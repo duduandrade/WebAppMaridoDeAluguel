@@ -1,0 +1,84 @@
+<!-- ./index.html -->
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>{% block title %}Marido de Aluguel{% endblock %}</title>
+        {#<link href="{{ asset('css/materialize.css') }}" rel="stylesheet" />#}
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <!--Import materialize.css-->
+        <link type="text/css" rel="stylesheet" href="css/materialize.css" media="screen,projection"/>
+
+
+        <!--Let browser know website is optimized for mobile-->
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    </head>
+    <body>
+        <div id="navbar">
+            {% block navbar %}
+                <nav>
+                    <div class="nav-wrapper blue">
+                        <a href="#!" class="brand-logo">Solicitar serviço</a>
+                        <a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+                        <ul class="right hide-on-med-and-down">
+                            <li><a href="sass.html">Home</a></li>
+                            <li><a href="badges.html">Perfil</a></li>
+                            <li><a href="collapsible.html">Sair</a></li>
+
+                        </ul>
+                    </div>
+                </nav>
+                <ul class="sidenav" id="mobile-demo">
+                    <li><a href="sass.html">Home</a></li>
+                    <li><a href="badges.html">Perfil</a></li>
+                    <li><a href="collapsible.html">Sair</a></li>
+                </ul>
+            {% endblock %}
+        </div>
+
+
+        <div id="content" class="container valign center-block">
+            {% block body %}
+                <div class="row" {# style="height: 180px"#}>
+                    <div class="col s12">
+                        <div class="row">
+                            <div class="input-field col s12">
+                                <i class="material-icons prefix">textsms</i>
+                                <input type="text" id="autocomplete-input" class="autocomplete">
+                                <label for="autocomplete-input">Informe o serviço</label>
+                            </div>
+                        </div>
+                    </div> 
+                </div>
+
+                <div class="row">
+                    <div class="col s12 m6 l6 offset-m3 offset-l3 valign">
+                        <div class="card-panel blue-grey center-align">
+                            <span class="white-text"> Informe o serviço para estimar o valor. </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col s12 m6 l6 offset-m3 offset-l3  valign center-align">
+                        <span class="blue-grey-text"> Este valor pode ser modificado a partir  da avaliação do profissional na chegada ao local e só pode ser feito mediante sua autorização no sistema. </span>
+
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col s12 m6 l6 offset-m3 offset-l3 valign">
+                        <p class="center-align">
+
+                            <a class="waves-effect waves-light btn-large blue">Procurar profissional</a>
+                        </p>
+                    </div>
+                </div>
+
+
+            {% endblock %}
+        </div>
+        <!-- Scripts -->
+        <script type="text/javascript" src="js/jquery-3.3.1.min.js"></script>
+        <script type="text/javascript" src="js/materialize.js"></script>
+        <script type="text/javascript" src="js/servico.js"></script>
+    </body>
+</html>
