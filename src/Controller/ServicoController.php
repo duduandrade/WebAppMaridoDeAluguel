@@ -9,9 +9,9 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 class ServicoController extends Controller{
 
     /**
-     * @Route("/", name="index")
+     * @Route("/solicitar", name="solicitarProfissional")
      */
-    public function index() {
+    public function solicitarProfissional() {
         return $this->render('index.html.twig');
         
     }
