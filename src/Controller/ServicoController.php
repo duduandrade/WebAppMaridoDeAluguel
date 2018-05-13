@@ -12,7 +12,7 @@ class ServicoController extends Controller{
      * @Route("/solicitar", name="solicitarProfissional")
      */
     public function solicitarProfissional() {
-        return $this->render('index.html.twig');
+        return $this->render('solicitarServico.html.twig');
         
     }
 
