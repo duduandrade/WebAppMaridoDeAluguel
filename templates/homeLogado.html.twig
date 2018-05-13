@@ -1,0 +1,97 @@
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>{% block title %}Marido de Aluguel{% endblock %}</title>
+        {#<link href="{{ asset('css/materialize.css') }}" rel="stylesheet" />#}
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <!--Import materialize.css-->
+        <link type="text/css" rel="stylesheet" href="css/materialize.css" media="screen,projection"/>
+        <style type='text/css'>
+            header, main, footer {
+                padding-left: 300px;
+            }
+
+            @media only screen and (max-width : 992px) {
+                header, main, footer {
+                    padding-left: 0;
+                }
+            }
+        </style>
+
+        <!--Let browser know website is optimized for mobile-->
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    </head>
+    <body>
+        <div id="navbar">
+            {% block navbar %}
+                <nav>
+                    <div class="nav-wrapper blue">
+                        <a href="#!" class="brand-logo"></a>
+                        <a href="#" data-target="slide-out" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+                        <ul class="right hide-on-med-and-down">
+                            <li><a href="sass.html">Home</a></li>
+                            <li><a href="badges.html">Perfil</a></li>
+                            <li><a href="collapsible.html">Sair</a></li>
+
+                        </ul>
+                    </div>
+                </nav>
+
+                <ul id="slide-out" class="sidenav sidenav-fixed">
+                    <li><div class="user-view">
+                            <div class="background blue">
+
+                            </div>
+                            <a href="#user"><img class="circle" src="img/eletricista.jpg"></a>
+                            <a href="#name"><span class="white-text name">John Doe</span></a>
+                            <a href="#email"><span class="white-text email">jdandturk@gmail.com</span></a>
+                        </div></li>
+                    <li><a href="#!"><i class="material-icons">add</i>Solicitar novo serviço</a></li>
+                    <li><a href="#!"><i class="material-icons">assignment</i>Serviços em andamento</a></li>
+                    <li><a href="#!"><i class="material-icons">check_circle</i>Serviços concluídos</a></li>
+                    <li><div class="divider"></div></li>
+                        {# <li><a class="subheader"></a></li>#}
+                    <li><a class="waves-effect" href="#!">Sair</a></li>
+                </ul>
+
+
+            {% endblock %}
+        </div>
+
+        <main>
+        <div id="content" class="container valign center-block">
+            <h5 class="blue-text center-align"> Principais serviços </h5>
+            <div class="divider"></div>
+
+            <div class="row">
+                {#multiplicar pelo banco de dados#}
+                <div class="col s12 m6 l6">
+                    <div class="card small">
+                        <div class="card-image waves-effect waves-block waves-light">
+                            <img class="activator" src="img/eletricista.jpg">
+                        </div>
+                        <div class="card-content">
+                            <span class="card-title activator grey-text text-darken-4">Eletricista<i class="material-icons right">more_vert</i></span>
+                            <p>A partir de R$30,00</p>
+                        </div>
+                        <div class="card-reveal">
+                            <span class="card-title grey-text text-darken-4">Card Title<i class="material-icons right">close</i></span>
+                            <p>Here is some more information about this product that is only revealed once clicked on.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="fixed-action-btn">
+            <a class="btn-floating btn-large tooltipped red" data-position='top' data-tooltip='Novo serviço'>
+                <i class="large material-icons">add</i>
+            </a>
+
+        </div>
+        </main>
+        <!-- Scripts -->
+        <script type="text/javascript" src="js/jquery-3.3.1.min.js"></script>
+        <script type="text/javascript" src="js/materialize.js"></script>
+        <script type="text/javascript" src="js/homeLogado.js"></script>
+    </body>
+</html>
