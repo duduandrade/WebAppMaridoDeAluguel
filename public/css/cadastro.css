@@ -1,3 +1,45 @@
+
+
+
+#principal, #tela{
+     padding: 0 !important;
+   margin: 0 !important;
+}
+#tela{
+   background-image: url('../img/728.jpg');
+    width: 100%;
+    min-height: 100vh;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    z-index: 1;
+}
+#form_cadastro{
+    background-color: white;
+     font-size: 10px;
+   
+}
+#tela::before{
+    content: "";
+    display: block;
+    position: absolute;
+    z-index: -1;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background: #008;
+    opacity: 0.7;
+}
 /* label color */
 .input-field label {
     color: #000;

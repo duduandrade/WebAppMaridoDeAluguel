@@ -17,14 +17,17 @@
     <body>
 
 
-
+        <div id="tela">
         {% block body %}
-            <main>
-                <center>
-                    <img class="responsive-img" style="width: 400px;" src="https://i.imgur.com/ax0NCsK.gif" />
-                    <div id="content" class="container" style="display: flex">
-                        <div class="row" class="z-depth-1 grey lighten-4 row" style="display: inline-block;  border: 1px solid #EEE;">
-                            <form class="col s12" id="form_cadastro">
+         
+                   
+                   
+                        <div class="row" id="principal">
+                            
+                            <form class="col s12 m6 l4 offset-l8" id="form_cadastro" class="z-depth-1 grey lighten-4 row" style="display: inline-block;    ">
+                   <div class="section"></div>
+          
+                                <img class="responsive-img" style="width: 400px;" src="https://i.imgur.com/ax0NCsK.gif" />
 
                                 <div class="input-field col s12">
                                     <i class="material-icons prefix">account_circle</i>
@@ -40,25 +43,25 @@
 
                                 </div>
 
-                                <div class="input-field col s12 m6 l6">
+                                <div class="input-field col s12 ">
 
                                     <i class="material-icons prefix">lock</i>
                                     <input id="password" type="password" class="validate">
                                     <label for="password">Senha</label>
                                 </div>
-                                <div class="input-field col s12 m6 l6">
+                                <div class="input-field col s12">
                                     <i class="material-icons prefix">lock_outline</i>
                                     <input id="passwordConfirm" type="password">
                                     <label id="lblPasswordConfirm" for="passwordConfirm" data-error="Senhas não são iguais" data-success="Senhas correspodem">Confirmar senha</label>
                                 </div>
 
 
-                                <div class="input-field col s12 m6 l6">
-                                    <i class="material-icons prefix">phone</i>
+                                <div class="input-field col s12">
+                                    <i class="material-icons prefix indigo-text">phone</i>
                                     <input id="celular"  pattern="\([0-9]{2}\)[\s][0-9]{4}-[0-9]{4,5}" type="tel">
                                     <label for="celular">Celular</label>
                                 </div>
-                                <div class="input-field col s12 m6 l6">
+                                <div class="input-field col s12">
                                     <i class="material-icons prefix">phone</i>
                                     <input id="cpf" type="text">
                                     <label for="cpf">CPF</label>
@@ -69,15 +72,16 @@
                             
 
                            
-                                <button type='submit' name='btn_login' class='col s12 btn btn-large waves-effect '>Login</button>
+                                <button type='submit' name='btn_login' class='col s12 indigo white-text btn btn-done waves-effect '>Login</button>
                             
                         </form>
                     </div>
+                    
 
-
-            </center>
-        </main>
+            
+       
             {% endblock %}
+        </div>
 
         <!-- Scripts -->
         <script type="text/javascript" src="js/jquery-3.3.1.min.js"></script>
