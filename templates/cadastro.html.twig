@@ -18,68 +18,75 @@
 
 
         <div id="tela">
-        {% block body %}
-         
-                   
-                   
-                        <div class="row" id="principal">
-                            
-                            <form class="col s12 m6 l4 offset-l8" id="form_cadastro" class="z-depth-1 grey lighten-4 row" style="display: inline-block;    ">
-                   <div class="section"></div>
-          
-                                <img class="responsive-img" style="width: 400px;" src="https://i.imgur.com/ax0NCsK.gif" />
-
-                                <div class="input-field col s12">
-                                    <i class="material-icons prefix">account_circle</i>
-                                    <input id="nome" type="text" class="validate">
-                                    <label for="nome">Nome</label>
-                                </div>
-
-                                <div class="input-field col s12">
-                                    <i class="material-icons prefix">email</i>
-                                    <input id="email" type="email" class="validate">
-                                    <label for="email">Email</label>
-                                    <span class="helper-text" data-error="wrong" data-success="right"></span>
-
-                                </div>
-
-                                <div class="input-field col s12 ">
-
-                                    <i class="material-icons prefix">lock</i>
-                                    <input id="password" type="password" class="validate">
-                                    <label for="password">Senha</label>
-                                </div>
-                                <div class="input-field col s12">
-                                    <i class="material-icons prefix">lock_outline</i>
-                                    <input id="passwordConfirm" type="password">
-                                    <label id="lblPasswordConfirm" for="passwordConfirm" data-error="Senhas não são iguais" data-success="Senhas correspodem">Confirmar senha</label>
-                                </div>
-
-
-                                <div class="input-field col s12">
-                                    <i class="material-icons prefix indigo-text">phone</i>
-                                    <input id="celular"  pattern="\([0-9]{2}\)[\s][0-9]{4}-[0-9]{4,5}" type="tel">
-                                    <label for="celular">Celular</label>
-                                </div>
-                                <div class="input-field col s12">
-                                    <i class="material-icons prefix">phone</i>
-                                    <input id="cpf" type="text">
-                                    <label for="cpf">CPF</label>
-                                </div>
+            {% block body %}
 
 
 
-                            
+                <div class="row" id="principal">
 
-                           
-                                <button type='submit' name='btn_login' class='col s12 indigo white-text btn btn-done waves-effect '>Login</button>
-                            
-                        </form>
+                    {#  <form class="col s12 m6 l4 offset-l8" id="form_cadastro" class="z-depth-1 grey lighten-4 row" style="display: inline-block;    ">#}
+                    {{ form_start(form, { 'attr': {'class': 'col s12 m6 l4 offset-l8 z-depth-1 grey lighten-4 row' , 'id': 'form_cadastro'} }) }}
+                    <div class="section">{{ form_errors(form) }}</div>
+
+                    <img class="responsive-img" style="width: 400px;" src="https://i.imgur.com/ax0NCsK.gif" />
+
+                    <div class="input-field col s12">
+                        <i class="material-icons prefix">account_circle</i>
+
+                        {{ form_widget(form.nome, {'attr':{'id':'name'} } ) }}
+
+                        <label for="nome">Nome</label>
                     </div>
-                    
 
-            
-       
+                    <div class="input-field col s12">
+                        <i class="material-icons prefix">email</i>
+
+                        {{ form_widget(form.email, {'attr':{'id':'email'} } ) }}
+
+                        <label for="email">Email</label>
+                        <span class="helper-text" data-error="wrong" data-success="right"></span>
+
+                    </div>
+
+                    <div class="input-field col s12 ">
+
+                        <i class="material-icons prefix">lock</i>
+                        {{ form_widget(form.senha.first, {'attr':{'id':'password' , 'class':'validate'} } ) }}
+
+                        <label for="password">Senha</label>
+                    </div>
+                    <div class="input-field col s12">
+                        <i class="material-icons prefix">lock_outline</i>
+
+                        {{ form_widget(form.senha.second, {'attr':{'id':'passwordConfirm' , 'class':'validate'} } ) }}
+                        <label id="lblPasswordConfirm" for="passwordConfirm" data-error="Senhas não são iguais" data-success="Senhas correspodem">Confirmar senha</label>
+                    </div>
+
+
+                    <div class="input-field col s12">
+                        <i class="material-icons prefix indigo-text">phone</i>
+                        {{ form_widget(form.telefone, {'attr':{'id':'celular'} } ) }}
+                        <label for="celular">Celular</label>
+                    </div>
+                    <div class="input-field col s12">
+                        <i class="material-icons prefix">phone</i>
+                        {{ form_widget(form.cpf, {'attr':{'id':'cpf'} } ) }}
+                        <label for="cpf">CPF</label>
+                    </div>
+
+
+
+
+
+                    {{ form_widget(form.cadastrar, {'attr':{'class':'col s12 indigo white-text btn btn-done waves-effect'} } ) }}
+
+                    {{ form_end(form) }}
+
+                </div>
+
+
+
+
             {% endblock %}
         </div>
 
