@@ -1,6 +1,4 @@
 <?php
-
-
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -28,63 +26,8 @@ class Usuarios
      * @ORM\Column(name="nome", type="string", length=45, nullable=false)
      */
     private $nome;
-    function getIdusuarios() {
-        return $this->idusuarios;
-    }
 
-    function getNome() {
-        return $this->nome;
-    }
-
-    function getSenha() {
-        return $this->senha;
-    }
-
-    function getEmail() {
-        return $this->email;
-    }
-
-    function getCpf() {
-        return $this->cpf;
-    }
-
-    function getTelefone() {
-        return $this->telefone;
-    }
-
-    function getTipousuario() {
-        return $this->tipousuario;
-    }
-
-    function setIdusuarios($idusuarios) {
-        $this->idusuarios = $idusuarios;
-    }
-
-    function setNome($nome) {
-        $this->nome = $nome;
-    }
-
-    function setSenha($senha) {
-        $this->senha = $senha;
-    }
-
-    function setEmail($email) {
-        $this->email = $email;
-    }
-
-    function setCpf($cpf) {
-        $this->cpf = $cpf;
-    }
-
-    function setTelefone($telefone) {
-        $this->telefone = $telefone;
-    }
-
-    function setTipousuario($tipousuario) {
-        $this->tipousuario = $tipousuario;
-    }
-
-        /**
+    /**
      * @var string
      *
      * @ORM\Column(name="senha", type="string", length=45, nullable=false)
@@ -118,6 +61,77 @@ class Usuarios
      * @ORM\Column(name="tipoUsuario", type="string", length=1, nullable=true, options={"fixed"=true})
      */
     private $tipousuario;
+
+    /**
+     * @var bool|null
+     *
+     * @ORM\Column(name="emailConfirmado", type="boolean", nullable=true)
+     */
+    private $emailconfirmado;
+    function getIdusuarios() {
+        return $this->idusuarios;
+    }
+
+    function getNome() {
+        return $this->nome;
+    }
+
+    function getSenha() {
+        return $this->senha;
+    }
+
+    function getEmail() {
+        return $this->email;
+    }
+
+    function getCpf() {
+        return $this->cpf;
+    }
+
+    function getTelefone() {
+        return $this->telefone;
+    }
+
+    function getTipousuario() {
+        return $this->tipousuario;
+    }
+
+    function getEmailconfirmado() {
+        return $this->emailconfirmado;
+    }
+
+    function setIdusuarios($idusuarios) {
+        $this->idusuarios = $idusuarios;
+    }
+
+    function setNome($nome) {
+        $this->nome = $nome;
+    }
+
+    function setSenha($senha) {
+        $this->senha = $senha;
+    }
+
+    function setEmail($email) {
+        $this->email = $email;
+    }
+
+    function setCpf($cpf) {
+        $this->cpf = $cpf;
+    }
+
+    function setTelefone($telefone) {
+        $this->telefone = $telefone;
+    }
+
+    function setTipousuario($tipousuario) {
+        $this->tipousuario = $tipousuario;
+    }
+
+    function setEmailconfirmado($emailconfirmado) {
+        $this->emailconfirmado = $emailconfirmado;
+    }
+
 
 
 }
