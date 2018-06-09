@@ -159,10 +159,6 @@ class AutenticacaoController extends Controller {
                     $this->renderView(
                             'emailNovaSenha.html.twig', array('link' => $link, 'nomeUsuario' => $retornoUsuario->getNome())
                     ), "text/html");
-
-
-
-
             $this->container->get('mailer')->send($message);
         } catch (Exception $ex) {
             return $ex;

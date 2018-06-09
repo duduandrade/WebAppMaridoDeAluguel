@@ -22,7 +22,7 @@ class UsuarioController extends Controller {
         $validarEmail = $doctrine->getRepository(Usuarios::class)
                 ->findBy(array('email' => $email));
 
-        if (!$validarEmail) {
+        if (!empty($validarEmail)) {
             return false;
         } else {
             return true;
@@ -48,7 +48,7 @@ class UsuarioController extends Controller {
             $em->flush();
             $sucesso = true;
         } catch (\Doctrine\DBAL\DBALException $e) {
-            $sucesso = false;
+            $sucesso = $e->getMessage();
         }
         return $sucesso;
     }

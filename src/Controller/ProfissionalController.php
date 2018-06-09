@@ -7,6 +7,7 @@
  */
 
 namespace App\Controller;
+
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -22,20 +23,23 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use App\Entity\Profissionais;
 
 class ProfissionalController extends Controller {
+
     public $formCadastroProfissional;
+   
+
     /**
      * @Route("/procurarprofissional", name="procurarprofissional")
      */
-    public function procurarProfissional () {
-         return $this->render('procurarProfissionalMaps.html.twig');
+    public function procurarProfissional() {
+        return $this->render('procurarProfissionalMaps.html.twig');
     }
-    
-     /**
+
+    /**
      * @Route("/profissional", name="profissional")
      */
     public function profissional(Request $request) {
         $usuarioCadastro = new Usuarios();
-        
+
         $this->formCadastroProfissional = $this->createFormBuilder($usuarioCadastro)
                 ->add('nome', TextType::class)
                 ->add('senha', RepeatedType::class, array(
@@ -52,46 +56,62 @@ class ProfissionalController extends Controller {
                 ->getForm();
         $this->formCadastroProfissional->handleRequest($request);
 
-        if ($this->formCadastroProfissional->isSubmitted() && $this->formCadastro->isValid()) {
+        if ($this->formCadastroProfissional->isSubmitted() && $this->formCadastroProfissional->isValid()) {
 
             $usuarioCadastro = $this->formCadastroProfissional->getData();
-          if ( UsuarioController::verificarEmailCadastrado($usuarioCadastro->getEmail())){
+            if (UsuarioController::verificarEmailCadastrado($usuarioCadastro->getEmail(), $this->getDoctrine())) {
 
-            if (UsuarioController::salvarUsuario($usuarioCadastro, $this->getDoctrine()) && $this->salvarProfissional($usuarioCadastro)) {
-                
-                return new JsonResponse(array(
-                    'erro' => false,
-                    'mensagem' => 'Profissional cadastrado com sucesso',
-                    'data' => null
-                ));
+                if (UsuarioController::salvarUsuario($usuarioCadastro, $this->getDoctrine())) {
+                    if ($this->salvarProfissional($usuarioCadastro, $this->getDoctrine())) {
+                         if ($this->enviarEmailConfirmacao($usuarioCadastro->getEmail())){
+                             return new JsonResponse(array(
+                            'erro' => false,
+                            'mensagem' => 'Profissional cadastrado com sucesso',
+                            'data' => "email enviado"
+                        ));
+                         }else{
+                             return new JsonResponse(array(
+                            'erro' => true,
+                            'mensagem' => 'Profissional cadastrado com sucesso. Email nao enviado.',
+                            'data' => null
+                            ));
+                         }
+                        
+                    } else {
+                        return new JsonResponse(array(
+                            'erro' => true,
+                            'mensagem' => 'Falha ao cadastrar profissional, tente novamente',
+                            'data' => null
+                        ));
+                    }
+                } else {
+                    return new JsonResponse(array(
+                        'erro' => true,
+                        'mensagem' => 'Falha ao cadastrar profissional, tente novamente',
+                        'data' => null
+                    ));
+                }
             } else {
                 return new JsonResponse(array(
-                    'erro' => true,
-                    'mensagem' => 'Falha ao cadastrar profissional, tente novamente',
-                    'data' => null
-                ));
-            }
-          }else{
-               return new JsonResponse(array(
                     'erro' => true,
                     'mensagem' => 'Email já cadastrado',
                     'data' => null
                 ));
-          }
+            }
         }
         return $this->render('cadastrarProfissional.html.twig', array(
                     'form' => $this->formCadastroProfissional->createView(),
         ));
     }
 
-    public function salvarProfissional($usuarioCadastro) {
+    public function salvarProfissional($usuarioCadastro, $doctrine) {
         $profissional = new Profissionais();
-        $profissional->setUsuariosusuarios($usuariosusuarios);
+        $profissional->setUsuariosusuarios($usuarioCadastro);
         $profissional->setSomaavaliacoes(0);
         $profissional->setStatusaprovado(0);
         $sucesso = false;
         try {
-            $em = $this->getDoctrine()->getManager();
+            $em = $this->getDoctrine()->getManager();   
             $em->persist($profissional);
             $em->flush();
             $sucesso = true;
@@ -101,4 +121,22 @@ class ProfissionalController extends Controller {
         return $sucesso;
     }
 
+        public  function enviarEmailConfirmacao($email) {
+        try {
+
+            $retornoUsuario = UsuarioController::buscarUsuarioPorEmail($email, $this->getDoctrine());
+
+            $message = (new \Swift_Message('Bem vindo profissional'))
+                    ->setFrom('wepsuporteapp@gmail.com')
+                    ->setTo($email)
+                    ->setBody(
+                    $this->renderView(
+                            'emailConfirmacao.html.twig', array('nomeUsuario' => $retornoUsuario->getNome())
+                    ), "text/html");
+             $this->container->get('mailer')->send($message);
+        } catch (Exception $ex) {
+            return $ex;
+        }
+        return true;
+    }
 }

@@ -18,7 +18,6 @@ $("#form_login").submit(function (e) {
             console.log(result);
             if (!result.erro) {
                 window.location.href = location.origin + '/maridoDeAluguel/home';
-
             } else {
                 alert(result.mensagem);
             }

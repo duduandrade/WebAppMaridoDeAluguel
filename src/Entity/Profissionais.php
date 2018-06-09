@@ -3,6 +3,7 @@
 
 namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
+use App\Entity\Usuarios;
 
 /**
  * Profissionais
@@ -36,7 +37,7 @@ class Profissionais
     private $somaavaliacoes;
 
     /**
-     * @var \Usuarios
+     * @var App\Entity\Usuarios
      *
      * @ORM\ManyToOne(targetEntity="Usuarios")
      * @ORM\JoinColumns({
@@ -73,7 +74,7 @@ class Profissionais
         $this->somaavaliacoes = $somaavaliacoes;
     }
 
-    function setUsuariosusuarios(\Usuarios $usuariosusuarios) {
+    function setUsuariosusuarios(Usuarios $usuariosusuarios) {
         $this->usuariosusuarios = $usuariosusuarios;
     }
 
