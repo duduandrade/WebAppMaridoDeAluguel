@@ -5,24 +5,55 @@
  */
 
 
-$("#form_login").submit(function(e) {
+$("#form_login").submit(function (e) {
 
-        e.preventDefault();
-        var formSerialize = $(this).serialize();
+    e.preventDefault();
+    var formSerialize = $(this).serialize();
+    var url = location.origin + '/maridoDeAluguel/login';
+    $.ajax({
+        type: "POST",
+        url: url,
+        data: formSerialize,
+        success: function (result) {
+            console.log(result);
+            if (!result.erro) {
+                window.location.href = location.origin + '/maridoDeAluguel/home';
 
-        var url = location.origin + '/maridoDeAluguel/login';
+            } else {
+                alert(result.mensagem);
+            }
+        }
+    });
+});
+
+$("#esqueciSenha").click(function () {
+    $("#divSenha").hide();
+    $("#btnPrincipal").hide();
+    $("#esqueciSenha").hide();
+    $("#form_senha").removeAttr('required');
+
+    $("#esqueciSenhaMensagem").show();
+    $("#btnEsqueciSenha").show();
+});
+
+$("#btnEsqueciSenha").click(function () {
+    console.log("cliquei");
+    
+
+        var formSerialize = $("#form_login").serialize();
+        var url = location.origin + '/maridoDeAluguel/esquecisenha';
         $.ajax({
             type: "POST",
             url: url,
             data: formSerialize,
             success: function (result) {
                 console.log(result);
-              if (!result.erro){
-                  window.location.href = location.origin + '/maridoDeAluguel/home';
-
-              }else{
-                   alert(result.mensagem);
-              }
+                if (!result.erro) {
+                    console.log(result.mensagem);
+                } else {
+                    alert(result.mensagem);
+                }
             }
         });
-    });
+   
+});

@@ -1,0 +1,142 @@
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>{% block title %}Marido de Aluguel{% endblock %}</title>
+        {#<link href="{{ asset('css/materialize.css') }}" rel="stylesheet" />#}
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <!--Import materialize.css-->
+        <link type="text/css" rel="stylesheet" href="css/materialize.css" media="screen,projection"/>
+        <style type='text/css'>
+            header, main, footer {
+                padding-left: 300px;
+            }
+
+            @media only screen and (max-width : 992px) {
+                header, main, footer {
+                    padding-left: 0;
+                }
+            }
+        </style>
+
+        <!--Let browser know website is optimized for mobile-->
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    </head>
+    <body>
+        <div id="navbar">
+            {% block navbar %}
+                <nav class="blue" role="navigation">
+                    <div class="nav-wrapper container"><a id="logo-container" href="#" class="brand-logo">Marido de Aluguel</a>
+                        <ul class="right hide-on-med-and-down">
+                            <li><a href="#">Navbar Link</a></li>
+                        </ul>
+
+                        <ul id="nav-mobile" class="sidenav">
+                            <li><a href="#">Navbar Link</a></li>
+                        </ul>
+                        <a href="#" data-target="nav-mobile" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+                    </div>
+                </nav>
+            {% endblock %}
+        </div>
+        <div class="section no-pad-bot" id="index-banner">
+            <div class="container">
+                <div class="row">
+                    <div class="col s12 m6 l6">
+                        <img class="responsive-img" src="img/oficial.jpg">
+                    </div>
+                    <div class="col s12 m6 l6">
+                        <h3 class="header center orange-text">Seja um profissional</h3>
+                        <div class="row center">
+                            <h5 class="header col s12 light">Conheça as vantagens de fazer parte do nosso time</h5>
+                          
+                                <div class="icon-block col s6 m6 l6">
+                                    <h5 class="center blue-text"><i class="material-icons">attach_money</i></h5>
+                                    <h5 class="center">Aumente sua renda</h5>
+                                    <p class="light">Deixe que mais clientes e serviços encontre você de forma segura e quando você puder.</p>
+                                </div>
+                           
+                            
+                                <div class="icon-block col s6 m6 l6">
+                                    <h5 class="center blue-text"><i class="material-icons">my_location</i></h5>
+                                    <h5 class="center">Localize  clientes</h5>
+                                    <p class="light">Deixe que mais clientes e serviços encontre você de forma segura e quando você puder.</p>
+                                </div>
+                            <div class=" col s12">
+                                <p> Após efetuar o cadastro, você receberá um e-mail para agendar uma entrevista com nossa equipe. <p>
+                            </div> 
+                        </div>
+                        <div class="row center">
+                            <button id="button-cadastrar" class="btn-large waves-effect waves-light orange">Cadastre-se</button>
+                        </div>
+                       
+                    </div>
+                </div>
+                  <div class="row" >
+
+                    {#  <form class="col s12 m6 l4 offset-l8" id="form_cadastro" class="z-depth-1 grey lighten-4 row" style="display: inline-block;    ">#}
+                    {{ form_start(form, { 'attr': {'class': 'row' , 'id': 'form_cadastro'} }) }}
+                    <div class="section">{{ form_errors(form) }}</div>
+
+                    <div class="input-field col s12 m6 l6">
+                        <i class="material-icons prefix">account_circle</i>
+
+                        {{ form_widget(form.nome, {'attr':{'id':'name'} } ) }}
+
+                        <label for="nome">Nome</label>
+                    </div>
+
+                    <div class="input-field col s12 m6 l6">
+                        <i class="material-icons prefix">email</i>
+
+                        {{ form_widget(form.email, {'attr':{'id':'email'} } ) }}
+
+                        <label for="email">Email</label>
+                        <span class="helper-text" data-error="wrong" data-success="right"></span>
+
+                    </div>
+
+                    <div class="input-field col s12 m6 l6  ">
+
+                        <i class="material-icons prefix">lock</i>
+                        {{ form_widget(form.senha.first, {'attr':{'id':'password' , 'class':'validate'} } ) }}
+
+                        <label for="password">Senha</label>
+                    </div>
+                    <div class="input-field col s12 m6 l6">
+                        <i class="material-icons prefix">lock_outline</i>
+
+                        {{ form_widget(form.senha.second, {'attr':{'id':'passwordConfirm' , 'class':'validate'} } ) }}
+                        <label id="lblPasswordConfirm" for="passwordConfirm" data-error="Senhas não são iguais" data-success="Senhas correspodem">Confirmar senha</label>
+                    </div>
+
+
+                    <div class="input-field col s12 m6 l6">
+                        <i class="material-icons prefix">phone</i>
+                        {{ form_widget(form.telefone, {'attr':{'id':'celular'} } ) }}
+                        <label for="celular">Celular</label>
+                    </div>
+                    <div class="input-field col s12 m6 l6">
+                        <i class="material-icons prefix">phone</i>
+                        {{ form_widget(form.cpf, {'attr':{'id':'cpf'} } ) }}
+                        <label for="cpf">CPF</label>
+                    </div>
+
+
+
+
+
+                    {{ form_widget(form.cadastrar, {'attr':{'class':'col s12 blue white-text btn btn-done waves-effect'} } ) }}
+
+                    {{ form_end(form) }}
+
+                </div>
+
+
+            </div>
+        </div>
+        <!-- Scripts -->
+        <script type="text/javascript" src="js/jquery-3.3.1.min.js"></script>
+        <script type="text/javascript" src="js/materialize.js"></script>
+        <script type="text/javascript" src="js/cadastrarProfissional.js"></script>
+    </body>
+</html>

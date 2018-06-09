@@ -29,6 +29,7 @@
                         {{ form_start(formLogin, { 'attr': {'class': 'col s12  m6 offset-m3 l6 offset-l3 ', 'id': 'form_login'} }) }}
                         <div class='row'>
                             <div class='col s12'>
+                                <p id="esqueciSenhaMensagem" class="blue-text" style="display: none"> Digite seu e-mail para redefinição de senha</p>
                             </div>
                         </div>
 
@@ -40,25 +41,27 @@
                         </div>
 
                         <div class='row'>
-                            <div class='input-field col s12'>
+                            <div class='input-field col s12' id="divSenha">
                                 {{ form_widget(formLogin.senha, {'attr':{'id':'password'} } ) }}
                                 <label for='password'>Senha</label>
                             </div>
                             <label>
-                                <a class='blue-text' href='#!'><b>Esqueci minha senha</b></a>
+                                <a class='blue-text' id="esqueciSenha" href='#!'><b>Esqueci minha senha</b></a>
                             </label>
                         </div>
 
                         <br />
                         <center>
                             <div class='row'>
-                                <button type='submit' name='btn_login' class='col s12 btn btn-large waves-effect indigo'>Login</button>
+                                <button type='submit' id="btnPrincipal" name='btn_login' class='col s12 btn btn-large waves-effect indigo'>Login</button>
+                                <button type='button' style="display: none" id="btnEsqueciSenha"  class='col s12 btn btn-large waves-effect indigo'>Enviar e-mail</button>
+
                             </div>
                         </center>
                          {{ form_end(formLogin) }}
                     </div>
                 </div>
-                <a href="#!">Não tem uma conta? Cadastre-se</a>
+                <a href="{{path}}/cadastrar">Não tem uma conta? Cadastre-se</a>
             </center>
 
             <div class="section"></div>

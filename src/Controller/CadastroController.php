@@ -45,9 +45,9 @@ class CadastroController extends Controller {
         if ($this->formCadastro->isSubmitted() && $this->formCadastro->isValid()) {
 
             $usuarioCadastro = $this->formCadastro->getData();
-          if ( $this->verificarEmailCadastrado($usuarioCadastro->getEmail())){
+          if (UsuarioController::verificarEmailCadastrado($usuarioCadastro->getEmail(), $this->getDoctrine())){
 
-            if ($this->salvarUsuario($usuarioCadastro)) {
+            if (UsuarioController::salvarUsuario($usuarioCadastro, $this->getDoctrine())) {
                 return new JsonResponse(array(
                     'erro' => false,
                     'mensagem' => 'Usuário cadastrado com sucesso',
@@ -73,29 +73,7 @@ class CadastroController extends Controller {
         ));
     }
 
-    function salvarUsuario($usuarioCadastro) {
-        $sucesso = false;
-        try {
-            $this->em = $this->getDoctrine()->getManager();
-            $this->em->persist($usuarioCadastro);
-            $this->em->flush();
-            $sucesso = true;
-        } catch (\Doctrine\DBAL\DBALException $e) {
-            $sucesso = false;
-        }
-        return $sucesso;
-    }
 
-    function verificarEmailCadastrado($email) {
-        $validarEmail = $this->getDoctrine()
-                ->getRepository(Usuarios::class)
-                ->findBy(array('email' => $email));
-        
-         if (!$validarEmail) {
-             return false;
-         }else{
-             return true;
-         }
-    }
+
 
 }

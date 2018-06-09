@@ -7,6 +7,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\HttpFoundation\Request;
 use App\Entity\Usuarios;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -146,21 +147,27 @@ class AutenticacaoController extends Controller {
     }
 
     public function enviarEmailNovaSenha($email) {
+        try {
+            $link = $this->gerarLinkNovaSenha($email);
 
-        $link = $this->gerarLinkNovaSenha($email);
-        
-        $retornoUsuario = UsuarioController::buscarUsuarioPorEmail($email, $this->getDoctrine());
-        
-        $message = (new \Swift_Message('Bem vindo'))
-                ->setFrom($email)
-                ->setTo($email)
-                ->setBody(
-                $this->renderView(
-                        'emailNovaSenha.html.twig', array('link' => $link, 'nomeUsuario' => $retornoUsuario->getNome())
-                ))
-               ->setContentType("text/html")
-        ;
-       $this->getMailer()->send($message);
+            $retornoUsuario = UsuarioController::buscarUsuarioPorEmail($email, $this->getDoctrine());
+
+            $message = (new \Swift_Message('Esqueci minha senha'))
+                    ->setFrom('wepsuporteapp@gmail.com')
+                    ->setTo($email)
+                    ->setBody(
+                    $this->renderView(
+                            'emailNovaSenha.html.twig', array('link' => $link, 'nomeUsuario' => $retornoUsuario->getNome())
+                    ), "text/html");
+
+
+
+
+            $this->container->get('mailer')->send($message);
+        } catch (Exception $ex) {
+            return $ex;
+        }
+        return true;
     }
 
     public function gerarLinkNovaSenha($email) {
@@ -173,12 +180,12 @@ class AutenticacaoController extends Controller {
     }
 
     /**
-     * @Route("/changepassword/{$email}")
+     * @Route("/changepassword/{email}")
      */
     public function trocarSenha(Request $request, $email) {
         $emailDescriptografado = base64_decode($email);
         $retornoUsuario = UsuarioController::buscarUsuarioPorEmail($emailDescriptografado, $this->getDoctrine());
-        if (!$retornoUsuario) {
+        if ($retornoUsuario) {
             $formNovaSenha = $this->createFormBuilder($retornoUsuario)
                     ->add('senha', RepeatedType::class, array(
                         'type' => PasswordType::class,
@@ -195,13 +202,13 @@ class AutenticacaoController extends Controller {
                 if ($this->atualizarSenha($retornoUsuario)) {
                     return new JsonResponse(array(
                         'erro' => false,
-                        'mensagem' => 'Faça login',
+                        'mensagem' => 'Senha alterada com sucesso.',
                         'data' => null
                     ));
                 } else {
                     return new JsonResponse(array(
                         'erro' => true,
-                        'mensagem' => 'Falha ao cadastrar nova senha',
+                        'mensagem' => 'Falha ao alterar senha.',
                         'data' => null
                     ));
                 }
