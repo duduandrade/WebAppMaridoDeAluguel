@@ -2,7 +2,6 @@
 
 
 namespace App\Entity;
-
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -44,6 +43,13 @@ class Solicitacoes
     private $dtsolicitacao;
 
     /**
+     * @var int
+     *
+     * @ORM\Column(name="servicos_idServico", type="integer", nullable=false)
+     */
+    private $servicosIdservico;
+
+    /**
      * @var \Profissionais
      *
      * @ORM\ManyToOne(targetEntity="Profissionais")
@@ -62,16 +68,62 @@ class Solicitacoes
      * })
      */
     private $usuariosusuarios;
+    function getIdsolicitacoes() {
+        return $this->idsolicitacoes;
+    }
 
-    /**
-     * @var \Servicos
-     *
-     * @ORM\ManyToOne(targetEntity="Servicos")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="servicos_idServico", referencedColumnName="idServico")
-     * })
-     */
-    private $servicosservico;
+    function getStatussolicitacao() {
+        return $this->statussolicitacao;
+    }
+
+    function getDescricaosolicitacao() {
+        return $this->descricaosolicitacao;
+    }
+
+    function getDtsolicitacao() {
+        return $this->dtsolicitacao;
+    }
+
+    function getServicosIdservico() {
+        return $this->servicosIdservico;
+    }
+
+    function getProfissionaisprofissionais() {
+        return $this->profissionaisprofissionais;
+    }
+
+    function getUsuariosusuarios() {
+        return $this->usuariosusuarios;
+    }
+
+    function setIdsolicitacoes($idsolicitacoes) {
+        $this->idsolicitacoes = $idsolicitacoes;
+    }
+
+    function setStatussolicitacao($statussolicitacao) {
+        $this->statussolicitacao = $statussolicitacao;
+    }
+
+    function setDescricaosolicitacao($descricaosolicitacao) {
+        $this->descricaosolicitacao = $descricaosolicitacao;
+    }
+
+    function setDtsolicitacao(\DateTime $dtsolicitacao) {
+        $this->dtsolicitacao = $dtsolicitacao;
+    }
+
+    function setServicosIdservico($servicosIdservico) {
+        $this->servicosIdservico = $servicosIdservico;
+    }
+
+    function setProfissionaisprofissionais(\Profissionais $profissionaisprofissionais) {
+        $this->profissionaisprofissionais = $profissionaisprofissionais;
+    }
+
+    function setUsuariosusuarios(\Usuarios $usuariosusuarios) {
+        $this->usuariosusuarios = $usuariosusuarios;
+    }
+
 
 
 }

@@ -70,6 +70,70 @@ class Usuarios
      * @ORM\Column(name="emailConfirmado", type="boolean", nullable=true)
      */
     private $emailconfirmado;
+    function getIdusuarios() {
+        return $this->idusuarios;
+    }
+
+    function getNome() {
+        return $this->nome;
+    }
+
+    function getSenha() {
+        return $this->senha;
+    }
+
+    function getEmail() {
+        return $this->email;
+    }
+
+    function getCpf() {
+        return $this->cpf;
+    }
+
+    function getTelefone() {
+        return $this->telefone;
+    }
+
+    function getTipousuario() {
+        return $this->tipousuario;
+    }
+
+    function getEmailconfirmado() {
+        return $this->emailconfirmado;
+    }
+
+    function setIdusuarios($idusuarios) {
+        $this->idusuarios = $idusuarios;
+    }
+
+    function setNome($nome) {
+        $this->nome = $nome;
+    }
+
+    function setSenha($senha) {
+        $this->senha = $senha;
+    }
+
+    function setEmail($email) {
+        $this->email = $email;
+    }
+
+    function setCpf($cpf) {
+        $this->cpf = $cpf;
+    }
+
+    function setTelefone($telefone) {
+        $this->telefone = $telefone;
+    }
+
+    function setTipousuario($tipousuario) {
+        $this->tipousuario = $tipousuario;
+    }
+
+    function setEmailconfirmado($emailconfirmado) {
+        $this->emailconfirmado = $emailconfirmado;
+    }
+
 
 
 }

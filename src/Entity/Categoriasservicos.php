@@ -35,6 +35,7 @@ class Categoriasservicos
      * @ORM\Column(name="descricaoCategoria", type="string", length=45, nullable=true)
      */
     private $descricaocategoria;
+
     function getIdcategoriasservicos() {
         return $this->idcategoriasservicos;
     }
@@ -58,7 +59,6 @@ class Categoriasservicos
     function setDescricaocategoria($descricaocategoria) {
         $this->descricaocategoria = $descricaocategoria;
     }
-
 
 
 }

@@ -53,5 +53,45 @@ class Enderecosolicitacao
      */
     private $solicitacoessolicitacoes;
 
+    function getIdenderecosolicitacao() {
+        return $this->idenderecosolicitacao;
+    }
+
+    function getLatitude() {
+        return $this->latitude;
+    }
+
+    function getLongitude() {
+        return $this->longitude;
+    }
+
+    function getEnderecosolicitacao() {
+        return $this->enderecosolicitacao;
+    }
+
+    function getSolicitacoessolicitacoes() {
+        return $this->solicitacoessolicitacoes;
+    }
+
+    function setIdenderecosolicitacao($idenderecosolicitacao) {
+        $this->idenderecosolicitacao = $idenderecosolicitacao;
+    }
+
+    function setLatitude($latitude) {
+        $this->latitude = $latitude;
+    }
+
+    function setLongitude($longitude) {
+        $this->longitude = $longitude;
+    }
+
+    function setEnderecosolicitacao($enderecosolicitacao) {
+        $this->enderecosolicitacao = $enderecosolicitacao;
+    }
+
+    function setSolicitacoessolicitacoes(\Solicitacoes $solicitacoessolicitacoes) {
+        $this->solicitacoessolicitacoes = $solicitacoessolicitacoes;
+    }
+
 
 }

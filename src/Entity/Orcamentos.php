@@ -45,6 +45,38 @@ class Orcamentos
      * })
      */
     private $solicitacoessolicitacoes;
+    function getIdorcamentos() {
+        return $this->idorcamentos;
+    }
+
+    function getStatusorcamento() {
+        return $this->statusorcamento;
+    }
+
+    function getDtorcamento() {
+        return $this->dtorcamento;
+    }
+
+    function getSolicitacoessolicitacoes() {
+        return $this->solicitacoessolicitacoes;
+    }
+
+    function setIdorcamentos($idorcamentos) {
+        $this->idorcamentos = $idorcamentos;
+    }
+
+    function setStatusorcamento($statusorcamento) {
+        $this->statusorcamento = $statusorcamento;
+    }
+
+    function setDtorcamento(\DateTime $dtorcamento) {
+        $this->dtorcamento = $dtorcamento;
+    }
+
+    function setSolicitacoessolicitacoes(\Solicitacoes $solicitacoessolicitacoes) {
+        $this->solicitacoessolicitacoes = $solicitacoessolicitacoes;
+    }
+
 
 
 }

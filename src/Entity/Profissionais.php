@@ -1,9 +1,10 @@
 <?php
 
-
 namespace App\Entity;
 
+
 use Doctrine\ORM\Mapping as ORM;
+use App\Entity\Usuarios;
 
 /**
  * Profissionais
@@ -37,6 +38,34 @@ class Profissionais
     private $somaavaliacoes;
 
     /**
+     * @var string|null
+     *
+     * @ORM\Column(name="enderecoResidencia", type="string", length=45, nullable=true)
+     */
+    public $enderecoresidencia;
+
+    /**
+     * @var string|null
+     *
+     * @ORM\Column(name="cep", type="string", length=45, nullable=true)
+     */
+    private $cep;
+
+    /**
+     * @var string|null
+     *
+     * @ORM\Column(name="numero", type="string", length=45, nullable=true)
+     */
+    private $numero;
+
+    /**
+     * @var string|null
+     *
+     * @ORM\Column(name="bairro", type="string", length=45, nullable=true)
+     */
+    private $bairro;
+
+    /**
      * @var \Usuarios
      *
      * @ORM\ManyToOne(targetEntity="Usuarios")
@@ -45,6 +74,67 @@ class Profissionais
      * })
      */
     private $usuariosusuarios;
+
+    function getIdprofissionais() {
+        return $this->idprofissionais;
+    }
+
+    function getStatusaprovado() {
+        return $this->statusaprovado;
+    }
+
+    function getSomaavaliacoes() {
+        return $this->somaavaliacoes;
+    }
+
+    function getEnderecoresidencia() {
+        return $this->enderecoresidencia;
+    }
+
+    function getCep() {
+        return $this->cep;
+    }
+
+    function getNumero() {
+        return $this->numero;
+    }
+
+    function getBairro() {
+        return $this->bairro;
+    }
+
+    function getUsuariosusuarios() {
+        return $this->usuariosusuarios;
+    }
+
+    function setIdprofissionais($idprofissionais) {
+        $this->idprofissionais = $idprofissionais;
+    }
+
+    function setStatusaprovado($statusaprovado) {
+        $this->statusaprovado = $statusaprovado;
+    }
+
+    function setSomaavaliacoes($somaavaliacoes) {
+        $this->somaavaliacoes = $somaavaliacoes;
+    }
+
+    function setUsuariosusuarios(Usuarios $usuariosusuarios) {
+        $this->usuariosusuarios = $usuariosusuarios;
+    }
+
+    function setCep($cep) {
+        $this->cep = $cep;
+    }
+
+    function setNumero($numero) {
+        $this->numero = $numero;
+    }
+
+    function setBairro($bairro) {
+        $this->bairro = $bairro;
+    }
+
 
 
 }

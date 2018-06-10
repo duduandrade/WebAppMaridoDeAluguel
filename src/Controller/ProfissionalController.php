@@ -21,16 +21,18 @@ use App\Entity\Usuarios;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use App\Entity\Profissionais;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 
 class ProfissionalController extends Controller {
 
+    public $formProfissional;
     public $formCadastroProfissional;
-   
 
     /**
      * @Route("/procurarprofissional", name="procurarprofissional")
      */
     public function procurarProfissional() {
+
         return $this->render('procurarProfissionalMaps.html.twig');
     }
 
@@ -54,29 +56,42 @@ class ProfissionalController extends Controller {
                 ->add('telefone', TelType::class)
                 ->add('cadastrar', SubmitType::class, array('label' => 'Cadastrar'))
                 ->getForm();
+        $profissionalCadastro = new Profissionais();
+
+        $this->formProfissional = $this->createFormBuilder($profissionalCadastro)
+                ->add('enderecoresidencia', TextType::class)
+                ->add('cep', TextType::class)
+                ->add('numero', NumberType::class)
+                ->add('bairro', TextType::class)
+                ->getForm();
+
         $this->formCadastroProfissional->handleRequest($request);
 
-        if ($this->formCadastroProfissional->isSubmitted() && $this->formCadastroProfissional->isValid()) {
+        $this->formProfissional->handleRequest($request);
+        $data = $request->request->all();
 
+
+
+        if (isset($data['form'])) {
             $usuarioCadastro = $this->formCadastroProfissional->getData();
+            $profissionalCadastro = $this->formProfissional->getData();
             if (UsuarioController::verificarEmailCadastrado($usuarioCadastro->getEmail(), $this->getDoctrine())) {
 
                 if (UsuarioController::salvarUsuario($usuarioCadastro, $this->getDoctrine())) {
-                    if ($this->salvarProfissional($usuarioCadastro, $this->getDoctrine())) {
-                         if ($this->enviarEmailConfirmacao($usuarioCadastro->getEmail())){
-                             return new JsonResponse(array(
-                            'erro' => false,
-                            'mensagem' => 'Profissional cadastrado com sucesso',
-                            'data' => "email enviado"
-                        ));
-                         }else{
-                             return new JsonResponse(array(
-                            'erro' => true,
-                            'mensagem' => 'Profissional cadastrado com sucesso. Email nao enviado.',
-                            'data' => null
+                    if ($this->salvarProfissional($usuarioCadastro, $profissionalCadastro)) {
+                        if ($this->enviarEmailConfirmacao($usuarioCadastro->getEmail())) {
+                            return new JsonResponse(array(
+                                'erro' => false,
+                                'mensagem' => 'Profissional cadastrado com sucesso',
+                                'data' => "email enviado"
                             ));
-                         }
-                        
+                        } else {
+                            return new JsonResponse(array(
+                                'erro' => true,
+                                'mensagem' => 'Profissional cadastrado com sucesso. Email nao enviado.',
+                                'data' => null
+                            ));
+                        }
                     } else {
                         return new JsonResponse(array(
                             'erro' => true,
@@ -101,17 +116,18 @@ class ProfissionalController extends Controller {
         }
         return $this->render('cadastrarProfissional.html.twig', array(
                     'form' => $this->formCadastroProfissional->createView(),
+                    'formProfisional' => $this->formProfissional->createView()
         ));
     }
 
-    public function salvarProfissional($usuarioCadastro, $doctrine) {
-        $profissional = new Profissionais();
+    public function salvarProfissional($usuarioCadastro, $profissionalCadastro) {
+        $profissional = $profissionalCadastro;
         $profissional->setUsuariosusuarios($usuarioCadastro);
         $profissional->setSomaavaliacoes(0);
         $profissional->setStatusaprovado(0);
         $sucesso = false;
         try {
-            $em = $this->getDoctrine()->getManager();   
+            $em = $this->getDoctrine()->getManager();
             $em->persist($profissional);
             $em->flush();
             $sucesso = true;
@@ -121,7 +137,7 @@ class ProfissionalController extends Controller {
         return $sucesso;
     }
 
-        public  function enviarEmailConfirmacao($email) {
+    public function enviarEmailConfirmacao($email) {
         try {
 
             $retornoUsuario = UsuarioController::buscarUsuarioPorEmail($email, $this->getDoctrine());
@@ -133,10 +149,11 @@ class ProfissionalController extends Controller {
                     $this->renderView(
                             'emailConfirmacao.html.twig', array('nomeUsuario' => $retornoUsuario->getNome())
                     ), "text/html");
-             $this->container->get('mailer')->send($message);
+            $this->container->get('mailer')->send($message);
         } catch (Exception $ex) {
             return $ex;
         }
         return true;
     }
+
 }
