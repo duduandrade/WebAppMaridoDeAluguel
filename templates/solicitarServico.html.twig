@@ -8,8 +8,33 @@
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
         <!--Import materialize.css-->
         <link type="text/css" rel="stylesheet" href="css/materialize.css" media="screen,projection"/>
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
 
+        <style>
+            .icon-bar {
+                width: 100%; /* Full-width */
+                background-color: #2196f3; /* Dark-grey background */
+                overflow: auto; /* Overflow due to float */
+            }
 
+            .icon-bar a {
+                float: left; /* Float links side by side */
+                text-align: center; /* Center-align text */
+                width: 20%; /* Equal width (5 icons with 20% width each = 100%) */
+                padding: 12px 0; /* Some top and bottom padding */
+                transition: all 0.3s ease; /* Add transition for hover effects */
+                color: white; /* White text color */
+                font-size: 36px; /* Increased font size */
+            }
+
+            .icon-bar a:hover {
+                background-color: #000; /* Add a hover color */
+            }
+
+            .active {
+                background-color: #00bcd4; /* Add an active/current color */
+            }
+        </style>
         <!--Let browser know website is optimized for mobile-->
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     </head>
@@ -18,7 +43,7 @@
             {% block navbar %}
                 <nav>
                     <div class="nav-wrapper blue">
-                        <a href="#!" class="brand-logo">Solicitar serviço</a>
+                        <a href="#!" class="brand-logo">Solicitar</a>
                         <a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
                         <ul class="right hide-on-med-and-down">
                             <li><a href="sass.html">Home</a></li>
@@ -39,39 +64,68 @@
 
         <div id="content" class="container valign center-block">
             {% block body %}
+                {#{{dump(servicos)}}
+                {{dump(categorias)}}#}
+
                 <div class="row" {# style="height: 180px"#}>
-                    <div class="col s12">
+                    <div class="icon-bar">
+                        {#ids devem ser os mesmos das categorias do banco de dados#}
+                        <a class='col s12 m3 l3'href="#" onClick="visibilidade('limpeza');"><i class="fas fa-broom"></i>Limpeza</a> 
+                        <a  class='col s12 m3 l3'href="#" onClick="visibilidade('eletrica');"><i class="fa fa-plug"></i>Elétrica</a> 
+                        <a  class='col s12 m3 l3'href="#"><i class="fa fa-envelope"></i></a> 
+                        <a  class='col s12 m3 l3'href="#"><i class="fa fa-globe"></i></a>
+
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col s12 m6 l6 offset-m3 offset-l3 valign">
+                        <h5 class="center-align">
+                            Escolha o serviço para procurar o profissional mais próximo disponível.
+                        </h5>
+                    </div>
+                </div> 
+
+
+                {% for categoriaArray in categorias %}
+                    <div class="row divsCategorias" id="{{categoriaArray.nomecategoria}}" style="display: none" >
+                        {% for servicosArray in servicos %}
+                            {%if servicosArray.categoriasservicoscategoriasservicos.idcategoriasservicos == categoriaArray.idcategoriasservicos%}
+                                <div class="col s12 m4 l4">
+                                    <div class="card small" onClick="procurarProfissional('{{servicosArray.idservico}}')">
+                                        <div class="card-image waves-effect waves-block waves-light">
+                                            <img class="activator" src="img/eletricista.jpg">
+                                        </div>
+                                        <div class="card-content">
+                                            <span class="card-title activator grey-text text-darken-4">{{servicosArray.nomeservico}}<i class="material-icons right">more_vert</i></span>
+                                            <p>A partir de R${{servicosArray.valorservico}}</p>
+                                        </div>
+                                        <div class="card-reveal">
+                                            <span class="card-title grey-text text-darken-4">Card Title<i class="material-icons right">close</i></span>
+                                            <p>Here is some more information about this product that is only revealed once clicked on.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            {%endif%}
+                        {%endfor%}  
+
                         <div class="row">
-                            <div class="input-field col s12">
-                                <i class="material-icons prefix">textsms</i>
-                                <input type="text" id="autocomplete-input" class="autocomplete">
-                                <label for="autocomplete-input">Informe o serviço</label>
+                            <div class="col s12 m12 l12 valign"> 
+                                <p class="center-align"> Não encontrou o serviço desejado? Solicite um orçamento
+                                    <a class="waves-effect waves-light btn-large blue" onClick='solicitarOrcamento()'>Solicitar orçamento</a></p>
+
                             </div>
                         </div>
-                    </div> 
-                </div>
+                        <div class="divider"></div>
+                    </div>
+                {% endfor %}
 
                 <div class="row">
-                    <div class="col s12 m6 l6 offset-m3 offset-l3 valign">
-                        <div class="card-panel blue-grey center-align">
-                            <span class="white-text"> Informe o serviço para estimar o valor. </span>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col s12 m6 l6 offset-m3 offset-l3  valign center-align">
-                        <span class="blue-grey-text"> Este valor pode ser modificado a partir  da avaliação do profissional na chegada ao local e só pode ser feito mediante sua autorização no sistema. </span>
+                    <div class="col s12 m6 l12 offset-m3 offset-m3  valign center-align">
+                        <span class="blue-grey-text"> O valor pode ser modificado a partir da avaliação do profissional na chegada ao local e só pode ser feito mediante sua autorização no sistema. </span>
 
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col s12 m6 l6 offset-m3 offset-l3 valign">
-                        <p class="center-align">
 
-                            <a class="waves-effect waves-light btn-large blue">Procurar profissional</a>
-                        </p>
-                    </div>
-                </div>
 
 
             {% endblock %}
@@ -80,5 +134,6 @@
         <script type="text/javascript" src="js/jquery-3.3.1.min.js"></script>
         <script type="text/javascript" src="js/materialize.js"></script>
         <script type="text/javascript" src="js/servico.js"></script>
+
     </body>
 </html>
