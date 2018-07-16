@@ -17,6 +17,7 @@ use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TelType;
+use \Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use App\Entity\Usuarios;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -35,9 +36,12 @@ class ProfissionalController extends Controller {
     public function procurarProfissional() {
         $em = $this->getDoctrine()->getManager();
 
-        //s e c sao alias 
-        $profissionais = $this->getDoctrine()->getRepository(Profissionais::class)
-                ->findAll();
+       $qbProf = $em->createQueryBuilder();
+            $qbProf->select('p,u')
+                    ->from('App\Entity\Profissionais', 'p')
+                    ->join('p.usuariosusuarios', 'u');
+            $profissionais = $qbProf->getQuery()->execute();
+            
         $enderecos = array();
         foreach ($profissionais as $profissa) {
             $qb = $em->createQueryBuilder();
@@ -53,7 +57,7 @@ class ProfissionalController extends Controller {
                 $intervalo = $now->diff($result->getAtualizacao());
                 if ($intervalo->format("%i") <= 20) {//pelo menos 20 minutos de atualizacao
                     // $enderecos[] = $result;
-                    $enderecos[] = array("teste", $result->getLatitude(), $result->getLongitude(), 1);
+                    $enderecos[] = array("casa", $result->getLatitude(), $result->getLongitude(), $profissa->getIdprofissionais());
                 } else {
                     $pegarLatLong = 1;
                 }
@@ -73,7 +77,7 @@ class ProfissionalController extends Controller {
                 $arrayEndereco = json_decode($json, true);
                // $enderecos[]=$arrayEndereco;
                 if ($arrayEndereco["status"]=="OK"){
-                  $enderecos[] = array("teste", $arrayEndereco["results"][0]["geometry"]["location"]["lat"], $arrayEndereco["results"][0]["geometry"]["location"]["lng"], 2);
+                  $enderecos[] = array("atual", $arrayEndereco["results"][0]["geometry"]["location"]["lat"], $arrayEndereco["results"][0]["geometry"]["location"]["lng"], $profissa->getIdprofissionais());
    
                 }
             }
@@ -85,7 +89,7 @@ class ProfissionalController extends Controller {
 
 
 
-        return $this->render('procurarProfissionalMaps.html.twig', array("endereco" => $enderecos));
+        return $this->render('procurarProfissionalMaps.html.twig', array("endereco" => $enderecos, "profissionais"=>$profissionais));
     }
 
     /**
@@ -105,7 +109,11 @@ class ProfissionalController extends Controller {
                     'second_options' => array('label' => 'Repeat Password')))
                 ->add('email', EmailType::class)
                 ->add('cpf', TextType::class)
+                ->add('tipousuario', HiddenType::class, array(
+                    'data' => 'P'
+                ))
                 ->add('telefone', TelType::class)
+                
                 ->add('cadastrar', SubmitType::class, array('label' => 'Cadastrar'))
                 ->getForm();
         $profissionalCadastro = new Profissionais();

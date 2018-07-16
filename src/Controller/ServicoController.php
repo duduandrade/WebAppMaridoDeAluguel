@@ -35,10 +35,11 @@ class ServicoController extends Controller {
     }
 
     /**
-     * @Route("/set/{idservico}", name="set")
+     * @Route("/set/{idservico}/{quantidade}", name="set")
      */
-    public function set($idservico) {
+    public function set($idservico, $quantidade) {
         $this->get('session')->set('idservicosolicitado', $idservico);
+        $this->get('session')->set('quantidade', $quantidade);
         return $this->redirectToRoute('procurarprofissional');
     }
 

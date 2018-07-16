@@ -99,6 +99,14 @@ class Enderecoatualprofissional
         $this->profissionaisprofissionais = $profissionaisprofissionais;
     }
 
+    function getAtualizacao() {
+        return $this->atualizacao;
+    }
+
+    function setAtualizacao(\DateTime $atualizacao) {
+        $this->atualizacao = $atualizacao;
+    }
+
 
 
 }

@@ -41,7 +41,7 @@ $("#form_cadastro").submit(function(e) {
                 console.log(result);
               if (!result.erro){
                   alert(result.mensagem + " Faça login para utilizar a plataforma.");
-                  window.location.href = location.origin + '/login';
+                  window.location.href = location.origin + '/maridoDeAluguel/login';
 
               }else{
                    alert(result.mensagem);

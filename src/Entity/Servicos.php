@@ -84,6 +84,14 @@ class Servicos
     function setCategoriasservicoscategoriasservicos(\Categoriasservicos $categoriasservicoscategoriasservicos) {
         $this->categoriasservicoscategoriasservicos = $categoriasservicoscategoriasservicos;
     }
+    function getUnidademedida() {
+        return $this->unidademedida;
+    }
+
+    function setUnidademedida($unidademedida) {
+        $this->unidademedida = $unidademedida;
+    }
+
 
 
 }

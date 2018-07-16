@@ -7,7 +7,12 @@
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
         <!--Import materialize.css-->
         <link type="text/css" rel="stylesheet" href="css/materialize.css" media="screen,projection"/>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
         <style>
+            .checked {
+                color: orange;
+            }
+
             /* Always set the map height explicitly to define the size of the div
              * element that contains the map. */
             #map {
@@ -63,8 +68,6 @@
             #divProfissional { 
                 position: absolute;
                 z-index: 99; 
-
-
                 top: 50%;
                 left: 50%;
                 transform: translate(-50%, -50%);
@@ -98,210 +101,222 @@
 
             {% endblock %}
         </div>
-{{dump(endereco)}}
+       
         <input id="pac-input" class="controls" type="text"
-               placeholder="Enter a location">
+               placeholder="Informe o local do antendimento">
 
         <div id="map"></div>
-
-        <div  id="divProfissional" class="valign-wrapper z-depth-1" style="display: none;">
+         {% for profissionalArray in profissionais %}
+             {#    {{dump(profissionalArray)}}#}
+        <div  id="divProfissional" class="valign-wrapper " style="display: none;">
             <div class="row white" >
-
                 <div class="col s12 m12 blue white-text" id="divTitulo">
                     <p>Perfil profissional</p>
                 </div>
-
-
-                <div class="col s12 m6 " id="divConteudo">
-                    <div class="col s6 m5">
-                        <p>Teste</p>
+                <div class="row" id="divConteudo">
+                    <div class="row">
+                        <div class="col s6 m6 l6">
+                            <br>
+                            <img src="img/avatar.png"  class="responsive-img circle">
+                        </div>
+                        <div class="col s6 m6 l6">
+                            <h5 id="nome">{{profissionalArray.usuariosusuarios.nome}}</h5>
+                            <span class="fa fa-star checked"></span>
+                            <span class="fa fa-star checked"></span>
+                            <span class="fa fa-star checked"></span>
+                            <span class="fa fa-star"></span>
+                            <span class="fa fa-star"></span>
+                            <p> Está em: Rua livino Andriotti, 500 </p>
+                        </div>
+                        <div class="row">
+                            <br>                          
+                                <a class="waves-effect waves-light btn-small blue">Procurar outro</a>
+                                <a class="waves-effect waves-light btn-small orange">    <i class="material-icons right">send</i>Solicitar</a>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
+{%endfor%}
 
+        <!-- Scripts -->
+        <script type="text/javascript" src="js/jquery-3.3.1.min.js"></script>
+        <script type="text/javascript" src="js/materialize.js"></script>
+        <script type="text/javascript" src="js/menuLateral.js"></script>
 
-    <!-- Scripts -->
-    <script type="text/javascript" src="js/jquery-3.3.1.min.js"></script>
-    <script type="text/javascript" src="js/materialize.js"></script>
-    <script type="text/javascript" src="js/menuLateral.js"></script>
+        <script type="text/javascript">
+            function initMap() {
+                var flightPlanCoordinates = [
+                    {lat: -29.9591749, lng: -51.6287654},
+                ];
+                var map = new google.maps.Map(document.getElementById('map'), {
+                    zoom: 17,
+                    center: flightPlanCoordinates[0],
+                    mapTypeId: google.maps.MapTypeId.ROADMAP,
 
-    <script type="text/javascript">
-        function initMap() {
-            var flightPlanCoordinates = [
-                {lat: -29.9591749, lng: -51.6287654},
-            ];
-            var map = new google.maps.Map(document.getElementById('map'), {
-                zoom: 17,
-                center: flightPlanCoordinates[0],
-                mapTypeId: google.maps.MapTypeId.ROADMAP,
-
-                zoomControl: true,
-                gestureHandling: 'cooperative'
-            });
-            var infoWindow = new google.maps.InfoWindow({map: map});
-
-            // Try HTML5 geolocation.
-            function handlePermission() {
-                navigator.permissions.query({name: 'geolocation'}).then(function (result) {
-                    if (result.state == 'granted') {
-                        report(result.state);
-
-                    } else if (result.state == 'prompt') {
-                        report(result.state);
-
-                        navigator.geolocation.getCurrentPosition(revealPosition, positionDenied, geoSettings);
-                    } else if (result.state == 'denied') {
-                        report(result.state);
-
-                    }
-                    result.onchange = function () {
-                        report(result.state);
-                    }
+                    zoomControl: true,
+                    gestureHandling: 'cooperative'
                 });
-            }
+                var infoWindow = new google.maps.InfoWindow({map: map});
 
-            function report(state) {
-                console.log('Permission ' + state);
-            }
+                // Try HTML5 geolocation.
+                function handlePermission() {
+                    navigator.permissions.query({name: 'geolocation'}).then(function (result) {
+                        if (result.state == 'granted') {
+                            report(result.state);
 
-            handlePermission();
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(function (position) {
-                    var pos = {
-                        lat: position.coords.latitude,
-                        lng: position.coords.longitude
-                    };
+                        } else if (result.state == 'prompt') {
+                            report(result.state);
 
-                    map.setCenter(pos);
-                }, function () {
-                    handleLocationError(true, infoWindow, map.getCenter());
-                });
-            } else {
-                // Browser doesn't support Geolocation
-                handleLocationError(false, infoWindow, map.getCenter());
-            }
+                            navigator.geolocation.getCurrentPosition(revealPosition, positionDenied, geoSettings);
+                        } else if (result.state == 'denied') {
+                            report(result.state);
 
-
-
-            var input = /** @type {!HTMLInputElement} */(
-                    document.getElementById('pac-input'));
-
-            var types = document.getElementById('type-selector');
-            map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
-            map.controls[google.maps.ControlPosition.TOP_LEFT].push(types);
-            var autocomplete = new google.maps.places.Autocomplete(input);
-            autocomplete.bindTo('bounds', map);
-
-            var infowindow = new google.maps.InfoWindow();
-            var marker = new google.maps.Marker({
-                map: map,
-                anchorPoint: new google.maps.Point(0, -29)
-            });
-            bounds = new google.maps.LatLngBounds();
-            inserirMarcadoresProfissionais(map); // coloca os marcadores dos profissionais no mapa
-            map.fitBounds(bounds);  //aumenta o zoom
-            map.panToBounds(bounds);   //centraliza
-            autocomplete.addListener('place_changed', function () {
-                infowindow.close();
-                marker.setVisible(false);
-                var place = autocomplete.getPlace();
-                if (!place.geometry) {
-                    // User entered the name of a Place that was not suggested and
-                    // pressed the Enter key, or the Place Details request failed.
-                    window.alert("No details available for input: '" + place.name + "'");
-                    return;
+                        }
+                        result.onchange = function () {
+                            report(result.state);
+                        }
+                    });
                 }
 
-                // If the place has a geometry, then present it on a map.
-                if (place.geometry.viewport) {
-                    map.fitBounds(place.geometry.viewport);
+                function report(state) {
+                    console.log('Permission ' + state);
+                }
+
+                handlePermission();
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(function (position) {
+                        var pos = {
+                            lat: position.coords.latitude,
+                            lng: position.coords.longitude
+                        };
+
+                        map.setCenter(pos);
+                    }, function () {
+                        handleLocationError(true, infoWindow, map.getCenter());
+                    });
                 } else {
-                    map.setCenter(place.geometry.location);
-                    map.setZoom(17);  // Why 17? Because it looks good.
-                }
-                marker.setIcon(/** @type {google.maps.Icon} */({
-                    url: place.icon,
-                    size: new google.maps.Size(100, 100),
-                    origin: new google.maps.Point(0, 0),
-                    anchor: new google.maps.Point(17, 34),
-                    scaledSize: new google.maps.Size(35, 35)
-                }));
-                marker.setPosition(place.geometry.location);
-                marker.setVisible(true);
-
-                var address = '';
-                if (place.address_components) {
-                    address = [
-                        (place.address_components[0] && place.address_components[0].short_name || ''),
-                        (place.address_components[1] && place.address_components[1].short_name || ''),
-                        (place.address_components[2] && place.address_components[2].short_name || '')
-                    ].join(' ');
+                    // Browser doesn't support Geolocation
+                    handleLocationError(false, infoWindow, map.getCenter());
                 }
 
-                infowindow.setContent('<div><strong>' + place.name + '</strong><br>' + address);
-                infowindow.open(map, marker);
-            });
 
 
-            setTimeout(function () {
-                google.maps.event.trigger(map, 'resize')
-            }, 100);
+                var input = /** @type {!HTMLInputElement} */(
+                        document.getElementById('pac-input'));
 
-        }
+                var types = document.getElementById('type-selector');
+                map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+                map.controls[google.maps.ControlPosition.TOP_LEFT].push(types);
+                var autocomplete = new google.maps.places.Autocomplete(input);
+                autocomplete.bindTo('bounds', map);
 
-        function handleLocationError(browserHasGeolocation, infoWindow, pos) {
-            infoWindow.setPosition(pos);
-            infoWindow.setContent(browserHasGeolocation ?
-                    'Error: The Geolocation service failed.' :
-                    'Error: Your browser doesn\'t support geolocation.');
-        }
+                var infowindow = new google.maps.InfoWindow();
+                var marker = new google.maps.Marker({
+                    map: map,
+                    anchorPoint: new google.maps.Point(0, -29)
+                });
+                bounds = new google.maps.LatLngBounds();
+                inserirMarcadoresProfissionais(map); // coloca os marcadores dos profissionais no mapa
+                map.fitBounds(bounds);  //aumenta o zoom
+                map.panToBounds(bounds);   //centraliza
+                autocomplete.addListener('place_changed', function () {
+                    infowindow.close();
+                    marker.setVisible(false);
+                    var place = autocomplete.getPlace();
+                    if (!place.geometry) {
+                        // User entered the name of a Place that was not suggested and
+                        // pressed the Enter key, or the Place Details request failed.
+                        window.alert("No details available for input: '" + place.name + "'");
+                        return;
+                    }
 
-        //adicionar marcadores
+                    // If the place has a geometry, then present it on a map.
+                    if (place.geometry.viewport) {
+                        map.fitBounds(place.geometry.viewport);
+                    } else {
+                        map.setCenter(place.geometry.location);
+                        map.setZoom(17);  // Why 17? Because it looks good.
+                    }
+                    marker.setIcon(/** @type {google.maps.Icon} */({
+                        url: place.icon,
+                        size: new google.maps.Size(100, 100),
+                        origin: new google.maps.Point(0, 0),
+                        anchor: new google.maps.Point(17, 34),
+                        scaledSize: new google.maps.Size(35, 35)
+                    }));
+                    marker.setPosition(place.geometry.location);
+                    marker.setVisible(true);
 
-        function inserirMarcadoresProfissionais(map) {
-            //esse vetor será substituido pelo resultado da consulta do banco
-            //dos profissionais mais próximos do cliente
-            var locations = {{endereco|json_encode|raw }};
-            console.log(locations);
-            for (var i = 0; i < locations.length; i++) {
-                console.log(locations[i]);
-                addMarkerMethod(locations, map, i);
+                    var address = '';
+                    if (place.address_components) {
+                        address = [
+                            (place.address_components[0] && place.address_components[0].short_name || ''),
+                            (place.address_components[1] && place.address_components[1].short_name || ''),
+                            (place.address_components[2] && place.address_components[2].short_name || '')
+                        ].join(' ');
+                    }
+
+                    infowindow.setContent('<div><strong>' + place.name + '</strong><br>' + address);
+                    infowindow.open(map, marker);
+                });
+
+
+                setTimeout(function () {
+                    google.maps.event.trigger(map, 'resize')
+                }, 100);
+
             }
-        }
 
-        function addMarkerMethod(locations, map, i) {
-            var localizacao = new google.maps.LatLng(locations[i][1], locations[i][2]);
-            var marker = new google.maps.Marker({
-                position: localizacao,
-                map: map
-            });
-             marker.setIcon(/** @type {google.maps.Icon} */({
-                    url: "img/home.png",
-                    size: new google.maps.Size(100, 100),
-                    origin: new google.maps.Point(0, 0),
-                    anchor: new google.maps.Point(17, 34),
-                    scaledSize: new google.maps.Size(35, 35)
-                }));
-            addEventoMarcadoresProfissionais(marker, i);
-            bounds.extend(localizacao);
-        }
-        function addEventoMarcadoresProfissionais(marker, i) {
-            google.maps.event.addListener(marker, 'click', (function (marker, i) {
-                return function () {
-                    console.log(marker);
-                    abrirJanelaProfissional(marker.id);
+            function handleLocationError(browserHasGeolocation, infoWindow, pos) {
+                infoWindow.setPosition(pos);
+                infoWindow.setContent(browserHasGeolocation ?
+                        'Error: The Geolocation service failed.' :
+                        'Error: Your browser doesn\'t support geolocation.');
+            }
+
+            //adicionar marcadores
+
+            function inserirMarcadoresProfissionais(map) {
+                //esse vetor será substituido pelo resultado da consulta do banco
+                //dos profissionais mais próximos do cliente
+                var locations = {{endereco|json_encode|raw }};
+                        console.log(locations);
+                for (var i = 0; i < locations.length; i++) {
+                    console.log(locations[i]);
+                    addMarkerMethod(locations, map, i);
+                }
+            }
+
+            function addMarkerMethod(locations, map, i) {
+                var localizacao = new google.maps.LatLng(locations[i][1], locations[i][2]);
+                var marker = new google.maps.Marker({
+                    position: localizacao,
+                    map: map
+                });
+                var icon = {
+                    url: 'img/' + locations[i][0] + '.png',
+                    scaledSize: new google.maps.Size(40, 40)
                 };
-            })(marker, i));
-        }
-        function abrirJanelaProfissional(id) {
+                marker.setIcon(icon);
+                addEventoMarcadoresProfissionais(marker, locations[i][3]);
+                bounds.extend(localizacao);
+            }
+            function addEventoMarcadoresProfissionais(marker, i) {
+                google.maps.event.addListener(marker, 'click', (function (marker, i) {
+                    return function () {
+                        console.log(marker);
+                        abrirJanelaProfissional(marker.id);
+                    };
+                })(marker, i));
+            }
+            function abrirJanelaProfissional(id) {
 
-            $('#divProfissional').show();
-        }
-    </script>
+                $('#divProfissional').show();
+            }
+        </script>
 
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCJad8cPlyBoxq47_kMa7RejAGIOdIrVYc&libraries=places&callback=initMap"
-    async defer></script>
-</body>
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCJad8cPlyBoxq47_kMa7RejAGIOdIrVYc&libraries=places&callback=initMap"
+        async defer></script>
+    </body>
 </html>

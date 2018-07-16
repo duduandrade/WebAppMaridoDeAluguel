@@ -6,13 +6,9 @@
 console.log("carregou");
 
 $(document).ready(function () {
-    $('input.autocomplete').autocomplete({
-        data: {
-            "Apple": null,
-            "Microsoft": null,
-            "Google": 'https://placehold.it/250x250'
-        },
-    });
+
+    $('.modal').modal();
+
 });
 $(function () {
     $('.icon-bar a').on('click', function () {
@@ -34,9 +30,18 @@ function visibilidade(id) {
     return false;
 }
 
-function procurarProfissional(codigoServico) {
+function procurarProfissional(codigoServico, valor) {
+    $('#modal' + codigoServico + '').modal('open');
+    $('#unidadeQuantidade' + codigoServico + '').on('keyup', function () {
+        var quantidade = $(this).val();
+        var final = parseFloat(valor) * quantidade;
+        $('#valorTotal' + codigoServico + '').text("Valor total: R$" + parseFloat(final)) // get the current value of the input field.
+    });
 
-    window.location.href = location.origin + '/maridoDeAluguel/set/' + codigoServico;
+}
+function salvarSessao(codigoServico, valor) {
+    var quantidadeFinal = $('#unidadeQuantidade' + codigoServico + '').val();
+    window.location.href = location.origin + '/maridoDeAluguel/set/' + codigoServico + '/' + quantidadeFinal;
 }
 function solicitarOrcamento() {
 
