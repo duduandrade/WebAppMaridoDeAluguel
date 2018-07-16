@@ -37,6 +37,13 @@ class Servicos
     private $valorservico;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="unidadeMedida", type="string", length=45, nullable=false)
+     */
+    private $unidademedida;
+
+    /**
      * @var \Categoriasservicos
      *
      * @ORM\ManyToOne(targetEntity="Categoriasservicos")
@@ -52,7 +59,7 @@ class Servicos
 
     function getNomeservico() {
         return $this->nomeservico;
-    }
+}
 
     function getValorservico() {
         return $this->valorservico;

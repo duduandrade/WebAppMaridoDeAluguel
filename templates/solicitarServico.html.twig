@@ -43,7 +43,7 @@
             {% block navbar %}
                 <nav>
                     <div class="nav-wrapper blue">
-                        <a href="#!" class="brand-logo">Solicitar</a>
+                        <a href="#!" class="brand-logo"><img class="responsive-img" style="width: 100px;" src="img/logo_faz_tudo2.png" /></a>
                         <a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
                         <ul class="right hide-on-med-and-down">
                             <li><a href="sass.html">Home</a></li>
@@ -70,10 +70,11 @@
                 <div class="row" {# style="height: 180px"#}>
                     <div class="icon-bar">
                         {#ids devem ser os mesmos das categorias do banco de dados#}
-                        <a class='col s12 m3 l3'href="#" onClick="visibilidade('limpeza');"><i class="fas fa-broom"></i>Limpeza</a> 
-                        <a  class='col s12 m3 l3'href="#" onClick="visibilidade('eletrica');"><i class="fa fa-plug"></i>Elétrica</a> 
-                        <a  class='col s12 m3 l3'href="#"><i class="fa fa-envelope"></i></a> 
-                        <a  class='col s12 m3 l3'href="#"><i class="fa fa-globe"></i></a>
+                        <a class='col s12 m3 l3'href="#" onClick="visibilidade('limpeza');"><i class="fas fa-broom"></i> Limpeza</a> 
+                        <a  class='col s12 m3 l3'href="#" onClick="visibilidade('eletrica');"><i class="fa fa-plug"></i> Elétrica</a> 
+                        <a  class='col s12 m3 l3'href="#" onClick="visibilidade('hidraulica');"><i class="fa fa-tint"></i> Hidráulica</a>
+
+                        <a  class='col s12 m3 l3'href="#" onClick="visibilidade('alvenaria');"><i class="fa fa-industry"></i> Alvenaria</a> 
 
                     </div>
                 </div>
@@ -90,10 +91,10 @@
                     <div class="row divsCategorias" id="{{categoriaArray.nomecategoria}}" style="display: none" >
                         {% for servicosArray in servicos %}
                             {%if servicosArray.categoriasservicoscategoriasservicos.idcategoriasservicos == categoriaArray.idcategoriasservicos%}
-                                <div class="col s12 m4 l4">
+                                <div class="col s12 m3 l3">
                                     <div class="card small" onClick="procurarProfissional('{{servicosArray.idservico}}')">
                                         <div class="card-image waves-effect waves-block waves-light">
-                                            <img class="activator" src="img/eletricista.jpg">
+                                            <img class="activator" src="img/muro.jpg">
                                         </div>
                                         <div class="card-content">
                                             <span class="card-title activator grey-text text-darken-4">{{servicosArray.nomeservico}}<i class="material-icons right">more_vert</i></span>

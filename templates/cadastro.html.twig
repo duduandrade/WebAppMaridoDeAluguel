@@ -21,14 +21,13 @@
             {% block body %}
 
 
-
+<div class="container">
                 <div class="row" id="principal">
 
                     {#  <form class="col s12 m6 l4 offset-l8" id="form_cadastro" class="z-depth-1 grey lighten-4 row" style="display: inline-block;    ">#}
-                    {{ form_start(form, { 'attr': {'class': 'col s12 m6 l4 offset-l8 z-depth-1 grey lighten-4 row' , 'id': 'form_cadastro'} }) }}
-                    <div class="section">{{ form_errors(form) }}</div>
-
-                    <img class="responsive-img" style="width: 400px;" src="https://i.imgur.com/ax0NCsK.gif" />
+                    {{ form_start(form, { 'attr': {'class': 'col s12  m6 offset-m3 l6 offset-l3 ' , 'id': 'form_cadastro'} }) }}
+                 
+                    <img class="responsive-img center-block" style="width: 200px;" src="img/logo_faz_tudo.png" />
 
                     <div class="input-field col s12">
                         <i class="material-icons prefix">account_circle</i>
@@ -64,12 +63,12 @@
 
 
                     <div class="input-field col s12">
-                        <i class="material-icons prefix indigo-text">phone</i>
+                        <i class="material-icons prefix">phone</i>
                         {{ form_widget(form.telefone, {'attr':{'id':'celular'} } ) }}
                         <label for="celular">Celular</label>
                     </div>
                     <div class="input-field col s12">
-                        <i class="material-icons prefix">phone</i>
+                        <i class="material-icons prefix">assignment_ind</i>
                         {{ form_widget(form.cpf, {'attr':{'id':'cpf'} } ) }}
                         <label for="cpf">CPF</label>
                     </div>
@@ -78,7 +77,7 @@
 
 
 
-                    {{ form_widget(form.cadastrar, {'attr':{'class':'col s12 indigo white-text btn btn-done waves-effect'} } ) }}
+                    {{ form_widget(form.cadastrar, {'attr':{'class':'col s12 blue white-text btn btn-done waves-effect'} } ) }}
 
                     {{ form_end(form) }}
 
@@ -89,7 +88,7 @@
 
             {% endblock %}
         </div>
-
+        </div>
         <!-- Scripts -->
         <script type="text/javascript" src="js/jquery-3.3.1.min.js"></script>
         <script type="text/javascript" src="js/materialize.js"></script>

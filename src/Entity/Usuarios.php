@@ -80,7 +80,7 @@ class Usuarios
 
     function getSenha() {
         return $this->senha;
-    }
+}
 
     function getEmail() {
         return $this->email;

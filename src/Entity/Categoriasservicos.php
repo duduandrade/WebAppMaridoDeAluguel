@@ -42,7 +42,7 @@ class Categoriasservicos
 
     function getNomecategoria() {
         return $this->nomecategoria;
-    }
+}
 
     function getDescricaocategoria() {
         return $this->descricaocategoria;

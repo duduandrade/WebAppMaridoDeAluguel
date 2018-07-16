@@ -44,6 +44,13 @@ class Enderecoatualprofissional
     private $endereco;
 
     /**
+     * @var \DateTime|null
+     *
+     * @ORM\Column(name="atualizacao", type="datetime", nullable=true)
+     */
+    private $atualizacao;
+
+    /**
      * @var \Profissionais
      *
      * @ORM\ManyToOne(targetEntity="Profissionais")
@@ -62,7 +69,7 @@ class Enderecoatualprofissional
 
     function getLongitude() {
         return $this->longitude;
-    }
+}
 
     function getEndereco() {
         return $this->endereco;

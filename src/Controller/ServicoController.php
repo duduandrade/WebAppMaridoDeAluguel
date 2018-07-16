@@ -49,4 +49,20 @@ class ServicoController extends Controller {
         return $this->render('orcamento.html.twig');
     }
 
+    static public function buscarServioEmAndamento($idUsuario, $doctrine) {
+        $em = $doctrine->getManager();
+        $qb = $em->createQueryBuilder();
+        $qb->select('s,u')
+                ->from('App\Entity\Solicitacoes', 's')
+                ->join('s.usuariosusuarios', 'u')
+                ->where($qb->expr()->eq('s.usuariosusuarios', $idUsuario))
+                ->andWhere($qb->expr()->neq('s.statussolicitacao', 9));
+        $result = $qb->getQuery()->getOneOrNullResult();
+        if ($result != null) {
+            return $result;
+        } else {
+            return false;
+        }
+    }
+
 }

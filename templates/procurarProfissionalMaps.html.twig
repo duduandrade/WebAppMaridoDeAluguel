@@ -98,7 +98,7 @@
 
             {% endblock %}
         </div>
-
+{{dump(endereco)}}
         <input id="pac-input" class="controls" type="text"
                placeholder="Enter a location">
 
@@ -130,10 +130,7 @@
     <script type="text/javascript">
         function initMap() {
             var flightPlanCoordinates = [
-                {lat: 37.772, lng: -122.214},
-                {lat: 21.291, lng: -157.821},
-                {lat: -18.142, lng: 178.431},
-                {lat: -27.467, lng: 153.027}
+                {lat: -29.9591749, lng: -51.6287654},
             ];
             var map = new google.maps.Map(document.getElementById('map'), {
                 zoom: 17,
@@ -226,7 +223,7 @@
                 }
                 marker.setIcon(/** @type {google.maps.Icon} */({
                     url: place.icon,
-                    size: new google.maps.Size(71, 71),
+                    size: new google.maps.Size(100, 100),
                     origin: new google.maps.Point(0, 0),
                     anchor: new google.maps.Point(17, 34),
                     scaledSize: new google.maps.Size(35, 35)
@@ -266,14 +263,10 @@
         function inserirMarcadoresProfissionais(map) {
             //esse vetor será substituido pelo resultado da consulta do banco
             //dos profissionais mais próximos do cliente
-            var locations = [
-                ['Bondi Beach', -29.9694976, -51.6329908, 4],
-                ['Coogee Beach', -29.9649129, -51.6321223, 5],
-                ['Cronulla Beach', -29.9629768, -51.6293877, 3]
-            ];
-
+            var locations = {{endereco|json_encode|raw }};
+            console.log(locations);
             for (var i = 0; i < locations.length; i++) {
-                console.log(locations[i][1]);
+                console.log(locations[i]);
                 addMarkerMethod(locations, map, i);
             }
         }
@@ -284,6 +277,13 @@
                 position: localizacao,
                 map: map
             });
+             marker.setIcon(/** @type {google.maps.Icon} */({
+                    url: "img/home.png",
+                    size: new google.maps.Size(100, 100),
+                    origin: new google.maps.Point(0, 0),
+                    anchor: new google.maps.Point(17, 34),
+                    scaledSize: new google.maps.Size(35, 35)
+                }));
             addEventoMarcadoresProfissionais(marker, i);
             bounds.extend(localizacao);
         }

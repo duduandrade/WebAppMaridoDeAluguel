@@ -59,7 +59,7 @@ class Enderecosolicitacao
 
     function getLatitude() {
         return $this->latitude;
-    }
+}
 
     function getLongitude() {
         return $this->longitude;

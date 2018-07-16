@@ -55,7 +55,7 @@ class Orcamentos
 
     function getDtorcamento() {
         return $this->dtorcamento;
-    }
+}
 
     function getSolicitacoessolicitacoes() {
         return $this->solicitacoessolicitacoes;

@@ -29,9 +29,9 @@
                         <a href="#!" class="brand-logo"></a>
                         <a href="#" data-target="slide-out" class="sidenav-trigger"><i class="material-icons">menu</i></a>
                         <ul class="right hide-on-med-and-down">
-                            <li><a href="sass.html">Home</a></li>
-                            <li><a href="badges.html">Perfil</a></li>
-                            <li><a href="collapsible.html">Sair</a></li>
+                            <li><a href="#">Home</a></li>
+                            <li><a href="#">Perfil</a></li>
+                            <li><a href="#">Sair</a></li>
 
                         </ul>
                     </div>
@@ -39,13 +39,12 @@
 
                 <ul id="slide-out" class="sidenav sidenav-fixed">
                     <li><div class="user-view">
-                            <div class="background blue">
+                            <div class="background orange">
 
                             </div>
-                            <a href="#user"><img class="circle" src="img/eletricista.jpg"></a>
-                            <a href="#name"><span class="white-text name">{{nome}}</span></a>
+                            <a href="#user"><img class="circle" src="img/avatar.png"></a>
+                            <a href="#name"><span class="white-text name">Profissional {{nome}}</span></a>
                         </div></li>
-                    <li><a href="#!"><i class="material-icons">add</i>Solicitar novo serviço</a></li>
                     <li><a href="#!"><i class="material-icons">assignment</i>Serviço em andamento</a></li>
                     <li><a href="#!"><i class="material-icons">check_circle</i>Serviços concluídos</a></li>
                     <li><div class="divider"></div></li>
@@ -82,14 +81,22 @@
                      </div>
                  </div>#}
 
-                <h5 class="blue-text center-align"> Serviço em andamento </h5>
+                <h5 class="blue-text center-align"> Solicitações </h5>
                 <div class="divider"></div>
                 <div class="row">
+                      <div class="switch">
+                                <label>
+                                    Off
+                                    <input type="checkbox">
+                                    <span class="lever"></span>
+                                    On
+                                </label>
+                            </div>
                     <div class="container center-align">
                         <ul class="collection">
-                            <li class="collection-item avatar">
+                          {#  <li class="collection-item avatar">
                                 <img src="img/avatar.png" alt="" class="circle">
-                                <h5 class="title">Profissional Joao da Silva Silva</h5>
+                                <h5 class="title">Cliente Eduardo Andrade</h5>
                                 <p> 
                                     Alvenaria - Colocar janela
                                 </p>
@@ -100,6 +107,13 @@
                                     Rua Felisberto de Andrade, 530, Charqueadas-RS
                                 </p>
                             </li>
+                          #}
+                            <li><h5> Não há solicitações no momento </h5></li>
+
+                            <a href="home"> <i class="large material-icons orange-text">refresh</i></a>
+                            <!-- Switch -->
+                          
+                            
                         </ul>
                         {#STATUS ////// #}
                         {# <h5 class="blue-text center-align"> Aguardando confirmação do Profissional  </h5>
@@ -107,17 +121,18 @@
                          <i class="medium material-icons orange-text">timelapse</i><br>#}
 
                         {# ///////#}
-                        <h5 class="blue-text center-align"> Profissional confirmado. Tempo de chegada aproximado: 20 min. </h5><br>
+                        {# <h5 class="blue-text center-align"> Profissional confirmado. Tempo de chegada aproximado: 20 min. </h5><br>
+ 
+                         <div class="row">
+ 
+                             <a class=" btn-small  blue">Cancelar solicitacao</a>
+                         </div>
+ 
+                         <div class="row">
+ 
+                             <a class="btn-small  orange">Informacoes</a>
+                         </div>#}
 
-                        <div class="row">
-
-                            <a class=" btn-small  blue">Cancelar solicitacao</a>
-                        </div>
-
-                        <div class="row">
-
-                            <a class="btn-small  orange">Informacoes</a>
-                        </div>
                     </div>
                 </div> 
             </div>

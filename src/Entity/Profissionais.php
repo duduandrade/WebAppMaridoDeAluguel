@@ -81,7 +81,7 @@ class Profissionais
 
     function getStatusaprovado() {
         return $this->statusaprovado;
-    }
+}
 
     function getSomaavaliacoes() {
         return $this->somaavaliacoes;

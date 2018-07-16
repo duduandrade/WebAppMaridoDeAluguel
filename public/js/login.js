@@ -17,6 +17,7 @@ $("#form_login").submit(function (e) {
         success: function (result) {
             console.log(result);
             if (!result.erro) {
+                
                 window.location.href = location.origin + '/maridoDeAluguel/home';
             } else {
                 alert(result.mensagem);

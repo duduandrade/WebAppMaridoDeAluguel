@@ -39,6 +39,17 @@ class UsuarioController extends Controller {
             return $usuarioEmail;
         }
     }
+    
+    static function buscarUsuarioPorId($id, $doctrine) {
+        $usuarioEmail = $doctrine->getRepository(Usuarios::class)
+                ->findOneBy(array('idusuarios' => $id));
+
+        if (!$usuarioEmail) {
+            return false;
+        } else {
+            return $usuarioEmail;
+        }
+    }
 
     static function salvarUsuario($usuarioCadastro,$doctrine) {
         $sucesso = false;
