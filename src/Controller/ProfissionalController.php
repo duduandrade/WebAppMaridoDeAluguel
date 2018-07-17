@@ -24,6 +24,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use App\Entity\Profissionais;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use DateTime;
+use DateTimeZone;
 
 class ProfissionalController extends Controller {
 
@@ -36,12 +37,12 @@ class ProfissionalController extends Controller {
     public function procurarProfissional() {
         $em = $this->getDoctrine()->getManager();
 
-       $qbProf = $em->createQueryBuilder();
-            $qbProf->select('p,u')
-                    ->from('App\Entity\Profissionais', 'p')
-                    ->join('p.usuariosusuarios', 'u');
-            $profissionais = $qbProf->getQuery()->execute();
-            
+        $qbProf = $em->createQueryBuilder();
+        $qbProf->select('p,u')
+                ->from('App\Entity\Profissionais', 'p')
+                ->join('p.usuariosusuarios', 'u');
+        $profissionais = $qbProf->getQuery()->execute();
+
         $enderecos = array();
         foreach ($profissionais as $profissa) {
             $qb = $em->createQueryBuilder();
@@ -53,9 +54,13 @@ class ProfissionalController extends Controller {
 
             $pegarLatLong = 0;
             if ($result != null) {
-                $now = new DateTime('now');
+                $UTC = new DateTimeZone("UTC");
+                $newTZ = new DateTimeZone("America/Sao_Paulo");
+
+                $now = new DateTime('now', $UTC);
+                $now->setTimezone($newTZ);
                 $intervalo = $now->diff($result->getAtualizacao());
-                if ($intervalo->format("%i") <= 20) {//pelo menos 20 minutos de atualizacao
+                if ($intervalo->format("%i") <= 30) {//pelo menos 30 minutos de atualizacao
                     // $enderecos[] = $result;
                     $enderecos[] = array("casa", $result->getLatitude(), $result->getLongitude(), $profissa->getIdprofissionais());
                 } else {
@@ -67,7 +72,7 @@ class ProfissionalController extends Controller {
             if ($pegarLatLong) {
                 $curl = curl_init();
                 curl_setopt($curl, CURLOPT_URL, 'https://maps.googleapis.com/maps/api/geocode/json?address='
-                        . rawurlencode("" . $profissa->getEnderecoresidencia() . " " . $profissa->getNumero() . " " . $profissa->getCep() . " ".$profissa->getBairro() ));
+                        . rawurlencode("" . $profissa->getEnderecoresidencia() . " " . $profissa->getNumero() . " " . $profissa->getCep() . " " . $profissa->getBairro()));
 
                 curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
 
@@ -75,10 +80,9 @@ class ProfissionalController extends Controller {
 
                 curl_close($curl);
                 $arrayEndereco = json_decode($json, true);
-               // $enderecos[]=$arrayEndereco;
-                if ($arrayEndereco["status"]=="OK"){
-                  $enderecos[] = array("atual", $arrayEndereco["results"][0]["geometry"]["location"]["lat"], $arrayEndereco["results"][0]["geometry"]["location"]["lng"], $profissa->getIdprofissionais());
-   
+                // $enderecos[]=$arrayEndereco;
+                if ($arrayEndereco["status"] == "OK") {
+                    $enderecos[] = array("atual", $arrayEndereco["results"][0]["geometry"]["location"]["lat"], $arrayEndereco["results"][0]["geometry"]["location"]["lng"], $profissa->getIdprofissionais());
                 }
             }
         }
@@ -89,7 +93,7 @@ class ProfissionalController extends Controller {
 
 
 
-        return $this->render('procurarProfissionalMaps.html.twig', array("endereco" => $enderecos, "profissionais"=>$profissionais));
+        return $this->render('procurarProfissionalMaps.html.twig', array("endereco" => $enderecos, "profissionais" => $profissionais));
     }
 
     /**
@@ -113,7 +117,6 @@ class ProfissionalController extends Controller {
                     'data' => 'P'
                 ))
                 ->add('telefone', TelType::class)
-                
                 ->add('cadastrar', SubmitType::class, array('label' => 'Cadastrar'))
                 ->getForm();
         $profissionalCadastro = new Profissionais();
@@ -224,6 +227,75 @@ class ProfissionalController extends Controller {
             return $ex;
         }
         return true;
+    }
+
+    /**
+     * @Route("/localAtual", name="procurarprofissional")
+     */
+    public function localAtual(Request $request) {
+        if (0 === strpos($request->headers->get('Content-Type'), 'application/json')) {
+            $data = json_decode($request->getContent(), true);
+            $request->request->replace(is_array($data) ? $data : array());
+            if ($this->get('session')->get('idUsuario')) {
+                $idUsuario = $this->get('session')->get('idUsuario');
+
+                $em = $this->getDoctrine()->getManager();
+
+
+                $qbProf = $em->createQueryBuilder();
+                $qbProf->select('p,u')
+                        ->from('App\Entity\Profissionais', 'p')
+                        ->join('p.usuariosusuarios', 'u')
+                        ->where($qbProf->expr()->eq('p.usuariosusuarios', $idUsuario));
+
+                $resultProfissional = $qbProf->getQuery()->getOneOrNullResult();
+
+                if ($resultProfissional != null) {
+                    $UTC = new DateTimeZone("UTC");
+                    $newTZ = new DateTimeZone("America/Sao_Paulo");
+
+                    $now = new DateTime('now', $UTC);
+                    $now->setTimezone($newTZ);
+
+                    $qb = $em->createQueryBuilder();
+
+                    $result = $qb->update('App\Entity\Enderecoatualprofissional', 'e')
+                                    ->set('e.latitude', $qb->expr()->literal($data['lat']))
+                                    ->set('e.longitude', $qb->expr()->literal($data['lng']))
+                                    ->set('e.atualizacao', $qb->expr()->literal($now->format('Y-m-d H:i:s')))
+                                    ->where('e.profissionaisprofissionais = ?2')
+                                    ->setParameter(2, $qb->expr()->literal($resultProfissional->getIdprofissionais()))
+                                    ->getQuery()->getSingleScalarResult();
+                    if ($result != null) {
+                        return new JsonResponse(array(
+                            'erro' => false,
+                            'mensagem' => '',
+                            'data' => null
+                        ));
+                    } else {
+                        return new JsonResponse(array(
+                            'erro' => true,
+                            'mensagem' => 'Falha ao salvar localizacao',
+                            'data' => null
+                        ));
+                    }
+                } else {
+                    return new JsonResponse(array(
+                        'erro' => true,
+                        'mensagem' => 'Profissional nao encontrado',
+                        'data' => null
+                    ));
+                }
+            } else {
+                $this->redirectToRoute("login");
+            }
+        } else {
+            return new JsonResponse(array(
+                'erro' => true,
+                'mensagem' => 'Formato invalido',
+                'data' => null
+            ));
+        }
     }
 
 }

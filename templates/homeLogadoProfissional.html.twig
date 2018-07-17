@@ -25,7 +25,7 @@
         <div id="navbar">
             {% block navbar %}
                 <nav>
-                    <div class="nav-wrapper blue">
+                    <div class="nav-wrapper orange lighten-2">
                         <a href="#!" class="brand-logo"></a>
                         <a href="#" data-target="slide-out" class="sidenav-trigger"><i class="material-icons">menu</i></a>
                         <ul class="right hide-on-med-and-down">
@@ -45,10 +45,29 @@
                             <a href="#user"><img class="circle" src="img/avatar.png"></a>
                             <a href="#name"><span class="white-text name">Profissional {{nome}}</span></a>
                         </div></li>
+                    <li><a href="#!"><i class="material-icons">build</i>Solicitações</a></li>
+                    <li><div class="divider"></div></li>
                     <li><a href="#!"><i class="material-icons">assignment</i>Serviço em andamento</a></li>
                     <li><a href="#!"><i class="material-icons">check_circle</i>Serviços concluídos</a></li>
                     <li><div class="divider"></div></li>
-                        {# <li><a class="subheader"></a></li>#}
+                    <li>   <p style="  margin-left: 30px;">  
+                            <label>
+                                <input type="checkbox" />
+                                <span class="grey-text darken-4">Mostrar minha localização</span>
+                            </label>
+                        </p>
+                    </li>
+
+                    <li><p style="  margin-left: 30px;">   
+
+                            <label>
+                                <input type="checkbox" />
+                                <span class="grey-text darken-4">Mostrar minha casa</span>
+                            </label>
+                        </p>
+                    </li>
+                    <li><div class="divider"></div></li>
+
                     <li><a class="waves-effect" href="#!">Sair</a></li>
                 </ul>
 
@@ -84,54 +103,50 @@
                 <h5 class="blue-text center-align"> Solicitações </h5>
                 <div class="divider"></div>
                 <div class="row">
-                      <div class="switch">
-                                <label>
-                                    Off
-                                    <input type="checkbox">
-                                    <span class="lever"></span>
-                                    On
-                                </label>
-                            </div>
+
                     <div class="container center-align">
+                        <div class="switch">
+                            <label>
+                                Não aceitando
+                                <input type="checkbox">
+                                <span class="lever"></span>
+                                Disponível
+                            </label>
+                        </div>
+                        <h5 class="blue-text"> Você está disponível</h5>
+                        <br>    
                         <ul class="collection">
-                          {#  <li class="collection-item avatar">
+                            <li class="collection-item avatar">
                                 <img src="img/avatar.png" alt="" class="circle">
                                 <h5 class="title">Cliente Eduardo Andrade</h5>
                                 <p> 
                                     Alvenaria - Colocar janela
                                 </p>
                                 <p>
-                                    R$ 45,00
+                                    Unidade: 1 
+                                </p>
+                                <p>
+                                    Valor final: R$ 45,00
                                 </p>
                                 <p><br>
                                     Rua Felisberto de Andrade, 530, Charqueadas-RS
                                 </p>
+                                <div class="row">
+                                    <a class="waves-effect waves-light btn blue">Recusar</a>
+                                </div>
+                                <div class="row">
+                                    <a class="waves-effect waves-light btn-large orange"> <i class="material-icons right">send</i>Aceitar e ir</a>
+                                </div>
+
                             </li>
-                          #}
-                            <li><h5> Não há solicitações no momento </h5></li>
 
-                            <a href="home"> <i class="large material-icons orange-text">refresh</i></a>
-                            <!-- Switch -->
-                          
-                            
+                            {# <li><h5> Não há solicitações no momento </h5></li>
+ 
+                             <a href="home"> <i class="large material-icons orange-text">refresh</i></a>#}
+
+
+
                         </ul>
-                        {#STATUS ////// #}
-                        {# <h5 class="blue-text center-align"> Aguardando confirmação do Profissional  </h5>
- 
-                         <i class="medium material-icons orange-text">timelapse</i><br>#}
-
-                        {# ///////#}
-                        {# <h5 class="blue-text center-align"> Profissional confirmado. Tempo de chegada aproximado: 20 min. </h5><br>
- 
-                         <div class="row">
- 
-                             <a class=" btn-small  blue">Cancelar solicitacao</a>
-                         </div>
- 
-                         <div class="row">
- 
-                             <a class="btn-small  orange">Informacoes</a>
-                         </div>#}
 
                     </div>
                 </div> 
@@ -143,5 +158,7 @@
     <script type="text/javascript" src="js/jquery-3.3.1.min.js"></script>
     <script type="text/javascript" src="js/materialize.js"></script>
     <script type="text/javascript" src="js/homeLogado.js"></script>
+    <script type="text/javascript" src="js/coletarLocalizacaoProfissional.js"></script>
+
 </body>
 </html>
