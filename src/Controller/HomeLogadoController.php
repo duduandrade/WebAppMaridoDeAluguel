@@ -26,7 +26,7 @@ class HomeLogadoController extends Controller {
             if ($usuario != false) {
                 if ($tipoUsuario == "P") {
                     
-                    return $this->render('homeLogadoProfissional.html.twig', array("nome" => $usuario->getNome()));
+                    return $this->render('solicitacoesAndamento.html.twig', array("nome" => $usuario->getNome()));
                 } else {
                     if ($tipoUsuario == "C") {
                         $servicoAndamento = ServicoController::buscarServioEmAndamento($idUsuario, $this->getDoctrine());
