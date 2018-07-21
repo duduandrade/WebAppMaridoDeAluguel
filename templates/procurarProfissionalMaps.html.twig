@@ -101,43 +101,43 @@
 
             {% endblock %}
         </div>
-       
+
         <input id="pac-input" class="controls" type="text"
                placeholder="Informe o local do antendimento">
 
         <div id="map"></div>
-         {% for profissionalArray in profissionais %}
-             {#    {{dump(profissionalArray)}}#}
-        <div  id="divProfissional" class="valign-wrapper " style="display: none;">
-            <div class="row white" >
-                <div class="col s12 m12 blue white-text" id="divTitulo">
-                    <p>Perfil profissional</p>
-                </div>
-                <div class="row" id="divConteudo">
-                    <div class="row">
-                        <div class="col s6 m6 l6">
-                            <br>
-                            <img src="img/avatar.png"  class="responsive-img circle">
-                        </div>
-                        <div class="col s6 m6 l6">
-                            <h5 id="nome">{{profissionalArray.usuariosusuarios.nome}}</h5>
-                            <span class="fa fa-star checked"></span>
-                            <span class="fa fa-star checked"></span>
-                            <span class="fa fa-star checked"></span>
-                            <span class="fa fa-star"></span>
-                            <span class="fa fa-star"></span>
-                            <p> Está em: Rua livino Andriotti, 500 </p>
-                        </div>
+        {% for profissionalArray in profissionais %}
+            {#    {{dump(profissionalArray)}}#}
+            <div  id="divProfissional" class="valign-wrapper " style="display: none;">
+                <div class="row white" >
+                    <div class="col s12 m12 blue white-text" id="divTitulo">
+                        <p>Perfil profissional</p>
+                    </div>
+                    <div class="row" id="divConteudo">
                         <div class="row">
-                            <br>                          
+                            <div class="col s6 m6 l6">
+                                <br>
+                                <img src="img/avatar.png"  class="responsive-img circle">
+                            </div>
+                            <div class="col s6 m6 l6">
+                                <h5 id="nome">{{profissionalArray.usuariosusuarios.nome}}</h5>
+                                <span class="fa fa-star checked"></span>
+                                <span class="fa fa-star checked"></span>
+                                <span class="fa fa-star checked"></span>
+                                <span class="fa fa-star"></span>
+                                <span class="fa fa-star"></span>
+                                <p> Está em: Rua livino Andriotti, 500 </p>
+                            </div>
+                            <div class="row">
+                                <br>                          
                                 <a class="waves-effect waves-light btn-small blue">Procurar outro</a>
-                                <a class="waves-effect waves-light btn-small orange">    <i class="material-icons right">send</i>Solicitar</a>
+                                <a class="waves-effect waves-light btn-small orange" onClick="criarSolicitacao('{{profissionalArray.idprofissionais}}');">    <i class="material-icons right">send</i>Solicitar</a>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-{%endfor%}
+        {%endfor%}
 
         <!-- Scripts -->
         <script type="text/javascript" src="js/jquery-3.3.1.min.js"></script>
@@ -146,64 +146,81 @@
 
         <script type="text/javascript">
             function initMap() {
-                var flightPlanCoordinates = [
+                var coordenadasCharqueadas = [
                     {lat: -29.9591749, lng: -51.6287654},
                 ];
                 var map = new google.maps.Map(document.getElementById('map'), {
                     zoom: 17,
-                    center: flightPlanCoordinates[0],
+                    center: coordenadasCharqueadas[0],
                     mapTypeId: google.maps.MapTypeId.ROADMAP,
-
                     zoomControl: true,
                     gestureHandling: 'cooperative'
                 });
                 var infoWindow = new google.maps.InfoWindow({map: map});
 
-                // Try HTML5 geolocation.
-                function handlePermission() {
+                function solicitarPermissaoLocalizacao() {
                     navigator.permissions.query({name: 'geolocation'}).then(function (result) {
-                        if (result.state == 'granted') {
-                            report(result.state);
-
-                        } else if (result.state == 'prompt') {
-                            report(result.state);
-
+                        if (result.state == 'prompt' || result.state == 'denied') {
+                            //solicita autorização ao usuário caso ainda não tenha aceitado
                             navigator.geolocation.getCurrentPosition(revealPosition, positionDenied, geoSettings);
-                        } else if (result.state == 'denied') {
-                            report(result.state);
-
-                        }
-                        result.onchange = function () {
-                            report(result.state);
                         }
                     });
                 }
 
-                function report(state) {
-                    console.log('Permission ' + state);
-                }
-
-                handlePermission();
+                solicitarPermissaoLocalizacao();
                 if (navigator.geolocation) {
+                    //se a permissao foi aceita centraliza o mapa em sua posição
                     navigator.geolocation.getCurrentPosition(function (position) {
                         var pos = {
                             lat: position.coords.latitude,
                             lng: position.coords.longitude
                         };
-
                         map.setCenter(pos);
                     }, function () {
                         handleLocationError(true, infoWindow, map.getCenter());
                     });
                 } else {
-                    // Browser doesn't support Geolocation
                     handleLocationError(false, infoWindow, map.getCenter());
                 }
+                function inserirMarcadoresProfissionais(map) {
+                    var locations
+                    = {{endereco|json_encode|raw }}; //localizacoes recebidas do controller
+                            for (var i = 0; i < locations.length; i++) {
+                        adicionarMarcadoresMapa(locations, map, i);
+                    }
+                }
+                function adicionarMarcadoresMapa(locations, map, i) {
+                    var localizacao = new google.maps.LatLng(locations[i][1], locations[i][2]);
+                    var marker = new google.maps.Marker({
+                        position: localizacao,
+                        map: map
+                    });
+                    var icon = {
+                        url: 'img/' + locations[i][0] + '.png', //marcador casa ou relogio de acordo com o controller
+                        scaledSize: new google.maps.Size(40, 40)
+                    };
+                    marker.setIcon(icon);
+                    addEventoMarcadoresProfissionais(marker, locations[i][3]);
+                    bounds.extend(localizacao);
+                }
+                function addEventoMarcadoresProfissionais(marker, i) {
+                    google.maps.event.addListener(marker, 'click', (function (marker, i) {
+                        return function () {
+                            abrirJanelaProfissional(marker.id);
+                        };
+                    })(marker, i));
+                }
+                function abrirJanelaProfissional(id) {
+                    $('#divProfissional').show();
+                }
+                function handleLocationError(browserHasGeolocation, infoWindow, pos) {
+                    infoWindow.setPosition(pos);
+                    infoWindow.setContent(browserHasGeolocation ?
+                            'Error: The Geolocation service failed.' :
+                            'Error: Seu navegador não suporta geolocalização.');
+                }
 
-
-
-                var input = /** @type {!HTMLInputElement} */(
-                        document.getElementById('pac-input'));
+                var input = (document.getElementById('pac-input'));
 
                 var types = document.getElementById('type-selector');
                 map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
@@ -225,13 +242,10 @@
                     marker.setVisible(false);
                     var place = autocomplete.getPlace();
                     if (!place.geometry) {
-                        // User entered the name of a Place that was not suggested and
-                        // pressed the Enter key, or the Place Details request failed.
                         window.alert("No details available for input: '" + place.name + "'");
                         return;
                     }
 
-                    // If the place has a geometry, then present it on a map.
                     if (place.geometry.viewport) {
                         map.fitBounds(place.geometry.viewport);
                     } else {
@@ -268,51 +282,30 @@
 
             }
 
-            function handleLocationError(browserHasGeolocation, infoWindow, pos) {
-                infoWindow.setPosition(pos);
-                infoWindow.setContent(browserHasGeolocation ?
-                        'Error: The Geolocation service failed.' :
-                        'Error: Your browser doesn\'t support geolocation.');
-            }
 
-            //adicionar marcadores
-
-            function inserirMarcadoresProfissionais(map) {
-                //esse vetor será substituido pelo resultado da consulta do banco
-                //dos profissionais mais próximos do cliente
-                var locations = {{endereco|json_encode|raw }};
-                        console.log(locations);
-                for (var i = 0; i < locations.length; i++) {
-                    console.log(locations[i]);
-                    addMarkerMethod(locations, map, i);
-                }
-            }
-
-            function addMarkerMethod(locations, map, i) {
-                var localizacao = new google.maps.LatLng(locations[i][1], locations[i][2]);
-                var marker = new google.maps.Marker({
-                    position: localizacao,
-                    map: map
-                });
-                var icon = {
-                    url: 'img/' + locations[i][0] + '.png',
-                    scaledSize: new google.maps.Size(40, 40)
+            function criarSolicitacao(codigoProfissional) {
+                var enderecoServico = $("#pac-input").val();
+                var solicitacao = {
+                    profissional: codigoProfissional,
+                    endereco: enderecoServico
                 };
-                marker.setIcon(icon);
-                addEventoMarcadoresProfissionais(marker, locations[i][3]);
-                bounds.extend(localizacao);
-            }
-            function addEventoMarcadoresProfissionais(marker, i) {
-                google.maps.event.addListener(marker, 'click', (function (marker, i) {
-                    return function () {
-                        console.log(marker);
-                        abrirJanelaProfissional(marker.id);
-                    };
-                })(marker, i));
-            }
-            function abrirJanelaProfissional(id) {
-
-                $('#divProfissional').show();
+                
+                console.log(JSON.stringify(solicitacao));
+                $.ajax({
+                    type: "POST",
+                    url: "criarSolicitacao",
+                    dataType: "json",
+                    contentType: 'application/json',
+                    data: JSON.stringify(solicitacao),
+                    success: function (result) {
+                        console.log("result");
+                        console.log(result);
+                    },
+                    error: function (xhr, ajaxOptions, thrownError) {
+                        console.log(xhr.status);
+                        console.log(thrownError);
+                    }
+                });
             }
         </script>
 

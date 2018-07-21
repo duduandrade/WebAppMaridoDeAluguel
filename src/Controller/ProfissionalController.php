@@ -230,7 +230,7 @@ class ProfissionalController extends Controller {
     }
 
     /**
-     * @Route("/localAtual", name="procurarprofissional")
+     * @Route("/localAtual", name="localAtual")
      */
     public function localAtual(Request $request) {
         if (0 === strpos($request->headers->get('Content-Type'), 'application/json')) {
@@ -298,4 +298,14 @@ class ProfissionalController extends Controller {
         }
     }
 
+    static public function buscarProfissionalPorId($idProfissional, $doctrine) {
+        $objetoProfissional = $doctrine->getRepository(Profissionais::class)
+                ->findOneBy(array('idprofissionais' => $idProfissional));
+
+        if (!$objetoProfissional) {
+            return false;
+        } else {
+            return $objetoProfissional;
+        }
+    }
 }
