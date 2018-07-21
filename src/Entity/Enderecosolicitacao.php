@@ -4,7 +4,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-
+use App\Entity\Solicitacoes;
 /**
  * Enderecosolicitacao
  *
@@ -39,7 +39,7 @@ class Enderecosolicitacao
     /**
      * @var string|null
      *
-     * @ORM\Column(name="enderecoSolicitacao", type="string", length=45, nullable=true)
+     * @ORM\Column(name="enderecoSolicitacao", type="string", length=200, nullable=true)
      */
     private $enderecosolicitacao;
 
@@ -89,7 +89,7 @@ class Enderecosolicitacao
         $this->enderecosolicitacao = $enderecosolicitacao;
     }
 
-    function setSolicitacoessolicitacoes(\Solicitacoes $solicitacoessolicitacoes) {
+    function setSolicitacoessolicitacoes(Solicitacoes $solicitacoessolicitacoes) {
         $this->solicitacoessolicitacoes = $solicitacoessolicitacoes;
     }
 

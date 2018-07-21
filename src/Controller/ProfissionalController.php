@@ -37,63 +37,65 @@ class ProfissionalController extends Controller {
     public function procurarProfissional() {
         $em = $this->getDoctrine()->getManager();
 
-        $qbProf = $em->createQueryBuilder();
-        $qbProf->select('p,u')
-                ->from('App\Entity\Profissionais', 'p')
-                ->join('p.usuariosusuarios', 'u');
-        $profissionais = $qbProf->getQuery()->execute();
+        $session = $this->getRequest()->getSession();
+        if ($session->has('idservicosolicitado') && $session->has('quantidade')) {
 
-        $enderecos = array();
-        foreach ($profissionais as $profissa) {
-            $qb = $em->createQueryBuilder();
-            $qb->select('p,e')
-                    ->from('App\Entity\Enderecoatualprofissional', 'e')
-                    ->join('e.profissionaisprofissionais', 'p')
-                    ->where($qb->expr()->eq('e.profissionaisprofissionais', $profissa->getIdprofissionais()));
-            $result = $qb->getQuery()->getOneOrNullResult();
+            $qbProf = $em->createQueryBuilder();
+            $qbProf->select('p,u')
+                    ->from('App\Entity\Profissionais', 'p')
+                    ->join('p.usuariosusuarios', 'u');
+            $profissionais = $qbProf->getQuery()->execute();
 
-            $pegarLatLong = 0;
-            if ($result != null) {
-                $UTC = new DateTimeZone("UTC");
-                $newTZ = new DateTimeZone("America/Sao_Paulo");
+            $enderecos = array();
+            foreach ($profissionais as $profissa) {
+                $qb = $em->createQueryBuilder();
+                $qb->select('p,e')
+                        ->from('App\Entity\Enderecoatualprofissional', 'e')
+                        ->join('e.profissionaisprofissionais', 'p')
+                        ->where($qb->expr()->eq('e.profissionaisprofissionais', $profissa->getIdprofissionais()));
+                $result = $qb->getQuery()->getOneOrNullResult();
 
-                $now = new DateTime('now', $UTC);
-                $now->setTimezone($newTZ);
-                $intervalo = $now->diff($result->getAtualizacao());
-                if ($intervalo->format("%i") <= 30) {//pelo menos 30 minutos de atualizacao
-                    // $enderecos[] = $result;
-                    $enderecos[] = array("casa", $result->getLatitude(), $result->getLongitude(), $profissa->getIdprofissionais());
+                $pegarLatLong = 0;
+                if ($result != null) {
+                    $UTC = new DateTimeZone("UTC");
+                    $newTZ = new DateTimeZone("America/Sao_Paulo");
+
+                    $now = new DateTime('now', $UTC);
+                    $now->setTimezone($newTZ);
+                    $intervalo = $now->diff($result->getAtualizacao());
+                    if ($intervalo->format("%i") <= 30) {//pelo menos 30 minutos de atualizacao
+                        // $enderecos[] = $result;
+                        $enderecos[] = array("casa", $result->getLatitude(), $result->getLongitude(), $profissa->getIdprofissionais());
+                    } else {
+                        $pegarLatLong = 1;
+                    }
                 } else {
                     $pegarLatLong = 1;
                 }
-            } else {
-                $pegarLatLong = 1;
-            }
-            if ($pegarLatLong) {
-                $curl = curl_init();
-                curl_setopt($curl, CURLOPT_URL, 'https://maps.googleapis.com/maps/api/geocode/json?address='
-                        . rawurlencode("" . $profissa->getEnderecoresidencia() . " " . $profissa->getNumero() . " " . $profissa->getCep() . " " . $profissa->getBairro()));
+                if ($pegarLatLong) {
+                    $curl = curl_init();
+                    curl_setopt($curl, CURLOPT_URL, 'https://maps.googleapis.com/maps/api/geocode/json?address='
+                            . rawurlencode("" . $profissa->getEnderecoresidencia() . " " . $profissa->getNumero() . " " . $profissa->getCep() . " " . $profissa->getBairro()));
 
-                curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+                    curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
 
-                $json = curl_exec($curl);
+                    $json = curl_exec($curl);
 
-                curl_close($curl);
-                $arrayEndereco = json_decode($json, true);
-                // $enderecos[]=$arrayEndereco;
-                if ($arrayEndereco["status"] == "OK") {
-                    $enderecos[] = array("atual", $arrayEndereco["results"][0]["geometry"]["location"]["lat"], $arrayEndereco["results"][0]["geometry"]["location"]["lng"], $profissa->getIdprofissionais());
+                    curl_close($curl);
+                    $arrayEndereco = json_decode($json, true);
+                    // $enderecos[]=$arrayEndereco;
+                    if ($arrayEndereco["status"] == "OK") {
+                        $enderecos[] = array("atual", $arrayEndereco["results"][0]["geometry"]["location"]["lat"], $arrayEndereco["results"][0]["geometry"]["location"]["lng"], $profissa->getIdprofissionais());
+                    }
                 }
             }
+            return $this->render('procurarProfissionalMaps.html.twig', array("endereco" => $enderecos, "profissionais" => $profissionais));
+        } else {
+            $this->redirectToRoute("solicitar");
         }
-
 
         // to get just one result:
         // $product = $qb->setMaxResults(1)->getOneOrNullResult();
-
-
-
-        return $this->render('procurarProfissionalMaps.html.twig', array("endereco" => $enderecos, "profissionais" => $profissionais));
     }
 
     /**
@@ -301,6 +303,17 @@ class ProfissionalController extends Controller {
     static public function buscarProfissionalPorId($idProfissional, $doctrine) {
         $objetoProfissional = $doctrine->getRepository(Profissionais::class)
                 ->findOneBy(array('idprofissionais' => $idProfissional));
+
+        if (!$objetoProfissional) {
+            return false;
+        } else {
+            return $objetoProfissional;
+        }
+    }
+
+    static public function buscarProfissionalPorIdUsuario($idUsuario, $doctrine) {
+        $objetoProfissional = $doctrine->getRepository(Profissionais::class)
+                ->findOneBy(array('usuariosusuarios' => $idUsuario));
 
         if (!$objetoProfissional) {
             return false;

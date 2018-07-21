@@ -4,7 +4,9 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-
+use App\Entity\Profissionais;
+use App\Entity\Usuarios;
+use App\Entity\Servicos;
 /**
  * Solicitacoes
  *
@@ -43,17 +45,20 @@ class Solicitacoes
      */
     private $dtsolicitacao;
 
-    /**
-     * @var int
+     /**
+     * @var \Servicos
      *
-     * @ORM\Column(name="servicos_idServico", type="integer", nullable=false)
+     * @ORM\ManyToOne(targetEntity="Servicos")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="Servicos_idServico", referencedColumnName="idServico")
+     * })
      */
     private $servicosIdservico;
 
     /**
      * @var string|null
      *
-     * @ORM\Column(name="precoFinal", type="string", length=45, nullable=true)
+     * @ORM\Column(name="precoFinal",  type="decimal", precision=10, scale=2, nullable=false)
      */
     private $precofinal;
 
@@ -149,15 +154,15 @@ class Solicitacoes
         $this->dtsolicitacao = $dtsolicitacao;
     }
 
-    function setServicosIdservico($servicosIdservico) {
+    function setServicosIdservico(Servicos $servicosIdservico) {
         $this->servicosIdservico = $servicosIdservico;
     }
 
-    function setProfissionaisprofissionais(\Profissionais $profissionaisprofissionais) {
+    function setProfissionaisprofissionais(Profissionais $profissionaisprofissionais) {
         $this->profissionaisprofissionais = $profissionaisprofissionais;
     }
 
-    function setUsuariosusuarios(\Usuarios $usuariosusuarios) {
+    function setUsuariosusuarios(Usuarios $usuariosusuarios) {
         $this->usuariosusuarios = $usuariosusuarios;
     }
     function getPrecofinal() {

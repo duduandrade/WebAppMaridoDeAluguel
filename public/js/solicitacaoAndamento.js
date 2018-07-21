@@ -10,3 +10,7 @@ $(document).ready(function () {
     $('.modal').modal();
 
 });
+function aceitarSolicitacao(solicita){
+    var tempo = $("#tempoChegada").val();
+    window.location.href = location.origin + '/maridoDeAluguel/aceitar/'+tempo+'/'+solicita; 
+}

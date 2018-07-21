@@ -4,7 +4,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-
+use App\Entity\Categoriasservicos;
 /**
  * Servicos
  *
@@ -81,7 +81,7 @@ class Servicos
         $this->valorservico = $valorservico;
     }
 
-    function setCategoriasservicoscategoriasservicos(\Categoriasservicos $categoriasservicoscategoriasservicos) {
+    function setCategoriasservicoscategoriasservicos(Categoriasservicos $categoriasservicoscategoriasservicos) {
         $this->categoriasservicoscategoriasservicos = $categoriasservicoscategoriasservicos;
     }
     function getUnidademedida() {

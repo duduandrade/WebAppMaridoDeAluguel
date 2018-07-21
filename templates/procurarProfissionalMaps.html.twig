@@ -289,7 +289,7 @@
                     profissional: codigoProfissional,
                     endereco: enderecoServico
                 };
-                
+
                 console.log(JSON.stringify(solicitacao));
                 $.ajax({
                     type: "POST",
@@ -300,6 +300,9 @@
                     success: function (result) {
                         console.log("result");
                         console.log(result);
+                        if (!result.erro) {
+                            window.location.href = location.origin + '/maridoDeAluguel/solicitacoes';
+                        }
                     },
                     error: function (xhr, ajaxOptions, thrownError) {
                         console.log(xhr.status);

@@ -23,15 +23,16 @@ class HomeLogadoController extends Controller {
         $tipoUsuario = $this->get('session')->get('tipoUsuario');
         if ($idUsuario != null) {
             $usuario = UsuarioController::buscarUsuarioPorId($idUsuario, $this->getDoctrine());
+            $this->get('session')->set('nomeUsuario', $usuario->getNome());
             if ($usuario != false) {
                 if ($tipoUsuario == "P") {
-                    
-                    return $this->render('solicitacoesAndamento.html.twig', array("nome" => $usuario->getNome()));
+                    $profissional = ProfissionalController::buscarProfissionalPorIdUsuario($idUsuario, $this->getDoctrine());
+                    $solicitacoesProf = ServicoController::buscarServicoEmAndamentoProfissional($profissional->getIdprofissionais(), $this->getDoctrine());
+                    return $this->render('solicitacoesAndamentoProfissional.html.twig', array("solicitacoesProf"=>$solicitacoesProf));
                 } else {
                     if ($tipoUsuario == "C") {
-                        $servicoAndamento = ServicoController::buscarServioEmAndamento($idUsuario, $this->getDoctrine());
-
-                        return $this->render('homeLogado.html.twig', array("nome" => $usuario->getNome(), "servico" => $servicoAndamento));
+                    //se tiver servico em andamento redirecionar pralaF
+                        return $this->render('homeLogado.html.twig', array("nome" => $usuario->getNome()));
                     } else {
                         //se nao for cliente nem profissional
                     }

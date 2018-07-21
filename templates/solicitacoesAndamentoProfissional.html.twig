@@ -1,0 +1,193 @@
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>{% block title %}Marido de Aluguel{% endblock %}</title>
+        {#<link href="{{ asset('css/materialize.css') }}" rel="stylesheet" />#}
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <!--Import materialize.css-->
+        <link type="text/css" rel="stylesheet" href="css/materialize.css" media="screen,projection"/>
+        <style type='text/css'>
+            header, main, footer {
+                padding-left: 300px;
+            }
+
+            @media only screen and (max-width : 992px) {
+                header, main, footer {
+                    padding-left: 0;
+                }
+            }
+        </style>
+
+        <!--Let browser know website is optimized for mobile-->
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    </head>
+    <body>
+        <div id="navbar">
+            {% block navbar %}
+                <nav>
+                    <div class="nav-wrapper orange lighten-2">
+                        <a href="#!" class="brand-logo"></a>
+                        <a href="#" data-target="slide-out" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+                        <ul class="right hide-on-med-and-down">
+                            <li><a href="#">Home</a></li>
+                            <li><a href="#">Perfil</a></li>
+                            <li><a href="#">Sair</a></li>
+
+                        </ul>
+                    </div>
+                </nav>
+
+                <ul id="slide-out" class="sidenav sidenav-fixed">
+                    <li><div class="user-view">
+                            <div class="background orange">
+
+                            </div>
+                            <a href="#user"><img class="circle" src="img/avatar.png"></a>
+                            <a href="#name"><span class="white-text name">Profissional {{ app.session.get('nomeUsuario') }}</span></a>
+                        </div></li>
+                    <li><a href="#!"><i class="material-icons">build</i>Solicitações</a></li>
+                    <li><div class="divider"></div></li>
+                    <li><a href="#!"><i class="material-icons">assignment</i>Serviço em andamento</a></li>
+                    <li><a href="#!"><i class="material-icons">check_circle</i>Serviços concluídos</a></li>
+                    <li><div class="divider"></div></li>
+                    <li>   <p style="  margin-left: 30px;">  
+                            <label>
+                                <input type="checkbox" />
+                                <span class="grey-text darken-4">Mostrar minha localização</span>
+                            </label>
+                        </p>
+                    </li>
+
+                    <li><p style="  margin-left: 30px;">   
+
+                            <label>
+                                <input type="checkbox" />
+                                <span class="grey-text darken-4">Mostrar minha casa</span>
+                            </label>
+                        </p>
+                    </li>
+                    <li><div class="divider"></div></li>
+
+                    <li><a class="waves-effect" href="#!">Sair</a></li>
+                </ul>
+
+
+            {% endblock %}
+        </div>
+
+        <main>
+            <div id="content" class="container valign center-block">
+             {#   {{dump(solicitacoesProf)}}#}
+
+                <h5 class="blue-text center-align"> Solicitação em Andamento </h5>
+                <div class="divider"></div>
+                <div class="row">
+
+                    <ul class="collection">
+                        {%if solicitacoesProf is empty%}
+                            <li><h5> Não há solicitações no momento </h5></li>
+
+                            <a href="home"> <i class="large material-icons orange-text">refresh</i></a>
+                        {%else%}
+                            <li class="collection-item avatar">
+                                <img src="img/avatar.png" alt="" class="circle">
+                                <h5 class="title">Cliente {{solicitacoesProf[0].usuariosusuarios.nome}}</h5>
+                                <p> 
+                                    {{ solicitacoesProf[0].servicosIdservico.nomeservico}} - {{solicitacoesProf[0].servicosIdservico.categoriasservicoscategoriasservicos.nomecategoria}}
+                                </p>
+                                <p>
+                                    R$  {{ solicitacoesProf[0].precofinal}}
+                                </p>
+                                <p><br>
+
+                                    {{ solicitacoesProf[1].enderecosolicitacao}}
+                                </p>
+                                {%if solicitacoesProf[0].statussolicitacao == 1%}
+                                    <div class="row">
+                                        <a class="waves-effect waves-light btn blue">Recusar</a>
+                                    </div>
+                                    <div class="row">
+                                        <a class="waves-effect waves-light btn-large modal-trigger orange" href="#modalAceitar"> <i class="material-icons right">send</i>Aceitar e ir</a>
+                                    </div>
+
+                                       <div id="modalAceitar" class="modal  modal-fixed-footer">
+
+                                        <div class="modal-content">
+                                            <h4>Informe ao cliente uma previsão de tempo de chegada em minutos </h4>
+                                            <form class="col s12">
+                                                <div class="row">
+                                                    <div class="col s12 m12 l12 center-align">
+                                                        minutos
+                                                        <div class="input-field inline">
+                                                            <input id="tempoChegada" type="number"  class="validate" placeholder="45.00">
+                                                        </div>
+                                                    </div>
+                                             
+                                                </div>
+                                            </form>
+
+                                        </div>
+                                        <div class="modal-footer">
+                                            <a href="#!"  onClick="aceitarSolicitacao('{{solicitacoesProf[0].idsolicitacoes}}')" class="modal-close waves-effect waves-green btn-small orange">Salvar e IR</a>
+                                        </div>
+                                    </div>
+                                {%elseif solicitacoesProf[0].statussolicitacao == 2%}
+
+                                    <div class="row center-align">
+                                        <a class="waves-effect waves-light btn modal-trigger blue " href="#modal1">Alterar Valor</a>
+                                    </div>
+                                    <div class="row">
+                                        <a class="waves-effect waves-light btn-large orange" style="display:block"> Finalizar e receber pagamento <i class="material-icons right">attach_money</i> </a>
+                                    </div>
+                                    <div id="modal1" class="modal  modal-fixed-footer">
+
+                                        <div class="modal-content">
+                                            <h5>Alterar valor do serviço </h5>
+                                            <form class="col s12">
+                                                <div class="row">
+                                                    <div class="col s12 m6 l6">
+                                                        R$ 
+                                                        <div class="input-field inline">
+                                                            <input id="preco" type="number" step="0.01" class="validate" placeholder="45.00">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col s12 m6 l6">
+                                                        Motivo: 
+                                                        <div class="input-field inline">
+                                                            <textarea  id="motivo" class="materialize-textarea" placeholder="A janela precisa ser ajustada."></textarea>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col s12 m12 l12">
+                                                        <p>Após salvar o novo valor, solicite ao cliente que entre em seu sistema e acesse a opção <b>informações</b> no <b>serviço em andamento</b> para <b>CONFIRMAR</b> a alteração do valor.</p>
+                                                    </div>
+                                                </div>
+                                            </form>
+
+                                        </div>
+                                        <div class="modal-footer">
+                                            <a href="#!"  class="modal-close waves-effect waves-green btn-small orange">Salvar</a>
+                                        </div>
+                                    </div>
+                                {%endif%}
+                            </li>
+
+                        {%endif%}
+
+
+
+                    </ul>
+
+                </div>
+            </div> 
+        </div>
+    </div>
+
+</main>
+<!-- Scripts -->
+<script type="text/javascript" src="js/jquery-3.3.1.min.js"></script>
+<script type="text/javascript" src="js/materialize.js"></script>
+<script type="text/javascript" src="js/solicitacaoAndamento.js"></script>
+<script type="text/javascript" src="js/coletarLocalizacaoProfissional.js"></script>
+
+</body>
+</html>
