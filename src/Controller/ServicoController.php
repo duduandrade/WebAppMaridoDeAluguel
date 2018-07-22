@@ -216,12 +216,50 @@ class ServicoController extends Controller {
                         ->where('s.profissionaisprofissionais = ?3')
                         ->andWhere('s.idsolicitacoes = ?4')
                         ->setParameter(1, 2)
-                        ->setParameter(2, (int)$tempo)
+                        ->setParameter(2, (int) $tempo)
                         ->setParameter(3, $profissional->getIdprofissionais())
                         ->setParameter(4, $solicitacao)
                         ->getQuery()->getSingleScalarResult();
 
         return $this->redirectToRoute('home');
+    }
+
+    /**
+     * @Route("/verificarStatusSolicitacao", name="verificarStatusSolicitacao")
+     */
+    public function verificarStatusSolicitacao(Request $request) {
+        if (0 === strpos($request->headers->get('Content-Type'), 'application/json')) {
+            $data = json_decode($request->getContent(), true);
+            $request->request->replace(is_array($data) ? $data : array());
+            if ($this->get('session')->get('idUsuario')) {
+                $solicitacao = ServicoController::buscarSolicitacaPorIdEProfissional($data["solicitacao"], $data["profissional"], $this->getDoctrine());
+                if ($solicitacao != null) {
+                    $status = $solicitacao->getStatussolicitacao();
+                    if ($status == 3) {
+                        return new JsonResponse(array(
+                            'erro' => FALSE,
+                            'mensagem' => 'Sucesso',
+                            'status' => $status,
+                            'data' => array("trocaPreco"=>$solicitacao->getTrocapreco())
+                        ));
+                    } else {
+                        return new JsonResponse(array(
+                            'erro' => FALSE,
+                            'mensagem' => 'Sucesso',
+                            'status' => $status,
+                            'data' => null
+                        ));
+                    }
+                } else {
+                    return new JsonResponse(array(
+                        'erro' => true,
+                        'mensagem' => 'Não encontrado a solicitacao',
+                        'status' => null,
+                        'data' => null
+                    ));
+                }
+            }
+        }
     }
 
 }

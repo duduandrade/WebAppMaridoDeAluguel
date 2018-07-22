@@ -59,7 +59,7 @@
 
         <main>
             <div id="content" class="container valign center-block">
-                  {{dump(solicitacao)}}
+                {# {{dump(solicitacao)}}#}
 
 
                 <h5 class="blue-text center-align"> Serviço em andamento </h5>
@@ -70,15 +70,15 @@
                             <li class="collection-item avatar">
                                 <img src="img/avatar.png" alt="" class="circle">
                                 <h5 class="title">Profissional {{solicitacao[0].profissionaisprofissionais.usuariosusuarios.nome}}</h5>
-                               
+
                                 <p> 
-                                   {{ solicitacao[0].servicosIdservico.nomeservico}} - {{solicitacao[0].servicosIdservico.categoriasservicoscategoriasservicos.nomecategoria}}
+                                    {{ solicitacao[0].servicosIdservico.nomeservico}} - {{solicitacao[0].servicosIdservico.categoriasservicoscategoriasservicos.nomecategoria}}
                                 </p>
                                 <p>
                                     R$  {{ solicitacao[0].precofinal}}
                                 </p>
                                 <p><br>
-                                   
+
                                     {{ solicitacao[1].enderecosolicitacao}}
                                 </p>
                             </li>
@@ -87,23 +87,22 @@
 
                             <a class=" btn-small  blue">Cancelar solicitacao</a>
                         </div>
-                        {%if solicitacao[0].statussolicitacao ==1 %}
-                         <h5 class="blue-text center-align"> Aguardando confirmação do Profissional  </h5>
- 
-                         <i class="medium material-icons orange-text">timelapse</i><br>
 
-                         {%elseif solicitacao[0].statussolicitacao ==2%}
-                        <h5 class="blue-text center-align"> Profissional confirmado. Tempo de chegada aproximado:{{solicitacao[0].tempochegada}}  min. </h5><br>
-
-                         
-                             <div class="row">
-
-                            <a class="btn-small  orange modal-trigger" href="#informacoes">Informacoes</a>
+                        <div id="status1" style="display: none;">
+                            <h5 class="blue-text center-align"> Aguardando confirmação do Profissional  </h5>
+                            <i class="medium material-icons orange-text">timelapse</i><br>
                         </div>
-                             {%endif%}
-                       
 
-                        
+                        <div id="status2" style="display: none;">
+                            <h5 class="blue-text center-align"> Profissional confirmado. Tempo de chegada aproximado:{{solicitacao[0].tempochegada}}  min. </h5><br>
+                            <div class="row">
+                                <a class="btn-small  orange modal-trigger" href="#informacoes">Informacoes</a>
+                            </div>
+                        </div>
+
+
+
+
 
                         <div id="informacoes" class="modal">
                             <div class="modal-content">
@@ -127,6 +126,25 @@
     <!-- Scripts -->
     <script type="text/javascript" src="js/jquery-3.3.1.min.js"></script>
     <script type="text/javascript" src="js/materialize.js"></script>
-    <script type="text/javascript" src="js/homeLogado.js"></script>
+    <script type="text/javascript" src="js/solicitacaoAndamentoCliente.js"></script>
+    <script type="text/javascript">
+        var mensagem = {
+            solicitacao: '{{solicitacao[0].idsolicitacoes}}',
+            profissional: '{{solicitacao[0].profissionaisprofissionais.idprofissionais}}',
+            status: '{{solicitacao[0].statussolicitacao}}'
+        };
+        {%if solicitacao[0].statussolicitacao ==1 %}
+            $("#status1").show();
+            $("#status2").hide();
+        {%elseif solicitacao[0].statussolicitacao ==2%}
+            $("#status2").show();
+            $("#status1").hide();
+        {%endif%}
+            window.setInterval(function () {
+                verificaStatusSolicitacao(mensagem);
+
+            }, 3000);
+
+    </script>
 </body>
 </html>

@@ -1,20 +1,20 @@
 <?php
 
-
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use App\Entity\Profissionais;
 use App\Entity\Usuarios;
 use App\Entity\Servicos;
+
 /**
  * Solicitacoes
  *
  * @ORM\Table(name="solicitacoes", indexes={@ORM\Index(name="fk_Solicitacoes_Usuarios1_idx", columns={"Usuarios_idUsuarios"}), @ORM\Index(name="fk_Solicitacoes_Profissionais1_idx", columns={"Profissionais_idProfissionais"}), @ORM\Index(name="fk_solicitacoes_servicos1_idx", columns={"servicos_idServico"})})
  * @ORM\Entity
  */
-class Solicitacoes
-{
+class Solicitacoes {
+
     /**
      * @var int
      *
@@ -45,20 +45,10 @@ class Solicitacoes
      */
     private $dtsolicitacao;
 
-     /**
-     * @var \Servicos
-     *
-     * @ORM\ManyToOne(targetEntity="Servicos")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="Servicos_idServico", referencedColumnName="idServico")
-     * })
-     */
-    private $servicosIdservico;
-
     /**
-     * @var string|null
+     * @var string
      *
-     * @ORM\Column(name="precoFinal",  type="decimal", precision=10, scale=2, nullable=false)
+     * @ORM\Column(name="precoFinal", type="decimal", precision=10, scale=2, nullable=false)
      */
     private $precofinal;
 
@@ -91,6 +81,13 @@ class Solicitacoes
     private $motivotrocapreco;
 
     /**
+     * @var string|null
+     *
+     * @ORM\Column(name="novoValor", type="decimal", precision=10, scale=2, nullable=true)
+     */
+    private $novovalor;
+
+    /**
      * @var \Profissionais
      *
      * @ORM\ManyToOne(targetEntity="Profissionais")
@@ -99,6 +96,16 @@ class Solicitacoes
      * })
      */
     private $profissionaisprofissionais;
+
+    /**
+     * @var \Servicos
+     *
+     * @ORM\ManyToOne(targetEntity="Servicos")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="servicos_idServico", referencedColumnName="idServico")
+     * })
+     */
+    private $servicosservico;
 
     /**
      * @var \Usuarios
@@ -116,7 +123,7 @@ class Solicitacoes
 
     function getStatussolicitacao() {
         return $this->statussolicitacao;
-}
+    }
 
     function getDescricaosolicitacao() {
         return $this->descricaosolicitacao;
@@ -126,12 +133,36 @@ class Solicitacoes
         return $this->dtsolicitacao;
     }
 
-    function getServicosIdservico() {
-        return $this->servicosIdservico;
+    function getPrecofinal() {
+        return $this->precofinal;
+    }
+
+    function getTempochegada() {
+        return $this->tempochegada;
+    }
+
+    function getTrocapreco() {
+        return $this->trocapreco;
+    }
+
+    function getTrocaprecoautorizada() {
+        return $this->trocaprecoautorizada;
+    }
+
+    function getMotivotrocapreco() {
+        return $this->motivotrocapreco;
+    }
+
+    function getNovovalor() {
+        return $this->novovalor;
     }
 
     function getProfissionaisprofissionais() {
         return $this->profissionaisprofissionais;
+    }
+
+    function getServicosservico() {
+        return $this->servicosservico;
     }
 
     function getUsuariosusuarios() {
@@ -154,37 +185,6 @@ class Solicitacoes
         $this->dtsolicitacao = $dtsolicitacao;
     }
 
-    function setServicosIdservico(Servicos $servicosIdservico) {
-        $this->servicosIdservico = $servicosIdservico;
-    }
-
-    function setProfissionaisprofissionais(Profissionais $profissionaisprofissionais) {
-        $this->profissionaisprofissionais = $profissionaisprofissionais;
-    }
-
-    function setUsuariosusuarios(Usuarios $usuariosusuarios) {
-        $this->usuariosusuarios = $usuariosusuarios;
-    }
-    function getPrecofinal() {
-        return $this->precofinal;
-    }
-
-    function getTempochegada() {
-        return $this->tempochegada;
-    }
-
-    function getTrocapreco() {
-        return $this->trocapreco;
-    }
-
-    function getTrocaprecoautorizada() {
-        return $this->trocaprecoautorizada;
-    }
-
-    function getMotivotrocapreco() {
-        return $this->motivotrocapreco;
-    }
-
     function setPrecofinal($precofinal) {
         $this->precofinal = $precofinal;
     }
@@ -205,6 +205,20 @@ class Solicitacoes
         $this->motivotrocapreco = $motivotrocapreco;
     }
 
+    function setNovovalor($novovalor) {
+        $this->novovalor = $novovalor;
+    }
 
+    function setProfissionaisprofissionais(Profissionais $profissionaisprofissionais) {
+        $this->profissionaisprofissionais = $profissionaisprofissionais;
+    }
+
+    function setServicosservico(Servicos $servicosservico) {
+        $this->servicosservico = $servicosservico;
+    }
+
+    function setUsuariosusuarios(Usuarios $usuariosusuarios) {
+        $this->usuariosusuarios = $usuariosusuarios;
+    }
 
 }
