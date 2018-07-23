@@ -72,7 +72,7 @@
                                 <h5 class="title">Profissional {{solicitacao[0].profissionaisprofissionais.usuariosusuarios.nome}}</h5>
 
                                 <p> 
-                                    {{ solicitacao[0].servicosIdservico.nomeservico}} - {{solicitacao[0].servicosIdservico.categoriasservicoscategoriasservicos.nomecategoria}}
+                                    {{ solicitacao[0].servicosservico.nomeservico}} - {{solicitacao[0].servicosservico.categoriasservicoscategoriasservicos.nomecategoria}}
                                 </p>
                                 <p>
                                     R$  {{ solicitacao[0].precofinal}}
@@ -94,7 +94,12 @@
                         </div>
 
                         <div id="status2" style="display: none;">
-                            <h5 class="blue-text center-align"> Profissional confirmado. Tempo de chegada aproximado:{{solicitacao[0].tempochegada}}  min. </h5><br>
+                            <h5 id="textoTempoChegada" class="blue-text center-align"> Profissional confirmado. Tempo de chegada aproximado:{{solicitacao[0].tempochegada}}  min. </h5><br>
+                            <div class="row">
+                                <a class="btn-small  orange modal-trigger" href="#informacoes">Informacoes</a>
+                            </div>
+                        </div>
+                        <div id="status3" style="display: none;">
                             <div class="row">
                                 <a class="btn-small  orange modal-trigger" href="#informacoes">Informacoes</a>
                             </div>
@@ -102,19 +107,18 @@
 
 
 
-
-
                         <div id="informacoes" class="modal">
                             <div class="modal-content">
                                 <h5>Informações</h5>
                                 {# <p>Não há informações para exibir.</p>#}
-                                <p> <i class="material-icons">sim_card_alert</i> 
-                                    O profissional solicitou alteração do preço por motivo de <b> A janela precisa ser ajustada </b>
-                                    <b>de R$ 45.00 para R$ 55.00 </b> </p>
+                                <p id="textoTrocaPreco">  </p>
 
                             </div>
                             <div class="modal-footer">
-                                <a href="#!" class="modal-close waves-effect waves-green btn-flat">Agree</a>
+
+                                <a href="#!" class="modal-close waves-effect waves-green btn-flat ">Cancelar</a>
+
+                                <a href="concordo/{{solicitacao[0].idsolicitacoes}}"  class="modal-close waves-effect waves-green btn-flat orange">CONCORDO</a>
                             </div>
                         </div>
                     </div>
@@ -136,9 +140,23 @@
         {%if solicitacao[0].statussolicitacao ==1 %}
             $("#status1").show();
             $("#status2").hide();
+            $("#status3").hide();
+            $("#textoTrocaPreco").html("Não há informações para exibir");
+
         {%elseif solicitacao[0].statussolicitacao ==2%}
             $("#status2").show();
             $("#status1").hide();
+            $("#status3").hide();
+            $("#textoTrocaPreco").html("Não há informações para exibir");
+        {%elseif solicitacao[0].statussolicitacao ==3 and solicitacao[0].trocaprecoautorizada ==0 %}
+            $("#status3").show();
+            $("#status1").hide();
+            $("#status2").hide();
+            $("#textoTrocaPreco").html('<i class="material-icons">sim_card_alert</i>' +
+                    'O profissional solicitou alteração do preço por motivo de <b> ' +
+                    '{{solicitacao[0].motivotrocapreco}} </b>.<br>' +
+                    'O valor anterior <b> R$ {{solicitacao[0].precofinal}}  para R$ {{solicitacao[0].novovalor}} </b>' +
+                    'Se você concorda, clique em CONCORDO, senão, o serviço será cancelado clicando em CANCELAR.');
         {%endif%}
             window.setInterval(function () {
                 verificaStatusSolicitacao(mensagem);

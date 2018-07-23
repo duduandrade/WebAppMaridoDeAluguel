@@ -72,7 +72,7 @@ class ServicoController extends Controller {
                 ->from('App\Entity\Solicitacoes', 's')
                 ->join('s.usuariosusuarios', 'u')
                 ->join('s.profissionaisprofissionais', 'p')
-                ->join('s.servicosIdservico', 'ser')
+                ->join('s.servicosservico', 'ser')
                 ->join('ser.categoriasservicoscategoriasservicos', 'cat')
                 ->leftJoin('p.usuariosusuarios', 'uP')
                 ->leftJoin(
@@ -95,7 +95,7 @@ class ServicoController extends Controller {
                 ->from('App\Entity\Solicitacoes', 's')
                 ->join('s.usuariosusuarios', 'u')
                 ->join('s.profissionaisprofissionais', 'p')
-                ->join('s.servicosIdservico', 'ser')
+                ->join('s.servicosservico', 'ser')
                 ->join('ser.categoriasservicoscategoriasservicos', 'cat')
                 ->leftJoin('p.usuariosusuarios', 'uP')
                 ->leftJoin(
@@ -140,7 +140,7 @@ class ServicoController extends Controller {
                         $novaSolicitacao = new Solicitacoes();
                         $novaSolicitacao->setProfissionaisprofissionais($objetoProf);
                         $novaSolicitacao->setUsuariosusuarios($objetoUsuario);
-                        $novaSolicitacao->setServicosIdservico($objetoServico);
+                        $novaSolicitacao->setServicosservico($objetoServico);
                         $novaSolicitacao->setPrecofinal($valorFinal);
                         $novaSolicitacao->setStatussolicitacao(1);
                         $em->persist($novaSolicitacao);
@@ -189,6 +189,17 @@ class ServicoController extends Controller {
         }
     }
 
+    static function buscarSolicitacaoPorId($idSolicitacao, $doctrine) {
+        $objetoSolicitacao = $doctrine->getRepository(Solicitacoes::class)
+                ->findOneBy(array('idsolicitacoes' => $idSolicitacao));
+
+        if (!$objetoSolicitacao) {
+            return false;
+        } else {
+            return $objetoSolicitacao;
+        }
+    }
+
     static function buscarSolicitacaPorIdEProfissional($idSolicitacao, $idProfissional, $doctrine) {
         $objetoSolicitacao = $doctrine->getRepository(Solicitacoes::class)
                 ->findOneBy(array('idsolicitacoes' => $idSolicitacao, "profissionaisprofissionais" => $idProfissional));
@@ -197,6 +208,35 @@ class ServicoController extends Controller {
             return false;
         } else {
             return $objetoSolicitacao;
+        }
+    }
+
+    /**
+     * @Route("/concordo/{solicitacao}", name="concordo")
+     */
+    public function concordo($solicitacao) {
+        $idUsuario = $this->get('session')->get('idUsuario');
+
+        $em = $this->getDoctrine()->getManager();
+        $qb = $em->createQueryBuilder();
+        $solicitacao = ServicoController::buscarSolicitacaoPorId($solicitacao, $this->getDoctrine());
+        if ($solicitacao != false) {
+            $result = $qb->update('App\Entity\Solicitacoes', 's')
+                            ->set('s.statussolicitacao', '?1')
+                            ->set('s.trocaprecoautorizada', '?4')
+                            ->set('s.precofinal', '?5')
+                            ->where('s.usuariosusuarios = ?2')
+                            ->andWhere('s.idsolicitacoes = ?3')
+                            ->setParameter(1, 1)
+                            ->setParameter(2, $idUsuario)
+                            ->setParameter(3, $solicitacao)
+                            ->setParameter(4, 1)
+                            ->setParameter(5, $solicitacao->getNovovalor())
+                            ->getQuery()->getSingleScalarResult();
+
+            return $this->redirectToRoute("solicitacoes");
+        } else {
+            return $this->redirectToRoute("login");
         }
     }
 
@@ -235,19 +275,21 @@ class ServicoController extends Controller {
                 $solicitacao = ServicoController::buscarSolicitacaPorIdEProfissional($data["solicitacao"], $data["profissional"], $this->getDoctrine());
                 if ($solicitacao != null) {
                     $status = $solicitacao->getStatussolicitacao();
-                    if ($status == 3) {
+                    if ($status == 3 && (!$solicitacao->getTrocaprecoautorizada())) {
                         return new JsonResponse(array(
                             'erro' => FALSE,
                             'mensagem' => 'Sucesso',
                             'status' => $status,
-                            'data' => array("trocaPreco"=>$solicitacao->getTrocapreco())
+                            'data' => array("novoValor" => $solicitacao->getNovovalor(),
+                                "motivoTrocaPreco" => $solicitacao->getMotivotrocapreco(),
+                                "precoFinal" => $solicitacao->getPrecofinal())
                         ));
                     } else {
                         return new JsonResponse(array(
                             'erro' => FALSE,
                             'mensagem' => 'Sucesso',
                             'status' => $status,
-                            'data' => null
+                            'data' => array("tempoChegada" => $solicitacao->getTempochegada())
                         ));
                     }
                 } else {

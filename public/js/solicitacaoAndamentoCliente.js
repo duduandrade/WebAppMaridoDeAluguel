@@ -29,15 +29,30 @@ function verificaStatusSolicitacao(mensagem) {
             if (!result.erro) {
                 console.log(result.status);
             }
-           
-                if (result.status == 1) {
-                    $("#status1").show();
-                    $("#status2").hide();
-                } else if (result.status == 2) {
-                    $("#status2").show();
-                    $("#status1").hide();
-                }
-            
+            if (result.status == 1) {
+                $("#status1").show();
+                $("#status2").hide();
+                $("#status3").hide();
+                $("#textoTrocaPreco").html("Não há informações para exibir");
+
+            } else if (result.status == 2) {
+                $("#status2").show();
+                $("#status1").hide();
+                $("#status3").hide();
+                $("#textoTempoChegada").html("Profissional confirmado. Tempo de chegada aproximado:"+result.data.tempoChegada+"  min. </h5><br>");
+                $("#textoTrocaPreco").html("Não há informações para exibir");
+
+            } else if (result.status == 3 && result.data != null) {
+                $("#status3").show();
+                $("#status2").hide();
+                $("#status1").hide();
+                $("#textoTrocaPreco").html('<i class="material-icons">sim_card_alert</i>' +
+                        'O profissional solicitou alteração do preço por motivo de <b> ' +
+                        '' + result.data.motivoTrocaPreco + ' </b>.<br>' +
+                        'O valor anterior <b> R$ ' + result.data.precoFinal + ' para R$ ' + result.data.novoValor + ' </b>' +
+                        'Se você concorda, clique em CONCORDO, senão, o serviço será cancelado clicando em CANCELAR.');
+            }
+
         },
         error: function (xhr, ajaxOptions, thrownError) {
             console.log(xhr.status);
