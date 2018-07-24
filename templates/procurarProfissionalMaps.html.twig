@@ -65,14 +65,14 @@
                 font-size: 13px;
                 font-weight: 300;
             }
-            #divProfissional { 
+            .divProfissionalBox { 
                 position: absolute;
                 z-index: 99; 
                 top: 50%;
                 left: 50%;
                 transform: translate(-50%, -50%);
             }
-            #divProfissional, #divTitulo, #divConteudoProfissional, #divBotoes{
+            .divProfissionalBox, #divTitulo, #divConteudoProfissional, #divBotoes{
                 width: 300px;
             }
         </style>
@@ -107,11 +107,13 @@
 
         <div id="map"></div>
         {% for profissionalArray in profissionais %}
-            {#    {{dump(profissionalArray)}}#}
-            <div  id="divProfissional" class="valign-wrapper " style="display: none;">
+             
+            <div  id="divProfissional{{profissionalArray.idprofissionais}}" class="divProfissionalBox valign-wrapper " style="display: none;">
                 <div class="row white" >
-                    <div class="col s12 m12 blue white-text" id="divTitulo">
-                        <p>Perfil profissional</p>
+                    <div class="col s12 m12 l12 blue white-text" id="divTitulo">
+                        <p>Perfil profissional <i class="material-icons" onClick="fechar(this);">close</i> </p>
+                        
+                        
                     </div>
                     <div class="row" id="divConteudo">
                         <div class="row">
@@ -206,12 +208,13 @@
                 function addEventoMarcadoresProfissionais(marker, i) {
                     google.maps.event.addListener(marker, 'click', (function (marker, i) {
                         return function () {
-                            abrirJanelaProfissional(marker.id);
+                            abrirJanelaProfissional(i);
                         };
                     })(marker, i));
                 }
-                function abrirJanelaProfissional(id) {
-                    $('#divProfissional').show();
+                function abrirJanelaProfissional(i) {
+                    console.log("marker id: "+ i);
+                    $('#divProfissional'+i).show();
                 }
                 function handleLocationError(browserHasGeolocation, infoWindow, pos) {
                     infoWindow.setPosition(pos);
@@ -309,6 +312,10 @@
                         console.log(thrownError);
                     }
                 });
+            }
+            
+            function fechar(icone){
+                $(icone).parent().parent().parent().parent().hide();
             }
         </script>
 

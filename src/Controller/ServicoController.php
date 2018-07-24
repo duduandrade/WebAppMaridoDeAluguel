@@ -241,6 +241,100 @@ class ServicoController extends Controller {
     }
 
     /**
+     * @Route("/cancelar", name="cancelar")
+     */
+    public function cancelar(Request $request) {
+        if (0 === strpos($request->headers->get('Content-Type'), 'application/json')) {
+            $data = json_decode($request->getContent(), true);
+            $request->request->replace(is_array($data) ? $data : array());
+            if ($this->get('session')->get('idUsuario')) {
+                $idUsuario = $this->get('session')->get('idUsuario');
+
+                $em = $this->getDoctrine()->getManager();
+                $qb = $em->createQueryBuilder();
+
+                $result = $qb->update('App\Entity\Solicitacoes', 's')
+                                ->set('s.statussolicitacao', '?1')
+                                ->where('s.usuariosusuarios = ?2')
+                                ->andWhere('s.idsolicitacoes = ?3')
+                                ->setParameter(1, 9) //status 9 cancelada
+                                ->setParameter(2, $idUsuario)
+                                ->setParameter(3, $data["solicitacao"])
+                                ->getQuery()->getSingleScalarResult();
+
+                if ($result != null) {
+                    return new JsonResponse(array(
+                        'erro' => false,
+                        'mensagem' => 'Sucesso',
+                        'status' => null,
+                        'data' => null
+                    ));
+                } else {
+                    return new JsonResponse(array(
+                        'erro' => true,
+                        'mensagem' => 'Não foi possivel cancelar.',
+                        'status' => null,
+                        'data' => null
+                    ));
+                }
+            } else {
+                return $this->redirectToRoute("login");
+            }
+        }
+    }
+
+    /**
+     * @Route("/alterarPreco", name="alterarPreco")
+     */
+    public function alterarPreco(Request $request) {
+        if (0 === strpos($request->headers->get('Content-Type'), 'application/json')) {
+            $data = json_decode($request->getContent(), true);
+            $request->request->replace(is_array($data) ? $data : array());
+            if ($this->get('session')->get('idUsuario')) {
+                $idUsuario = $this->get('session')->get('idUsuario');
+                $profissional = ProfissionalController::buscarProfissionalPorIdUsuario($idUsuario, $this->getDoctrine());
+                $em = $this->getDoctrine()->getManager();
+                $qb = $em->createQueryBuilder();
+
+                $result = $qb->update('App\Entity\Solicitacoes', 's')
+                                ->set('s.statussolicitacao', '?1')
+                                ->set('s.novovalor', '?2')
+                                ->set('s.motivotrocapreco', '?5')
+                                ->set('s.trocapreco', '?6')
+                                ->set('s.trocaprecoautorizada', '?7')
+                                ->where('s.profissionaisprofissionais = ?3')
+                                ->andWhere('s.idsolicitacoes = ?4')
+                                ->setParameter(1, 3) //status 3 troca preco 
+                                ->setParameter(2, $data["novoPreco"])
+                                ->setParameter(3, $profissional->getIdprofissionais())
+                                ->setParameter(4, $data["solicitacao"])
+                                ->setParameter(5, $data["motivo"])
+                                ->setParameter(6, 1)
+                                ->setParameter(7, 0)
+                                ->getQuery()->getSingleScalarResult();
+
+                if ($result != null) {
+                    return new JsonResponse(array(
+                        'erro' => false,
+                        'mensagem' => 'Sucesso',
+                        'status' => null,
+                        'data' => null
+                    ));
+                } else {
+                    return new JsonResponse(array(
+                        'erro' => true,
+                        'mensagem' => 'Não foi possivel trocar o preco.',
+                        'status' => null,
+                        'data' => null
+                    ));
+                }
+            } else {
+                return $this->redirectToRoute("login");
+            }
+        }
+    }
+
+    /**
      * @Route("/aceitar/{tempo}/{solicitacao}", name="aceitar")
      */
     public function aceitar($tempo, $solicitacao) {

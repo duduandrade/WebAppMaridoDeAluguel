@@ -6,7 +6,8 @@
 console.log("carregou");
 
 $(document).ready(function () {
-
+       $('.sidenav').sidenav();
+    $('#slide-out').removeClass('sidenav-fixed');
     $('.modal').modal();
 
 });

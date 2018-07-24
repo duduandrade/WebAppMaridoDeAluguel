@@ -24,34 +24,7 @@
     <body>
         <div id="navbar">
             {% block navbar %}
-                <nav>
-                    <div class="nav-wrapper blue">
-                        <a href="#!" class="brand-logo"></a>
-                        <a href="#" data-target="slide-out" class="sidenav-trigger"><i class="material-icons">menu</i></a>
-                        <ul class="right hide-on-med-and-down">
-                            <li><a href="sass.html">Home</a></li>
-                            <li><a href="badges.html">Perfil</a></li>
-                            <li><a href="collapsible.html">Sair</a></li>
-
-                        </ul>
-                    </div>
-                </nav>
-
-                <ul id="slide-out" class="sidenav sidenav-fixed">
-                    <li><div class="user-view">
-                            <div class="background blue">
-
-                            </div>
-                            <a href="#user"><img class="circle" src="img/eletricista.jpg"></a>
-                            <a href="#name"><span class="white-text name">{{ app.session.get('nomeUsuario') }}</span></a>
-                        </div></li>
-                    <li><a href="#!"><i class="material-icons">add</i>Solicitar novo serviço</a></li>
-                    <li><a href="#!"><i class="material-icons">assignment</i>Serviço em andamento</a></li>
-                    <li><a href="#!"><i class="material-icons">check_circle</i>Serviços concluídos</a></li>
-                    <li><div class="divider"></div></li>
-                        {# <li><a class="subheader"></a></li>#}
-                    <li><a class="waves-effect" href="#!">Sair</a></li>
-                </ul>
+                {%include 'menuLateralCliente.html.twig'%}
 
 
             {% endblock %}
@@ -64,65 +37,69 @@
 
                 <h5 class="blue-text center-align"> Serviço em andamento </h5>
                 <div class="divider"></div>
-                <div class="row">
-                    <div class="container center-align">
-                        <ul class="collection">
-                            <li class="collection-item avatar">
-                                <img src="img/avatar.png" alt="" class="circle">
-                                <h5 class="title">Profissional {{solicitacao[0].profissionaisprofissionais.usuariosusuarios.nome}}</h5>
+                {%if solicitacao is empty%}
+                    <h5> Não há serviço em andamento</h5>
+                {%else%}
+                    <div class="row">
+                        <div class="container center-align">
+                            <ul class="collection">
+                                <li class="collection-item avatar">
+                                    <img src="img/avatar.png" alt="" class="circle">
+                                    <h5 class="title">Profissional {{solicitacao[0].profissionaisprofissionais.usuariosusuarios.nome}}</h5>
 
-                                <p> 
-                                    {{ solicitacao[0].servicosservico.nomeservico}} - {{solicitacao[0].servicosservico.categoriasservicoscategoriasservicos.nomecategoria}}
-                                </p>
-                                <p>
-                                    R$  {{ solicitacao[0].precofinal}}
-                                </p>
-                                <p><br>
+                                    <p> 
+                                        {{ solicitacao[0].servicosservico.nomeservico}} - {{solicitacao[0].servicosservico.categoriasservicoscategoriasservicos.nomecategoria}}
+                                    </p>
+                                    <p>
+                                        R$  {{ solicitacao[0].precofinal}}
+                                    </p>
+                                    <p><br>
 
-                                    {{ solicitacao[1].enderecosolicitacao}}
-                                </p>
-                            </li>
-                        </ul>
-                        <div class="row">
-
-                            <a class=" btn-small  blue">Cancelar solicitacao</a>
-                        </div>
-
-                        <div id="status1" style="display: none;">
-                            <h5 class="blue-text center-align"> Aguardando confirmação do Profissional  </h5>
-                            <i class="medium material-icons orange-text">timelapse</i><br>
-                        </div>
-
-                        <div id="status2" style="display: none;">
-                            <h5 id="textoTempoChegada" class="blue-text center-align"> Profissional confirmado. Tempo de chegada aproximado:{{solicitacao[0].tempochegada}}  min. </h5><br>
+                                        {{ solicitacao[1].enderecosolicitacao}}
+                                    </p>
+                                </li>
+                            </ul>
                             <div class="row">
-                                <a class="btn-small  orange modal-trigger" href="#informacoes">Informacoes</a>
+
+                                <a class=" btn-small  blue" onClick="cancelar('{{solicitacao[0].idsolicitacoes}}');">Cancelar solicitacao</a>
+                            </div>
+
+                            <div id="status1" style="display: none;">
+                                <h5 class="blue-text center-align"> Aguardando confirmação do Profissional  </h5>
+                                <i class="medium material-icons orange-text">timelapse</i><br>
+                            </div>
+
+                            <div id="status2" style="display: none;">
+                                <h5 id="textoTempoChegada" class="blue-text center-align"> Profissional confirmado. Tempo de chegada aproximado:{{solicitacao[0].tempochegada}}  min. </h5><br>
+                                <div class="row">
+                                    <a class="btn-small  orange modal-trigger" href="#informacoes">Informacoes</a>
+                                </div>
+                            </div>
+                            <div id="status3" style="display: none;">
+                                <div class="row">
+                                    <a class="btn-small  orange modal-trigger" href="#informacoes">Informacoes</a>
+                                </div>
+                            </div>
+
+
+
+                            <div id="informacoes" class="modal">
+                                <div class="modal-content">
+                                    <h5>Informações</h5>
+                                    {# <p>Não há informações para exibir.</p>#}
+                                    <p id="textoTrocaPreco">  </p>
+
+                                </div>
+                                <div class="modal-footer">
+
+                                    <a href="#!" onClick="cancelar('{{solicitacao[0].idsolicitacoes}}');" class="modal-close waves-effect waves-green btn-flat ">Cancelar</a>
+
+                                    <a href="concordo/{{solicitacao[0].idsolicitacoes}}"  class="modal-close waves-effect waves-green btn-flat orange">CONCORDO</a>
+                                </div>
                             </div>
                         </div>
-                        <div id="status3" style="display: none;">
-                            <div class="row">
-                                <a class="btn-small  orange modal-trigger" href="#informacoes">Informacoes</a>
-                            </div>
-                        </div>
-
-
-
-                        <div id="informacoes" class="modal">
-                            <div class="modal-content">
-                                <h5>Informações</h5>
-                                {# <p>Não há informações para exibir.</p>#}
-                                <p id="textoTrocaPreco">  </p>
-
-                            </div>
-                            <div class="modal-footer">
-
-                                <a href="#!" class="modal-close waves-effect waves-green btn-flat ">Cancelar</a>
-
-                                <a href="concordo/{{solicitacao[0].idsolicitacoes}}"  class="modal-close waves-effect waves-green btn-flat orange">CONCORDO</a>
-                            </div>
-                        </div>
-                    </div>
-                </div> 
+                    </div> 
+                {%endif%}
             </div>
         </div>
 
@@ -132,37 +109,38 @@
     <script type="text/javascript" src="js/materialize.js"></script>
     <script type="text/javascript" src="js/solicitacaoAndamentoCliente.js"></script>
     <script type="text/javascript">
-        var mensagem = {
-            solicitacao: '{{solicitacao[0].idsolicitacoes}}',
-            profissional: '{{solicitacao[0].profissionaisprofissionais.idprofissionais}}',
-            status: '{{solicitacao[0].statussolicitacao}}'
-        };
-        {%if solicitacao[0].statussolicitacao ==1 %}
-            $("#status1").show();
-            $("#status2").hide();
-            $("#status3").hide();
-            $("#textoTrocaPreco").html("Não há informações para exibir");
+        {%if solicitacao is not empty%}
+            var mensagem = {
+                solicitacao: '{{solicitacao[0].idsolicitacoes}}',
+                profissional: '{{solicitacao[0].profissionaisprofissionais.idprofissionais}}',
+                status: '{{solicitacao[0].statussolicitacao}}'
+            };
+            {%if solicitacao[0].statussolicitacao ==1 %}
+                $("#status1").show();
+                $("#status2").hide();
+                $("#status3").hide();
+                $("#textoTrocaPreco").html("Não há informações para exibir");
 
-        {%elseif solicitacao[0].statussolicitacao ==2%}
-            $("#status2").show();
-            $("#status1").hide();
-            $("#status3").hide();
-            $("#textoTrocaPreco").html("Não há informações para exibir");
-        {%elseif solicitacao[0].statussolicitacao ==3 and solicitacao[0].trocaprecoautorizada ==0 %}
-            $("#status3").show();
-            $("#status1").hide();
-            $("#status2").hide();
-            $("#textoTrocaPreco").html('<i class="material-icons">sim_card_alert</i>' +
-                    'O profissional solicitou alteração do preço por motivo de <b> ' +
-                    '{{solicitacao[0].motivotrocapreco}} </b>.<br>' +
-                    'O valor anterior <b> R$ {{solicitacao[0].precofinal}}  para R$ {{solicitacao[0].novovalor}} </b>' +
-                    'Se você concorda, clique em CONCORDO, senão, o serviço será cancelado clicando em CANCELAR.');
+            {%elseif solicitacao[0].statussolicitacao ==2%}
+                $("#status2").show();
+                $("#status1").hide();
+                $("#status3").hide();
+                $("#textoTrocaPreco").html("Não há informações para exibir");
+            {%elseif solicitacao[0].statussolicitacao ==3 and solicitacao[0].trocaprecoautorizada ==0 %}
+                $("#status3").show();
+                $("#status1").hide();
+                $("#status2").hide();
+                $("#textoTrocaPreco").html('<i class="material-icons">sim_card_alert</i>' +
+                        'O profissional solicitou alteração do preço por motivo de <b> ' +
+                        '{{solicitacao[0].motivotrocapreco}} </b>.<br>' +
+                        'O valor anterior <b> R$ {{solicitacao[0].precofinal}}  para R$ {{solicitacao[0].novovalor}} </b>' +
+                        'Se você concorda, clique em CONCORDO, senão, o serviço será cancelado clicando em CANCELAR.');
+            {%endif%}
+                window.setInterval(function () {
+                    verificaStatusSolicitacao(mensagem);
+
+                }, 30000);
         {%endif%}
-            window.setInterval(function () {
-                verificaStatusSolicitacao(mensagem);
-
-            }, 3000);
-
     </script>
 </body>
 </html>

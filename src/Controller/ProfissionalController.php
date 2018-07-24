@@ -36,8 +36,8 @@ class ProfissionalController extends Controller {
      */
     public function procurarProfissional() {
         $em = $this->getDoctrine()->getManager();
-
-        $session = $this->getRequest()->getSession();
+        $request = $this->container->get('request_stack')->getCurrentRequest();
+        $session = $request->getSession();
         if ($session->has('idservicosolicitado') && $session->has('quantidade')) {
 
             $qbProf = $em->createQueryBuilder();
@@ -85,7 +85,10 @@ class ProfissionalController extends Controller {
                     $arrayEndereco = json_decode($json, true);
                     // $enderecos[]=$arrayEndereco;
                     if ($arrayEndereco["status"] == "OK") {
-                        $enderecos[] = array("atual", $arrayEndereco["results"][0]["geometry"]["location"]["lat"], $arrayEndereco["results"][0]["geometry"]["location"]["lng"], $profissa->getIdprofissionais());
+                        $enderecos[] = array("atual",
+                            $arrayEndereco["results"][0]["geometry"]["location"]["lat"],
+                            $arrayEndereco["results"][0]["geometry"]["location"]["lng"],
+                            $profissa->getIdprofissionais());
                     }
                 }
             }
@@ -321,4 +324,5 @@ class ProfissionalController extends Controller {
             return $objetoProfissional;
         }
     }
+
 }

@@ -14,6 +14,28 @@ $(document).ready(function () {
     $('.sidenav').sidenav();
     $('.modal').modal();
 });
+
+function cancelar(idSolicitacao) {
+    var mensagem = {
+        solicitacao: idSolicitacao
+    };
+    console.log("cancelar");
+    $.ajax({
+        type: "POST",
+        url: "cancelar",
+        dataType: "json",
+        contentType: 'application/json',
+        data: JSON.stringify(mensagem),
+        success: function (result) {
+            console.log(result);
+        },
+        error: function (xhr, ajaxOptions, thrownError) {
+            console.log(xhr.status);
+            console.log(thrownError);
+        }
+    });
+
+}
 function verificaStatusSolicitacao(mensagem) {
     console.log(JSON.stringify(mensagem));
     $.ajax({
@@ -39,7 +61,7 @@ function verificaStatusSolicitacao(mensagem) {
                 $("#status2").show();
                 $("#status1").hide();
                 $("#status3").hide();
-                $("#textoTempoChegada").html("Profissional confirmado. Tempo de chegada aproximado:"+result.data.tempoChegada+"  min. </h5><br>");
+                $("#textoTempoChegada").html("Profissional confirmado. Tempo de chegada aproximado:" + result.data.tempoChegada + "  min. </h5><br>");
                 $("#textoTrocaPreco").html("Não há informações para exibir");
 
             } else if (result.status == 3 && result.data != null) {
