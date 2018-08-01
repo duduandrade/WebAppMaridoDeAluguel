@@ -70,9 +70,9 @@ class ServicoController extends Controller {
      */
     public function andamento() {
         $idUsuario = $this->get('session')->get('idUsuario');
-         $profissional = ProfissionalController::buscarProfissionalPorIdUsuario($idUsuario, $this->getDoctrine());
-                    $solicitacoesProf = ServicoController::buscarServicoEmAndamentoProfissional($profissional->getIdprofissionais(), $this->getDoctrine());
-                    return $this->render('solicitacoesAndamentoProfissional.html.twig', array("solicitacoesProf"=>$solicitacoesProf));
+        $profissional = ProfissionalController::buscarProfissionalPorIdUsuario($idUsuario, $this->getDoctrine());
+        $solicitacoesProf = ServicoController::buscarServicoEmAndamentoProfissional($profissional->getIdprofissionais(), $this->getDoctrine());
+        return $this->render('solicitacoesAndamentoProfissional.html.twig', array("solicitacoesProf" => $solicitacoesProf));
     }
 
     static public function buscarServicoEmAndamento($idUsuario, $doctrine) {
@@ -141,6 +141,55 @@ class ServicoController extends Controller {
             return $result;
         } else {
             return false;
+        }
+    }
+
+    /**
+     * @Route("/mostrarMinhaLocalAtual", name="mostrarMinhaLocalAtual")
+     */
+    public function mostrarMinhaLocalAtual(Request $request) {
+        if (0 === strpos($request->headers->get('Content-Type'), 'application/json')) {
+            $data = json_decode($request->getContent(), true);
+            $request->request->replace(is_array($data) ? $data : array());
+            if ($this->get('session')->get('idUsuario')) {
+                $em = $this->getDoctrine()->getManager();
+                $idUsuario = $this->get('session')->get('idUsuario');
+                $profissional = ProfissionalController::buscarProfissionalPorIdUsuario($idUsuario, $this->getDoctrine());
+                $profissional->setMostraratual($data['permissaoLocalAtual']);
+                $em->persist($profissional);
+                $em->flush();
+                return new JsonResponse(array(
+                    'erro' => false,
+                    'mensagem' => '',
+                    'data' => null
+                ));
+            } else {
+                return $this->redirectToRoute('login');
+            }
+        }
+    }
+        /**
+     * @Route("/mostrarMinhaCasa", name="mostrarMinhaCasa")
+     */
+    public function mostrarMinhaCasa(Request $request) {
+        if (0 === strpos($request->headers->get('Content-Type'), 'application/json')) {
+            $data = json_decode($request->getContent(), true);
+            $request->request->replace(is_array($data) ? $data : array());
+            if ($this->get('session')->get('idUsuario')) {
+                $em = $this->getDoctrine()->getManager();
+                $idUsuario = $this->get('session')->get('idUsuario');
+                $profissional = ProfissionalController::buscarProfissionalPorIdUsuario($idUsuario, $this->getDoctrine());
+                $profissional->setMostrarcasa($data['permissaoCasa']);
+                $em->persist($profissional);
+                $em->flush();
+                return new JsonResponse(array(
+                    'erro' => false,
+                    'mensagem' => '',
+                    'data' => null
+                ));
+            } else {
+                return $this->redirectToRoute('login');
+            }
         }
     }
 
@@ -273,8 +322,7 @@ class ServicoController extends Controller {
         }
     }
 
-    
-      /**
+    /**
      * @Route("/verificarAceiteCliente", name="verificarAceiteCliente")
      */
     public function verificarAceiteCliente(Request $request) {
@@ -283,24 +331,26 @@ class ServicoController extends Controller {
             $request->request->replace(is_array($data) ? $data : array());
             if ($this->get('session')->get('idUsuario')) {
 
-               $solicitacao= ServicoController::buscarSolicitacaoPorId($data['solicitacao'], $this->getDoctrine());
-               if ($solicitacao->getTrocaprecoautorizada()){
-                   return new JsonResponse(array(
-                        'erro' => false,
-                        'mensagem' => 'Não foi possivel cancelar.',
-                        'autorizada' => true,
-                        'data' => null
-                    ));
-               }else{
+                $solicitacao = ServicoController::buscarSolicitacaoPorId($data['solicitacao'], $this->getDoctrine());
+                if ($solicitacao->getTrocaprecoautorizada()) {
                     return new JsonResponse(array(
                         'erro' => false,
                         'mensagem' => 'Não foi possivel cancelar.',
                         'autorizada' => true,
                         'data' => null
                     ));
-               }
+                } else {
+                    return new JsonResponse(array(
+                        'erro' => false,
+                        'mensagem' => 'Não foi possivel cancelar.',
+                        'autorizada' => true,
+                        'data' => null
+                    ));
+                }
             }
-    }}
+        }
+    }
+
     /**
      * @Route("/cancelar", name="cancelar")
      */
@@ -358,20 +408,20 @@ class ServicoController extends Controller {
                 $qb = $em->createQueryBuilder();
 
                 $result = $qb->update('App\Entity\Solicitacoes', 's')
-                                ->set('s.statussolicitacao', '?1')
-                                ->set('s.novovalor', '?2')
-                                ->set('s.motivotrocapreco', '?5')
-                                ->set('s.trocapreco', '?6')
-                                ->set('s.trocaprecoautorizada', '?7')
-                                ->where('s.profissionaisprofissionais = ?3')
-                                ->andWhere('s.idsolicitacoes = ?4')
-                                ->setParameter(1, 3) //status 3 troca preco 
-                                ->setParameter(2, $data["novoPreco"])
-                                ->setParameter(3, $profissional->getIdprofissionais())
-                                ->setParameter(4, $data["solicitacao"])
-                                ->setParameter(5, $data["motivo"])
-                                ->setParameter(6, 1)
-                                ->setParameter(7, 0)
+//                                ->set('s.statussolicitacao', '?1')
+                                ->set('s.novovalor', '?1')
+                                ->set('s.motivotrocapreco', '?4')
+                                ->set('s.trocapreco', '?5')
+                                ->set('s.trocaprecoautorizada', '?6')
+                                ->where('s.profissionaisprofissionais = ?2')
+                                ->andWhere('s.idsolicitacoes = ?3')
+//                                ->setParameter(1, 3) //status 3 troca preco 
+                                ->setParameter(1, $data["novoPreco"])
+                                ->setParameter(2, $profissional->getIdprofissionais())
+                                ->setParameter(3, $data["solicitacao"])
+                                ->setParameter(4, $data["motivo"])
+                                ->setParameter(5, 1)
+                                ->setParameter(6, 0)
                                 ->getQuery()->getSingleScalarResult();
 
                 if ($result != null) {

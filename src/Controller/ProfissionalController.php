@@ -25,6 +25,7 @@ use App\Entity\Profissionais;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use DateTime;
 use DateTimeZone;
+use App\Entity\Enderecoatualprofissional;
 
 class ProfissionalController extends Controller {
 
@@ -48,6 +49,7 @@ class ProfissionalController extends Controller {
 
             $enderecos = array();
             foreach ($profissionais as $profissa) {
+            if ($profissa->getMostraratual()) {
                 $qb = $em->createQueryBuilder();
                 $qb->select('p,e')
                         ->from('App\Entity\Enderecoatualprofissional', 'e')
@@ -63,16 +65,14 @@ class ProfissionalController extends Controller {
                     $now = new DateTime('now', $UTC);
                     $now->setTimezone($newTZ);
                     $intervalo = $now->diff($result->getAtualizacao());
-                    if ($intervalo->format("%i") <= 30) {//pelo menos 30 minutos de atualizacao
+                    if ($intervalo->format("%i") <= 10) {//pelo menos 10 minutos de atualizacao
                         // $enderecos[] = $result;
-                        $enderecos[] = array("casa", $result->getLatitude(), $result->getLongitude(), $profissa->getIdprofissionais());
-                    } else {
-                        $pegarLatLong = 1;
-                    }
-                } else {
-                    $pegarLatLong = 1;
-                }
-                if ($pegarLatLong) {
+                        $enderecos[] = array("atual", $result->getLatitude(), $result->getLongitude(), $profissa->getIdprofissionais());
+                    } 
+                } 
+            }
+            
+                if ($profissa->getMostrarcasa() ) {
                     $curl = curl_init();
                     curl_setopt($curl, CURLOPT_URL, 'https://maps.googleapis.com/maps/api/geocode/json?address='
                             . rawurlencode("" . $profissa->getEnderecoresidencia() . " " . $profissa->getNumero() . " " . $profissa->getCep() . " " . $profissa->getBairro()));
@@ -85,7 +85,7 @@ class ProfissionalController extends Controller {
                     $arrayEndereco = json_decode($json, true);
                     // $enderecos[]=$arrayEndereco;
                     if ($arrayEndereco["status"] == "OK") {
-                        $enderecos[] = array("atual",
+                        $enderecos[] = array("casa",
                             $arrayEndereco["results"][0]["geometry"]["location"]["lat"],
                             $arrayEndereco["results"][0]["geometry"]["location"]["lng"],
                             $profissa->getIdprofissionais());
@@ -262,25 +262,52 @@ class ProfissionalController extends Controller {
                     $now = new DateTime('now', $UTC);
                     $now->setTimezone($newTZ);
 
-                    $qb = $em->createQueryBuilder();
+                    //ver se ele ja tem um registro de endereco atual senao cria
+                    $objetoLocalAtual = $this->getDoctrine()->getRepository(Enderecoatualprofissional::class)
+                            ->findOneBy(array('profissionaisprofissionais' => $resultProfissional->getIdprofissionais()));
 
-                    $result = $qb->update('App\Entity\Enderecoatualprofissional', 'e')
-                                    ->set('e.latitude', $qb->expr()->literal($data['lat']))
-                                    ->set('e.longitude', $qb->expr()->literal($data['lng']))
-                                    ->set('e.atualizacao', $qb->expr()->literal($now->format('Y-m-d H:i:s')))
-                                    ->where('e.profissionaisprofissionais = ?2')
-                                    ->setParameter(2, $qb->expr()->literal($resultProfissional->getIdprofissionais()))
-                                    ->getQuery()->getSingleScalarResult();
-                    if ($result != null) {
+                    if ($objetoLocalAtual != null) {
+
+                        $qb = $em->createQueryBuilder();
+
+                        $result = $qb->update('App\Entity\Enderecoatualprofissional', 'e')
+                                        ->set('e.latitude', $qb->expr()->literal($data['lat']))
+                                        ->set('e.longitude', $qb->expr()->literal($data['lng']))
+                                        ->set('e.endereco', $qb->expr()->literal($data['endereco']))
+                                        ->set('e.atualizacao', $qb->expr()->literal($now->format('Y-m-d H:i:s')))
+                                        ->where('e.profissionaisprofissionais = ?1')
+                                        ->setParameter(1, $qb->expr()->literal($resultProfissional->getIdprofissionais()))
+                                        ->getQuery()->getSingleScalarResult();
+                        if ($result != null) {
+                            return new JsonResponse(array(
+                                'erro' => false,
+                                'mensagem' => '',
+                                'data' => null
+                            ));
+                        } else {
+                            return new JsonResponse(array(
+                                'erro' => true,
+                                'mensagem' => 'Falha ao atualizar localizacao',
+                                'data' => null
+                            ));
+                        }
+                    } else {
+                        $profissional = ProfissionalController::buscarProfissionalPorIdUsuario($idUsuario, $this->getDoctrine());
+                        $em = $this->getDoctrine()->getManager();
+
+                        $novaLocalAtual = new Enderecoatualprofissional();
+                        $novaLocalAtual->setLatitude($data['lat']);
+                        $novaLocalAtual->setLongitude($data['lng']);
+                        $novaLocalAtual->setAtualizacao($now);
+                        $novaLocalAtual->setEndereco($data['endereco']);
+                        $novaLocalAtual->setProfissionaisprofissionais($profissional);
+
+                        $em->persist($novaLocalAtual);
+                        $em->flush();
+
                         return new JsonResponse(array(
                             'erro' => false,
                             'mensagem' => '',
-                            'data' => null
-                        ));
-                    } else {
-                        return new JsonResponse(array(
-                            'erro' => true,
-                            'mensagem' => 'Falha ao salvar localizacao',
                             'data' => null
                         ));
                     }

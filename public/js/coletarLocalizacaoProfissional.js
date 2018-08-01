@@ -30,28 +30,46 @@ function report(state) {
 
 function pegaPosicao() {
     if (navigator.geolocation) {
+
         navigator.geolocation.getCurrentPosition(function (position) {
+            console.log(position);
             var pos = {
                 lat: position.coords.latitude,
-                lng: position.coords.longitude
+                lng: position.coords.longitude,
+                endereco: null
             };
-            console.log(pos);
-            console.log(position);
-            $.ajax({
-                type: "POST",
-                url: "localAtual",
-                dataType: "json",
-                contentType: 'application/json',
-                data:JSON.stringify(pos),
-                success: function (result) {
-                    console.log("result");
-                    console.log(result);
-                },
-                error: function (xhr, ajaxOptions, thrownError) {
-                    console.log(xhr.status);
-                    console.log(thrownError);
-                }
-            });
+            var google_map_pos = new google.maps.LatLng(pos.lat, pos.lng);
+            var google_maps_geocoder = new google.maps.Geocoder();
+            google_maps_geocoder.geocode(
+                    {'latLng': google_map_pos},
+                    function (results, status) {
+                        console.log(results);
+                        if (status == google.maps.GeocoderStatus.OK && results[0]) {
+                            console.log(results[0].formatted_address);
+                            pos.endereco = results[0].formatted_address;
+                        }
+                        console.log(pos);
+                        console.log("POST");
+                        $.ajax({
+                            type: "POST",
+                            url: "localAtual",
+                            dataType: "json",
+                            contentType: 'application/json',
+                            data: JSON.stringify(pos),
+                            success: function (result) {
+                                console.log("result");
+                                console.log(result);
+                            },
+                            error: function (xhr, ajaxOptions, thrownError) {
+                                console.log(xhr.status);
+                                console.log(thrownError);
+                            }
+                        });
+                    }
+            );
+
+
+
             //   map.setCenter(pos);
         }, function () {
             // handleLocationError(true, infoWindow, map.getCenter());

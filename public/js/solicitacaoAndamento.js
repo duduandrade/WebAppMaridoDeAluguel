@@ -56,7 +56,7 @@ function mudarPreco(solicita) {
             console.log(result);
             window.setInterval(function () {
 
-                pegaPosicao(solicita);
+                verificarAceiteCliente(solicita);
 
             }, 30000); //300000 milissegundos = 5 minutos
         },

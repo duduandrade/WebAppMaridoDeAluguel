@@ -1,47 +1,106 @@
- <nav>
-                    <div class="nav-wrapper orange lighten-2">
-                        <a href="#!" class="brand-logo"></a>
-                        <a href="#" data-target="slide-out" class="sidenav-trigger"><i class="material-icons">menu</i></a>
-                        <ul class="right hide-on-med-and-down">
-                            <li><a href="#">Home</a></li>
-                            <li><a href="#">Perfil</a></li>
-                            <li><a href="#">Sair</a></li>
+<nav>
+    <div class="nav-wrapper orange lighten-2">
+        <a href="#!" class="brand-logo"></a>
+        <a href="#" data-target="slide-out" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+        <ul class="right hide-on-med-and-down">
+            <li><a href="#">Home</a></li>
+            <li><a href="#">Perfil</a></li>
+            <li><a href="#">Sair</a></li>
 
-                        </ul>
-                    </div>
-                </nav>
+        </ul>
+    </div>
+</nav>
 
-                <ul id="slide-out" class="sidenav sidenav-fixed">
-                    <li><div class="user-view">
-                            <div class="background orange">
+<ul id="slide-out" class="sidenav sidenav-fixed">
+    <li><div class="user-view">
+            <div class="background orange">
 
-                            </div>
-                            <a href="#user"><img class="circle" src="img/avatar.png"></a>
-                            <a href="#name"><span class="white-text name">Profissional {{ app.session.get('nomeUsuario') }}</span></a>
-                        </div></li>
-                    <li><a href="#!"><i class="material-icons">build</i>Solicitações</a></li>
-                    <li><div class="divider"></div></li>
-                    <li><a href="#!"><i class="material-icons">assignment</i>Serviço em andamento</a></li>
-                    <li><a href="#!"><i class="material-icons">check_circle</i>Serviços concluídos</a></li>
-                    <li><div class="divider"></div></li>
-                    <li>   <p style="  margin-left: 30px;">  
-                            <label>
-                                <input type="checkbox" />
-                                <span class="grey-text darken-4">Mostrar minha localização</span>
-                            </label>
-                        </p>
-                    </li>
+            </div>
+            <a href="#user"><img class="circle" src="img/avatar.png"></a>
+            <a href="#name"><span class="white-text name">Profissional {{ app.session.get('nomeUsuario') }}</span></a>
+        </div></li>
+    <li><a href="#!"><i class="material-icons">build</i>Solicitações</a></li>
+    <li><div class="divider"></div></li>
+    <li><a href="#!"><i class="material-icons">assignment</i>Serviço em andamento</a></li>
+    <li><a href="#!"><i class="material-icons">check_circle</i>Serviços concluídos</a></li>
+    <li><div class="divider"></div></li>
+    <li>   <p style="  margin-left: 30px;">  
+            <label>
+                <input type="checkbox"  onchange="changeMinhaLocal(this)"/>
+                <span class="grey-text darken-4">Mostrar minha localização</span>
+            </label>
+        </p>
+    </li>
 
-                    <li><p style="  margin-left: 30px;">   
+    <li><p style="  margin-left: 30px;">   
 
-                            <label>
-                                <input type="checkbox" />
-                                <span class="grey-text darken-4">Mostrar minha casa</span>
-                            </label>
-                        </p>
-                    </li>
-                    <li><div class="divider"></div></li>
+            <label>
+                <input type="checkbox"  onchange="changeMinhaCasa(this)"/>
+                <span class="grey-text darken-4">Mostrar minha casa</span>
+            </label>
+        </p>
+    </li>
+    <li><div class="divider"></div></li>
 
-                    <li><a class="waves-effect" href="#!">Sair</a></li>
-                </ul>
+    <li><a class="waves-effect" href="#!">Sair</a></li>
+</ul>
+<script type="text/javascript">
+    function changeMinhaLocal(el) {
+        if (el.checked) {
+           alert("Os usuarios nao irao ver  a sua localizacao atual no mapa.");
+            var mensagem = {
+                permissaoLocalAtual: true
+            };
 
+        } else {
+            alert("Os usuarios irao ver a sua localizacao atual no mapa.");
+            var mensagem = {
+                permissaoLocalAtual: false
+            };
+        }
+        $.ajax({
+            type: "POST",
+            url: "mostrarMinhaLocalAtual",
+            dataType: "json",
+            contentType: 'application/json',
+            data: JSON.stringify(mensagem),
+            success: function (result) {
+                console.log("result");
+                console.log(result);
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                console.log(xhr.status);
+                console.log(thrownError);
+            }
+        });
+    }
+    function changeMinhaCasa(el) {
+        if (el.checked) {
+            alert("Os usuarios nao irao mais a sua casa no mapa.");
+            var mensagem = {
+                permissaoCasa: true
+            };
+
+        } else {
+            alert("Os usuarios irao ver a sua casa no mapa.");
+            var mensagem = {
+                permissaoCasa: false
+            };
+        }
+        $.ajax({
+            type: "POST",
+            url: "mostrarMinhaCasa",
+            dataType: "json",
+            contentType: 'application/json',
+            data: JSON.stringify(mensagem),
+            success: function (result) {
+                console.log("result");
+                console.log(result);
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                console.log(xhr.status);
+                console.log(thrownError);
+            }
+        });
+    }
+</script>

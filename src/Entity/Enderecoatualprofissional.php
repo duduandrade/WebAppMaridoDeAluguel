@@ -4,7 +4,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-
+use App\Entity\Profissionais;
 /**
  * Enderecoatualprofissional
  *
@@ -95,7 +95,7 @@ class Enderecoatualprofissional
         $this->endereco = $endereco;
     }
 
-    function setProfissionaisprofissionais(\Profissionais $profissionaisprofissionais) {
+    function setProfissionaisprofissionais(Profissionais $profissionaisprofissionais) {
         $this->profissionaisprofissionais = $profissionaisprofissionais;
     }
 
