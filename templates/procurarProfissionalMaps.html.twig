@@ -107,13 +107,13 @@
 
         <div id="map"></div>
         {% for profissionalArray in profissionais %}
-             
+
             <div  id="divProfissional{{profissionalArray.idprofissionais}}" class="divProfissionalBox valign-wrapper " style="display: none;">
                 <div class="row white" >
                     <div class="col s12 m12 l12 blue white-text" id="divTitulo">
-                        <p>Perfil profissional <i class="material-icons" onClick="fechar(this);">close</i> </p>
-                        
-                        
+                        <p>Perfil profissional <i class="material-icons" onClick="fechar('divProfissional{{profissionalArray.idprofissionais}}');">close</i> </p>
+
+
                     </div>
                     <div class="row" id="divConteudo">
                         <div class="row">
@@ -132,7 +132,7 @@
                             </div>
                             <div class="row">
                                 <br>                          
-                                <a class="waves-effect waves-light btn-small blue">Procurar outro</a>
+                                <a class="waves-effect waves-light btn-small blue"  onClick="fechar('divProfissional{{profissionalArray.idprofissionais}}');">Procurar outro</a>
                                 <a class="waves-effect waves-light btn-small orange" onClick="criarSolicitacao('{{profissionalArray.idprofissionais}}');">    <i class="material-icons right">send</i>Solicitar</a>
                             </div>
                         </div>
@@ -213,8 +213,8 @@
                     })(marker, i));
                 }
                 function abrirJanelaProfissional(i) {
-                    console.log("marker id: "+ i);
-                    $('#divProfissional'+i).show();
+                    console.log("marker id: " + i);
+                    $('#divProfissional' + i).show();
                 }
                 function handleLocationError(browserHasGeolocation, infoWindow, pos) {
                     infoWindow.setPosition(pos);
@@ -287,35 +287,40 @@
 
 
             function criarSolicitacao(codigoProfissional) {
-                var enderecoServico = $("#pac-input").val();
-                var solicitacao = {
-                    profissional: codigoProfissional,
-                    endereco: enderecoServico
-                };
 
-                console.log(JSON.stringify(solicitacao));
-                $.ajax({
-                    type: "POST",
-                    url: "criarSolicitacao",
-                    dataType: "json",
-                    contentType: 'application/json',
-                    data: JSON.stringify(solicitacao),
-                    success: function (result) {
-                        console.log("result");
-                        console.log(result);
-                        if (!result.erro) {
-                            window.location.href = location.origin + '/maridoDeAluguel/solicitacoes';
+                var enderecoServico = $("#pac-input").val();
+                if (enderecoServico == "") {
+                    alert("Informe o local de antedimento");
+                } else {
+                    var solicitacao = {
+                        profissional: codigoProfissional,
+                        endereco: enderecoServico
+                    };
+
+                    console.log(JSON.stringify(solicitacao));
+                    $.ajax({
+                        type: "POST",
+                        url: "criarSolicitacao",
+                        dataType: "json",
+                        contentType: 'application/json',
+                        data: JSON.stringify(solicitacao),
+                        success: function (result) {
+                            console.log("result");
+                            console.log(result);
+                            if (!result.erro) {
+                                window.location.href = location.origin + '/maridoDeAluguel/solicitacoes';
+                            }
+                        },
+                        error: function (xhr, ajaxOptions, thrownError) {
+                            console.log(xhr.status);
+                            console.log(thrownError);
                         }
-                    },
-                    error: function (xhr, ajaxOptions, thrownError) {
-                        console.log(xhr.status);
-                        console.log(thrownError);
-                    }
-                });
+                    });
+                }
             }
-            
-            function fechar(icone){
-                $(icone).parent().parent().parent().parent().hide();
+
+            function fechar(div) {
+                $('#'+div).hide();
             }
         </script>
 

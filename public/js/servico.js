@@ -36,7 +36,7 @@ function procurarProfissional(codigoServico, valor) {
     $('#unidadeQuantidade' + codigoServico + '').on('keyup', function () {
         var quantidade = $(this).val();
         var final = parseFloat(valor) * quantidade;
-        $('#valorTotal' + codigoServico + '').text("Valor total: R$" + parseFloat(final)) // get the current value of the input field.
+        $('#valorTotal' + codigoServico + '').text("Valor total: R$" + parseFloat(final)); // get the current value of the input field.
     });
 
 }

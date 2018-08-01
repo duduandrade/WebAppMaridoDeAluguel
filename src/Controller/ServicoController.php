@@ -35,7 +35,7 @@ class ServicoController extends Controller {
 
         $categorias = $this->getDoctrine()->getRepository(Categoriasservicos::class)
                 ->findAll();
-        return $this->render('solicitarServico.html.twig', array('servicos' => $servicos, 'categorias' => $categorias));
+        return $this->render('solicitarServico.html.twig', array('servicos' => $servicos, 'categorias' => $categorias, 'fixed' => false));
     }
 
     /**
@@ -63,6 +63,16 @@ class ServicoController extends Controller {
         $servicos = ServicoController::buscarServicoEmAndamento($idUsuario, $this->getDoctrine());
 
         return $this->render('solicitacaoAndamentoCliente.html.twig', array("solicitacao" => $servicos));
+    }
+
+    /**
+     * @Route("/andamento", name="andamento")
+     */
+    public function andamento() {
+        $idUsuario = $this->get('session')->get('idUsuario');
+         $profissional = ProfissionalController::buscarProfissionalPorIdUsuario($idUsuario, $this->getDoctrine());
+                    $solicitacoesProf = ServicoController::buscarServicoEmAndamentoProfissional($profissional->getIdprofissionais(), $this->getDoctrine());
+                    return $this->render('solicitacoesAndamentoProfissional.html.twig', array("solicitacoesProf"=>$solicitacoesProf));
     }
 
     static public function buscarServicoEmAndamento($idUsuario, $doctrine) {
@@ -102,7 +112,30 @@ class ServicoController extends Controller {
                         'App\Entity\Enderecosolicitacao', 'e', \Doctrine\ORM\Query\Expr\Join::WITH, 'e.solicitacoessolicitacoes = s.idsolicitacoes'
                 )
                 ->where($qb->expr()->eq('s.profissionaisprofissionais', $idProfissional))
-                ->andWhere($qb->expr()->neq('s.statussolicitacao', 9));
+                ->andWhere($qb->expr()->eq('s.statussolicitacao', 2));
+        $result = $qb->getQuery()->getResult();
+        if ($result != null) {
+            return $result;
+        } else {
+            return false;
+        }
+    }
+
+    static public function buscarServicoEmEsperaProfissional($idProfissional, $doctrine) {
+        $em = $doctrine->getManager();
+        $qb = $em->createQueryBuilder();
+        $qb->select('s,u,p, uP, e, ser, cat')
+                ->from('App\Entity\Solicitacoes', 's')
+                ->join('s.usuariosusuarios', 'u')
+                ->join('s.profissionaisprofissionais', 'p')
+                ->join('s.servicosservico', 'ser')
+                ->join('ser.categoriasservicoscategoriasservicos', 'cat')
+                ->leftJoin('p.usuariosusuarios', 'uP')
+                ->leftJoin(
+                        'App\Entity\Enderecosolicitacao', 'e', \Doctrine\ORM\Query\Expr\Join::WITH, 'e.solicitacoessolicitacoes = s.idsolicitacoes'
+                )
+                ->where($qb->expr()->eq('s.profissionaisprofissionais', $idProfissional))
+                ->andWhere($qb->expr()->eq('s.statussolicitacao', 1));
         $result = $qb->getQuery()->getResult();
         if ($result != null) {
             return $result;
@@ -227,7 +260,7 @@ class ServicoController extends Controller {
                             ->set('s.precofinal', '?5')
                             ->where('s.usuariosusuarios = ?2')
                             ->andWhere('s.idsolicitacoes = ?3')
-                            ->setParameter(1, 1)
+                            ->setParameter(1, 2)
                             ->setParameter(2, $idUsuario)
                             ->setParameter(3, $solicitacao)
                             ->setParameter(4, 1)
@@ -240,6 +273,34 @@ class ServicoController extends Controller {
         }
     }
 
+    
+      /**
+     * @Route("/verificarAceiteCliente", name="verificarAceiteCliente")
+     */
+    public function verificarAceiteCliente(Request $request) {
+        if (0 === strpos($request->headers->get('Content-Type'), 'application/json')) {
+            $data = json_decode($request->getContent(), true);
+            $request->request->replace(is_array($data) ? $data : array());
+            if ($this->get('session')->get('idUsuario')) {
+
+               $solicitacao= ServicoController::buscarSolicitacaoPorId($data['solicitacao'], $this->getDoctrine());
+               if ($solicitacao->getTrocaprecoautorizada()){
+                   return new JsonResponse(array(
+                        'erro' => false,
+                        'mensagem' => 'Não foi possivel cancelar.',
+                        'autorizada' => true,
+                        'data' => null
+                    ));
+               }else{
+                    return new JsonResponse(array(
+                        'erro' => false,
+                        'mensagem' => 'Não foi possivel cancelar.',
+                        'autorizada' => true,
+                        'data' => null
+                    ));
+               }
+            }
+    }}
     /**
      * @Route("/cancelar", name="cancelar")
      */
@@ -355,7 +416,7 @@ class ServicoController extends Controller {
                         ->setParameter(4, $solicitacao)
                         ->getQuery()->getSingleScalarResult();
 
-        return $this->redirectToRoute('home');
+        return $this->redirectToRoute('andamento');
     }
 
     /**

@@ -24,7 +24,7 @@
     <body>
         <div id="navbar">
             {% block navbar %}
-                {%include 'menuLateralCliente.html.twig'%}
+                {%include 'menuLateralCliente.html.twig' with {'fixed': true} %}
 
 
             {% endblock %}
@@ -90,11 +90,14 @@
                                     <p id="textoTrocaPreco">  </p>
 
                                 </div>
-                                <div class="modal-footer">
-
+                                <div class="modal-footer" id="trocaPrecoFooter" style="display: none">
                                     <a href="#!" onClick="cancelar('{{solicitacao[0].idsolicitacoes}}');" class="modal-close waves-effect waves-green btn-flat ">Cancelar</a>
 
                                     <a href="concordo/{{solicitacao[0].idsolicitacoes}}"  class="modal-close waves-effect waves-green btn-flat orange">CONCORDO</a>
+                                </div>
+                                <div class="modal-footer" id="normalFooter">
+                                    <a href="#normalFooter" class="modal-close waves-effect waves-green btn-flat">Fechar</a>
+
                                 </div>
                             </div>
                         </div>
@@ -119,6 +122,7 @@
                 $("#status1").show();
                 $("#status2").hide();
                 $("#status3").hide();
+
                 $("#textoTrocaPreco").html("Não há informações para exibir");
 
             {%elseif solicitacao[0].statussolicitacao ==2%}
@@ -130,6 +134,9 @@
                 $("#status3").show();
                 $("#status1").hide();
                 $("#status2").hide();
+                $("#trocaPrecoFooter").show();
+                $("#normalFooter").hide();
+
                 $("#textoTrocaPreco").html('<i class="material-icons">sim_card_alert</i>' +
                         'O profissional solicitou alteração do preço por motivo de <b> ' +
                         '{{solicitacao[0].motivotrocapreco}} </b>.<br>' +
@@ -139,7 +146,7 @@
                 window.setInterval(function () {
                     verificaStatusSolicitacao(mensagem);
 
-                }, 30000);
+                }, 3000);
         {%endif%}
     </script>
 </body>

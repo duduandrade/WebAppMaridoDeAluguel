@@ -33,13 +33,13 @@
             <div id="content" class="container valign center-block">
                 {#   {{dump(solicitacoesProf)}}#}
 
-                <h5 class="blue-text center-align"> Solicitação em Andamento </h5>
+                <h5 class="blue-text center-align"> Solicitação </h5>
                 <div class="divider"></div>
                 <div class="row">
 
                     <ul class="collection">
                         {%if solicitacoesProf is empty%}
-                            <li><h5> Não há solicitações em andamento no momento </h5></li>
+                            <li><h5> Não há solicitações no momento </h5></li>
 
                             <a href="home"> <i class="large material-icons orange-text">refresh</i></a>
                         {%else%}
@@ -52,63 +52,40 @@
                                 <p>
                                     R$  {{ solicitacoesProf[0].precofinal}}
                                 </p>
-                                {%if solicitacoesProf[0].trocapreco==1  and solicitacoesProf[0].trocaprecoautorizada==0%}
-
-                                    <p> <i class="material-icons">local_atm</i>
-
-                                        Você solicitou mudança de preço de R${{solicitacoesProf[0].precoFinal}} para R${{solicitacoesProf[0].novovalor}}.
-                                    </p>
-                                {%elseif solicitacoesProf[0].trocapreco==1 and solicitacoesProf[0].trocaprecoautorizada==1%}
-                                    <p>
-                                        <i class="material-icons">local_atm</i>
-
-                                        Alteração de preço autorizada pelo cliente.
-                                    </p>
-
-                                {%endif%}
                                 <p><br>
 
                                     {{ solicitacoesProf[1].enderecosolicitacao}}
                                 </p>
-
-                                {%if solicitacoesProf[0].statussolicitacao == 2%}
-
-                                    <div class="row center-align">
-                                        <a class="waves-effect waves-light btn modal-trigger blue " href="#modal1">Alterar Valor</a>
+                                {%if solicitacoesProf[0].statussolicitacao == 1%}
+                                    <div class="row">
+                                        <a class="waves-effect waves-light btn blue">Recusar</a>
                                     </div>
                                     <div class="row">
-                                        <a class="waves-effect waves-light btn-large orange" style="display:block"> Finalizar e receber pagamento <i class="material-icons right">attach_money</i> </a>
+                                        <a class="waves-effect waves-light btn-large modal-trigger orange" href="#modalAceitar"> <i class="material-icons right">send</i>Aceitar e ir</a>
                                     </div>
-                                    <div id="modal1" class="modal  modal-fixed-footer">
+
+                                    <div id="modalAceitar" class="modal  modal-fixed-footer">
 
                                         <div class="modal-content">
-                                            <h5>Alterar valor do serviço </h5>
+                                            <h4>Informe ao cliente uma previsão de tempo de chegada em minutos </h4>
                                             <form class="col s12">
                                                 <div class="row">
-                                                    <div class="col s12 m6 l6">
-                                                        R$ 
+                                                    <div class="col s12 m12 l12 center-align">
+                                                        minutos
                                                         <div class="input-field inline">
-                                                            <input id="preco" type="number" step="0.01" class="validate" placeholder="45.00">
+                                                            <input id="tempoChegada" type="number"  class="validate" placeholder="20">
                                                         </div>
                                                     </div>
-                                                    <div class="col s12 m6 l6">
-                                                        Motivo: 
-                                                        <div class="input-field inline">
-                                                            <textarea  id="motivo" class="materialize-textarea" placeholder="A janela precisa ser ajustada."></textarea>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col s12 m12 l12">
-                                                        <p>Após salvar o novo valor, solicite ao cliente que entre em seu sistema e acesse a opção <b>informações</b> no <b>serviço em andamento</b> para <b>CONFIRMAR</b> a alteração do valor.</p>
-                                                    </div>
+
                                                 </div>
                                             </form>
 
                                         </div>
                                         <div class="modal-footer">
-                                            <a href="" onClick="event.preventDefault();
-                                                    mudarPreco('{{solicitacoesProf[0].idsolicitacoes}}')" class="modal-close waves-effect waves-green btn-small orange">Salvar</a>
+                                            <a href="#!"  onClick="aceitarSolicitacao('{{solicitacoesProf[0].idsolicitacoes}}')" class="modal-close waves-effect waves-green btn-small orange">Salvar e IR</a>
                                         </div>
                                     </div>
+                               
                                 {%endif%}
                             </li>
 

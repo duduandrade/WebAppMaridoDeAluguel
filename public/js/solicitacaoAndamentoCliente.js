@@ -68,6 +68,8 @@ function verificaStatusSolicitacao(mensagem) {
                 $("#status3").show();
                 $("#status2").hide();
                 $("#status1").hide();
+                $("#trocaPrecoFooter").show();
+                $("#normalFooter").hide();
                 $("#textoTrocaPreco").html('<i class="material-icons">sim_card_alert</i>' +
                         'O profissional solicitou alteração do preço por motivo de <b> ' +
                         '' + result.data.motivoTrocaPreco + ' </b>.<br>' +
