@@ -39,7 +39,7 @@ class UsuarioController extends Controller {
             return $usuarioEmail;
         }
     }
-    
+
     static function buscarUsuarioPorId($id, $doctrine) {
         $usuarioEmail = $doctrine->getRepository(Usuarios::class)
                 ->findOneBy(array('idusuarios' => $id));
@@ -51,7 +51,7 @@ class UsuarioController extends Controller {
         }
     }
 
-    static function salvarUsuario($usuarioCadastro,$doctrine) {
+    static function salvarUsuario($usuarioCadastro, $doctrine) {
         $sucesso = false;
         try {
             $em = $doctrine->getManager();
@@ -62,6 +62,25 @@ class UsuarioController extends Controller {
             $sucesso = $e->getMessage();
         }
         return $sucesso;
+    }
+
+    static public function jaTemsolicitacaoCliente($doctrine, $idUsuario) {
+        $em = $doctrine->getManager();
+
+        $qb = $em->createQueryBuilder();
+
+        $qb->select('s')
+                ->from('App\Entity\Solicitacoes', 's')
+                ->join('s.usuariosusuarios', 'u')
+                ->where($qb->expr()->eq('s.usuariosusuarios', $idUsuario))
+                ->where($qb->expr()->neq('s.statussolicitacao', 9))//só se ja foi cancelada
+                ->andWhere($qb->expr()->neq('s.statussolicitacao', 8)); //ou se ja foi finalizada
+        $solicitacaoCliente = $qb->getQuery()->execute();
+        if ($solicitacaoCliente != null) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
 }

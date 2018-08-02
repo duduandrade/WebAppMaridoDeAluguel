@@ -19,14 +19,15 @@
             <a href="#user"><img class="circle" src="img/avatar.png"></a>
             <a href="#name"><span class="white-text name">Profissional {{ app.session.get('nomeUsuario') }}</span></a>
         </div></li>
-    <li><a href="#!"><i class="material-icons">build</i>Solicitações</a></li>
+    <li><a href="home"><i class="material-icons">build</i>Solicitações</a></li>
     <li><div class="divider"></div></li>
-    <li><a href="#!"><i class="material-icons">assignment</i>Serviço em andamento</a></li>
+    <li><a href="andamento"><i class="material-icons">assignment</i>Serviço em andamento</a></li>
     <li><a href="#!"><i class="material-icons">check_circle</i>Serviços concluídos</a></li>
     <li><div class="divider"></div></li>
     <li>   <p style="  margin-left: 30px;">  
             <label>
-                <input type="checkbox"  onchange="changeMinhaLocal(this)"/>
+                <input type="checkbox"  {%if app.session.get('mostrarAtual') %}
+                       checked {%endif%} onchange="changeMinhaLocal(this)"/>
                 <span class="grey-text darken-4">Mostrar minha localização</span>
             </label>
         </p>
@@ -35,7 +36,8 @@
     <li><p style="  margin-left: 30px;">   
 
             <label>
-                <input type="checkbox"  onchange="changeMinhaCasa(this)"/>
+                <input type="checkbox"  {%if app.session.get('mostrarCasa') %}
+                       checked {%endif%} onchange="changeMinhaCasa(this)"/>
                 <span class="grey-text darken-4">Mostrar minha casa</span>
             </label>
         </p>
@@ -47,7 +49,7 @@
 <script type="text/javascript">
     function changeMinhaLocal(el) {
         if (el.checked) {
-           alert("Os usuarios nao irao ver  a sua localizacao atual no mapa.");
+            alert("Os usuarios nao irao ver  a sua localizacao atual no mapa.");
             var mensagem = {
                 permissaoLocalAtual: true
             };

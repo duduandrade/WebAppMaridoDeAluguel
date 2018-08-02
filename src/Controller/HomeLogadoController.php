@@ -27,13 +27,28 @@ class HomeLogadoController extends Controller {
             if ($usuario != false) {
                 if ($tipoUsuario == "P") {
                     $profissional = ProfissionalController::buscarProfissionalPorIdUsuario($idUsuario, $this->getDoctrine());
-        $solicitacoesProf = ServicoController::buscarServicoEmEsperaProfissional($profissional->getIdprofissionais(), $this->getDoctrine());
-        return $this->render('solicitacoesEmEsperaProfissional.html.twig', array("solicitacoesProf" => $solicitacoesProf));
-                   
+                    $solicitacoesProf = ServicoController::buscarServicoEmEsperaProfissional($profissional->getIdprofissionais(), $this->getDoctrine());
+                    $this->get('session')->set('mostrarCasa', $profissional->getMostrarcasa());
+                    $this->get('session')->set('mostrarAtual', $profissional->getMostraratual());
+                    $this->get('session')->set('statusDisponivel', $profissional->getStatusdisponivel());
+
+                    return $this->render('solicitacoesEmEsperaProfissional.html.twig', array("solicitacoesProf" => $solicitacoesProf));
                 } else {
                     if ($tipoUsuario == "C") {
-                    //se tiver servico em andamento redirecionar pralaF
-                        return $this->render('homeLogado.html.twig', array("nome" => $usuario->getNome(), "fixed"=>true));
+
+                        //verificar se o cliente ja tem uma solicitacao em andamento
+                        $idUsuario = $this->get('session')->get('idUsuario');
+
+                        $jatem = UsuarioController::jaTemsolicitacaoCliente($this->getDoctrine(), $idUsuario);
+                        if ($jatem) {
+                            $this->get('session')->set('jatem', true);
+
+                            return $this->redirectToRoute("solicitacoes");
+                        } else {
+                            $this->get('session')->set('jatem', false);
+
+                            return $this->render('homeLogado.html.twig', array("nome" => $usuario->getNome(), "fixed" => true));
+                        }
                     } else {
                         //se nao for cliente nem profissional
                     }

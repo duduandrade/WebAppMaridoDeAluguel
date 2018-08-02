@@ -40,39 +40,52 @@ class ProfissionalController extends Controller {
         $request = $this->container->get('request_stack')->getCurrentRequest();
         $session = $request->getSession();
         if ($session->has('idservicosolicitado') && $session->has('quantidade')) {
+            $qbProf1 = $em->createQueryBuilder('s');
+
+            $nots = $qbProf1->select('pp.idprofissionais')
+                    ->from('App\Entity\Solicitacoes', 's')
+                    ->join('s.profissionaisprofissionais', 'pp')
+                    ->where($qbProf1->expr()->neq('s.statussolicitacao', 9))//só se ja foi cancelada
+                    ->andWhere($qbProf1->expr()->neq('s.statussolicitacao', 1))//ou se ele ainda nao aceitou
+                    ->andWhere($qbProf1->expr()->neq('s.statussolicitacao', 8)); //ou se ja foi finalizada
+
 
             $qbProf = $em->createQueryBuilder();
+
             $qbProf->select('p,u')
                     ->from('App\Entity\Profissionais', 'p')
-                    ->join('p.usuariosusuarios', 'u');
+                    ->join('p.usuariosusuarios', 'u')
+                    ->where($qbProf->expr()->notIn('p.idprofissionais', $nots->getDQL()))
+                    ->andWhere($qbProf->expr()->eq('p.statusdisponivel', 1));
+
             $profissionais = $qbProf->getQuery()->execute();
 
             $enderecos = array();
             foreach ($profissionais as $profissa) {
-            if ($profissa->getMostraratual()) {
-                $qb = $em->createQueryBuilder();
-                $qb->select('p,e')
-                        ->from('App\Entity\Enderecoatualprofissional', 'e')
-                        ->join('e.profissionaisprofissionais', 'p')
-                        ->where($qb->expr()->eq('e.profissionaisprofissionais', $profissa->getIdprofissionais()));
-                $result = $qb->getQuery()->getOneOrNullResult();
+                if ($profissa->getMostraratual()) {
+                    $qb = $em->createQueryBuilder();
+                    $qb->select('p,e')
+                            ->from('App\Entity\Enderecoatualprofissional', 'e')
+                            ->join('e.profissionaisprofissionais', 'p')
+                            ->where($qb->expr()->eq('e.profissionaisprofissionais', $profissa->getIdprofissionais()));
+                    $result = $qb->getQuery()->getOneOrNullResult();
 
-                $pegarLatLong = 0;
-                if ($result != null) {
-                    $UTC = new DateTimeZone("UTC");
-                    $newTZ = new DateTimeZone("America/Sao_Paulo");
+                    $pegarLatLong = 0;
+                    if ($result != null) {
+                        $UTC = new DateTimeZone("UTC");
+                        $newTZ = new DateTimeZone("America/Sao_Paulo");
 
-                    $now = new DateTime('now', $UTC);
-                    $now->setTimezone($newTZ);
-                    $intervalo = $now->diff($result->getAtualizacao());
-                    if ($intervalo->format("%i") <= 10) {//pelo menos 10 minutos de atualizacao
-                        // $enderecos[] = $result;
-                        $enderecos[] = array("atual", $result->getLatitude(), $result->getLongitude(), $profissa->getIdprofissionais());
-                    } 
-                } 
-            }
-            
-                if ($profissa->getMostrarcasa() ) {
+                        $now = new DateTime('now', $UTC);
+                        $now->setTimezone($newTZ);
+                        $intervalo = $now->diff($result->getAtualizacao());
+                        if ($intervalo->format("%i") <= 10) {//pelo menos 10 minutos de atualizacao
+                            // $enderecos[] = $result;
+                            $enderecos[] = array("atual", $result->getLatitude(), $result->getLongitude(), $profissa->getIdprofissionais());
+                        }
+                    }
+                }
+
+                if ($profissa->getMostrarcasa()) {
                     $curl = curl_init();
                     curl_setopt($curl, CURLOPT_URL, 'https://maps.googleapis.com/maps/api/geocode/json?address='
                             . rawurlencode("" . $profissa->getEnderecoresidencia() . " " . $profissa->getNumero() . " " . $profissa->getCep() . " " . $profissa->getBairro()));
@@ -349,6 +362,87 @@ class ProfissionalController extends Controller {
             return false;
         } else {
             return $objetoProfissional;
+        }
+    }
+
+    /**
+     * @Route("/mostrarMinhaLocalAtual", name="mostrarMinhaLocalAtual")
+     */
+    public function mostrarMinhaLocalAtual(Request $request) {
+        if (0 === strpos($request->headers->get('Content-Type'), 'application/json')) {
+            $data = json_decode($request->getContent(), true);
+            $request->request->replace(is_array($data) ? $data : array());
+            if ($this->get('session')->get('idUsuario')) {
+                $em = $this->getDoctrine()->getManager();
+                $idUsuario = $this->get('session')->get('idUsuario');
+                $profissional = ProfissionalController::buscarProfissionalPorIdUsuario($idUsuario, $this->getDoctrine());
+                $profissional->setMostraratual($data['permissaoLocalAtual']);
+                $em->persist($profissional);
+                $em->flush();
+                $this->get('session')->set('mostrarAtual', $data['permissaoLocalAtual']);
+
+                return new JsonResponse(array(
+                    'erro' => false,
+                    'mensagem' => '',
+                    'data' => null
+                ));
+            } else {
+                return $this->redirectToRoute('login');
+            }
+        }
+    }
+
+    /**
+     * @Route("/mostrarMinhaCasa", name="mostrarMinhaCasa")
+     */
+    public function mostrarMinhaCasa(Request $request) {
+        if (0 === strpos($request->headers->get('Content-Type'), 'application/json')) {
+            $data = json_decode($request->getContent(), true);
+            $request->request->replace(is_array($data) ? $data : array());
+            if ($this->get('session')->get('idUsuario')) {
+                $em = $this->getDoctrine()->getManager();
+                $idUsuario = $this->get('session')->get('idUsuario');
+                $profissional = ProfissionalController::buscarProfissionalPorIdUsuario($idUsuario, $this->getDoctrine());
+                $profissional->setMostrarcasa($data['permissaoCasa']);
+                $em->persist($profissional);
+                $em->flush();
+                $this->get('session')->set('mostrarCasa', $data['permissaoCasa']);
+
+                return new JsonResponse(array(
+                    'erro' => false,
+                    'mensagem' => '',
+                    'data' => null
+                ));
+            } else {
+                return $this->redirectToRoute('login');
+            }
+        }
+    }
+
+    /**
+     * @Route("/alterarStatusDisponivel", name="alterarStatusDisponivel")
+     */
+    public function alterarStatusDisponivel(Request $request) {
+        if (0 === strpos($request->headers->get('Content-Type'), 'application/json')) {
+            $data = json_decode($request->getContent(), true);
+            $request->request->replace(is_array($data) ? $data : array());
+            if ($this->get('session')->get('idUsuario')) {
+                $em = $this->getDoctrine()->getManager();
+                $idUsuario = $this->get('session')->get('idUsuario');
+                $profissional = ProfissionalController::buscarProfissionalPorIdUsuario($idUsuario, $this->getDoctrine());
+                $profissional->setStatusdisponivel($data['statusDisponivel']);
+                $em->persist($profissional);
+                $em->flush();
+                $this->get('session')->set('statusDisponivel', $data['statusDisponivel']);
+
+                return new JsonResponse(array(
+                    'erro' => false,
+                    'mensagem' => '',
+                    'data' => null
+                ));
+            } else {
+                return $this->redirectToRoute('login');
+            }
         }
     }
 

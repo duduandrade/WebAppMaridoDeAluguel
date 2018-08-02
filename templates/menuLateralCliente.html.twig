@@ -1,3 +1,11 @@
+<style type="text/css">
+    a[disabled="disabled"] {
+        pointer-events: none;
+        color: gray !important;
+
+    }
+</style>
+
 <nav>
     <div class="nav-wrapper blue">
         <a href="#!" class="brand-logo"><img class="responsive-img" style="width: 100px;" src="img/logo_faz_tudo2.png" /></a>
@@ -22,7 +30,7 @@
                 <a href="#user"><img class="circle" src="img/eletricista.jpg"></a>
                 <a href="#name"><span class="white-text name">{{ app.session.get('nomeUsuario') }}</span></a>
             </div></li>
-        <li><a href="solicitar"><i class="material-icons">add</i>Solicitar novo serviço</a></li>
+        <li ><a  {%if  app.session.get('jatem') %} disabled="disabled" {%else%}href="solicitar"{%endif%} ><i class="material-icons">add</i>Solicitar novo serviço</a></li>
         <li><a href="solicitacoes"><i class="material-icons">assignment</i>Serviço em andamento</a></li>
         <li><a href="concluidos"><i class="material-icons">check_circle</i>Serviços concluídos</a></li>
         <li><div class="divider"></div></li>

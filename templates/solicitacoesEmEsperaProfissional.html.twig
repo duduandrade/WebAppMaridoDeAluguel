@@ -15,6 +15,13 @@
                 header, main, footer {
                     padding-left: 0;
                 }
+
+            }
+            .switch label input[type=checkbox]:checked+.lever:after {
+                background-color: #FF5252 !important;
+            }
+            .switch label input[type=checkbox]:checked+.lever {
+                background-color: #FF5252 !important;
             }
         </style>
 
@@ -33,80 +40,95 @@
             <div id="content" class="container valign center-block">
                 {#   {{dump(solicitacoesProf)}}#}
 
-                <h5 class="blue-text center-align"> Solicitação </h5>
+                <h5 class="blue-text center-align"> Solicitações de clientes </h5>
                 <div class="divider"></div>
                 <div class="row">
-
-                    <ul class="collection">
-                        {%if solicitacoesProf is empty%}
-                            <li><h5> Não há solicitações no momento </h5></li>
-
-                            <a href="home"> <i class="large material-icons orange-text">refresh</i></a>
+                    <div class="container center-align">
+                        <div class="switch">
+                            <label>
+                                Não aceitando
+                                <input type="checkbox"  {%if app.session.get('statusDisponivel') %}
+                                       checked {%endif%} onchange="changeDisponivel(this);">
+                                <span class="lever"></span>
+                                Disponível
+                            </label>
+                        </div>
+                        {%if app.session.get('statusDisponivel') %}
+                            <h5 class="blue-text" id="mensagemDisponivel"> Você está disponível</h5>
                         {%else%}
-                            <li class="collection-item avatar">
-                                <img src="img/avatar.png" alt="" class="circle">
-                                <h5 class="title">Cliente {{solicitacoesProf[0].usuariosusuarios.nome}}</h5>
-                                <p> 
-                                    {{ solicitacoesProf[0].servicosservico.nomeservico}} - {{solicitacoesProf[0].servicosservico.categoriasservicoscategoriasservicos.nomecategoria}}
-                                </p>
-                                <p>
-                                    R$  {{ solicitacoesProf[0].precofinal}}
-                                </p>
-                                <p><br>
-
-                                    {{ solicitacoesProf[1].enderecosolicitacao}}
-                                </p>
-                                {%if solicitacoesProf[0].statussolicitacao == 1%}
-                                    <div class="row">
-                                        <a class="waves-effect waves-light btn blue">Recusar</a>
-                                    </div>
-                                    <div class="row">
-                                        <a class="waves-effect waves-light btn-large modal-trigger orange" href="#modalAceitar"> <i class="material-icons right">send</i>Aceitar e ir</a>
-                                    </div>
-
-                                    <div id="modalAceitar" class="modal  modal-fixed-footer">
-
-                                        <div class="modal-content">
-                                            <h4>Informe ao cliente uma previsão de tempo de chegada em minutos </h4>
-                                            <form class="col s12">
-                                                <div class="row">
-                                                    <div class="col s12 m12 l12 center-align">
-                                                        minutos
-                                                        <div class="input-field inline">
-                                                            <input id="tempoChegada" type="number"  class="validate" placeholder="20">
-                                                        </div>
-                                                    </div>
-
-                                                </div>
-                                            </form>
-
-                                        </div>
-                                        <div class="modal-footer">
-                                            <a href="#!"  onClick="aceitarSolicitacao('{{solicitacoesProf[0].idsolicitacoes}}')" class="modal-close waves-effect waves-green btn-small orange">Salvar e IR</a>
-                                        </div>
-                                    </div>
-                               
-                                {%endif%}
-                            </li>
-
+                            <h5 class="blue-text" id="mensagemDisponivel"> Você está indisponivel.</h5>
                         {%endif%}
 
+                        <ul class="collection">
+                            {%if solicitacoesProf is empty%}
+                                <li><h5> Não há solicitações no momento </h5></li>
+
+                                <a href="home"> <i class="large material-icons orange-text">refresh</i></a>
+                            {%else%}
+                                <li class="collection-item avatar">
+                                    <img src="img/avatar.png" alt="" class="circle">
+                                    <h5 class="title">Cliente {{solicitacoesProf[0].usuariosusuarios.nome}}</h5>
+                                    <p> 
+                                        {{ solicitacoesProf[0].servicosservico.nomeservico}} - {{solicitacoesProf[0].servicosservico.categoriasservicoscategoriasservicos.nomecategoria}}
+                                    </p>
+                                    <p>
+                                        R$  {{ solicitacoesProf[0].precofinal}}
+                                    </p>
+                                    <p><br>
+
+                                        {{ solicitacoesProf[1].enderecosolicitacao}}
+                                    </p>
+                                    {%if solicitacoesProf[0].statussolicitacao == 1%}
+                                        <div class="row">
+                                            <a class="waves-effect waves-light btn blue">Recusar</a>
+                                        </div>
+                                        <div class="row">
+                                            <a class="waves-effect waves-light btn-large modal-trigger orange" href="#modalAceitar"> <i class="material-icons right">send</i>Aceitar e ir</a>
+                                        </div>
+
+                                        <div id="modalAceitar" class="modal  modal-fixed-footer">
+
+                                            <div class="modal-content">
+                                                <h4>Informe ao cliente uma previsão de tempo de chegada em minutos </h4>
+                                                <form class="col s12">
+                                                    <div class="row">
+                                                        <div class="col s12 m12 l12 center-align">
+                                                            minutos
+                                                            <div class="input-field inline">
+                                                                <input id="tempoChegada" type="number"  class="validate" placeholder="20">
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+                                                </form>
+
+                                            </div>
+                                            <div class="modal-footer">
+                                                <a href="#!"  onClick="aceitarSolicitacao('{{solicitacoesProf[0].idsolicitacoes}}')" class="modal-close waves-effect waves-green btn-small orange">Salvar e IR</a>
+                                            </div>
+                                        </div>
+
+                                    {%endif%}
+                                </li>
+
+                            {%endif%}
 
 
-                    </ul>
 
-                </div>
-            </div> 
+                        </ul>
+
+                    </div>
+                </div> 
+            </div>
         </div>
-    </div>
 
-</main>
-<!-- Scripts -->
-<script type="text/javascript" src="js/jquery-3.3.1.min.js"></script>
-<script type="text/javascript" src="js/materialize.js"></script>
-<script type="text/javascript" src="js/solicitacaoAndamento.js"></script>
-<script type="text/javascript" src="js/coletarLocalizacaoProfissional.js"></script>
- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCJad8cPlyBoxq47_kMa7RejAGIOdIrVYc&libraries=places&callback=initMap"
-        async defer></script>
+    </main>
+    <!-- Scripts -->
+    <script type="text/javascript" src="js/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="js/materialize.js"></script>
+    <script type="text/javascript" src="js/solicitacaoAndamento.js"></script>
+    <script type="text/javascript" src="js/coletarLocalizacaoProfissional.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCJad8cPlyBoxq47_kMa7RejAGIOdIrVYc&libraries=places&callback=initMap"
+    async defer></script>
 </body>
 </html>

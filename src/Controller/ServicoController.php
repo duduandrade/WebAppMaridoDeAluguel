@@ -29,9 +29,8 @@ class ServicoController extends Controller {
                 ->from('App\Entity\Servicos', 's')
                 ->join('s.categoriasservicoscategoriasservicos', 'c');
 
-        // to get just one result:
-        // $product = $qb->setMaxResults(1)->getOneOrNullResult();
         $servicos = $qb->getQuery()->getResult();
+
 
         $categorias = $this->getDoctrine()->getRepository(Categoriasservicos::class)
                 ->findAll();
@@ -141,55 +140,6 @@ class ServicoController extends Controller {
             return $result;
         } else {
             return false;
-        }
-    }
-
-    /**
-     * @Route("/mostrarMinhaLocalAtual", name="mostrarMinhaLocalAtual")
-     */
-    public function mostrarMinhaLocalAtual(Request $request) {
-        if (0 === strpos($request->headers->get('Content-Type'), 'application/json')) {
-            $data = json_decode($request->getContent(), true);
-            $request->request->replace(is_array($data) ? $data : array());
-            if ($this->get('session')->get('idUsuario')) {
-                $em = $this->getDoctrine()->getManager();
-                $idUsuario = $this->get('session')->get('idUsuario');
-                $profissional = ProfissionalController::buscarProfissionalPorIdUsuario($idUsuario, $this->getDoctrine());
-                $profissional->setMostraratual($data['permissaoLocalAtual']);
-                $em->persist($profissional);
-                $em->flush();
-                return new JsonResponse(array(
-                    'erro' => false,
-                    'mensagem' => '',
-                    'data' => null
-                ));
-            } else {
-                return $this->redirectToRoute('login');
-            }
-        }
-    }
-        /**
-     * @Route("/mostrarMinhaCasa", name="mostrarMinhaCasa")
-     */
-    public function mostrarMinhaCasa(Request $request) {
-        if (0 === strpos($request->headers->get('Content-Type'), 'application/json')) {
-            $data = json_decode($request->getContent(), true);
-            $request->request->replace(is_array($data) ? $data : array());
-            if ($this->get('session')->get('idUsuario')) {
-                $em = $this->getDoctrine()->getManager();
-                $idUsuario = $this->get('session')->get('idUsuario');
-                $profissional = ProfissionalController::buscarProfissionalPorIdUsuario($idUsuario, $this->getDoctrine());
-                $profissional->setMostrarcasa($data['permissaoCasa']);
-                $em->persist($profissional);
-                $em->flush();
-                return new JsonResponse(array(
-                    'erro' => false,
-                    'mensagem' => '',
-                    'data' => null
-                ));
-            } else {
-                return $this->redirectToRoute('login');
-            }
         }
     }
 

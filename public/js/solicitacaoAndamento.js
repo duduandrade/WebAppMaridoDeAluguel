@@ -66,3 +66,32 @@ function mudarPreco(solicita) {
         }
     });
 }
+function changeDisponivel(el) {
+    if (el.checked) {
+        var mensagem = {
+            statusDisponivel: true
+        };
+        $("#mensagemDisponivel").text("Voce esta disponivel!");
+    } else {
+        var mensagem = {
+            statusDisponivel: false
+        };
+        $("#mensagemDisponivel").text("Voce esta indisponivel");
+
+    }
+    $.ajax({
+        type: "POST",
+        url: "alterarStatusDisponivel",
+        dataType: "json",
+        contentType: 'application/json',
+        data: JSON.stringify(mensagem),
+        success: function (result) {
+            console.log("result");
+            console.log(result);
+        },
+        error: function (xhr, ajaxOptions, thrownError) {
+            console.log(xhr.status);
+            console.log(thrownError);
+        }
+    });
+}

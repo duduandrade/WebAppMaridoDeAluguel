@@ -2,7 +2,6 @@
 
 namespace App\Entity;
 
-
 use Doctrine\ORM\Mapping as ORM;
 use App\Entity\Usuarios;
 
@@ -12,8 +11,8 @@ use App\Entity\Usuarios;
  * @ORM\Table(name="profissionais", indexes={@ORM\Index(name="fk_Profissionais_Usuarios_idx", columns={"Usuarios_idUsuarios"})})
  * @ORM\Entity
  */
-class Profissionais
-{
+class Profissionais {
+
     /**
      * @var int
      *
@@ -80,6 +79,21 @@ class Profissionais
     private $mostraratual;
 
     /**
+     * @var bool|null
+     *
+     * @ORM\Column(name="statusDisponivel", type="boolean", nullable=true)
+     */
+    private $statusdisponivel;
+
+    function getStatusdisponivel() {
+        return $this->statusdisponivel;
+    }
+
+    function setStatusdisponivel($statusdisponivel) {
+        $this->statusdisponivel = $statusdisponivel;
+    }
+
+    /**
      * @var \Usuarios
      *
      * @ORM\ManyToOne(targetEntity="Usuarios")
@@ -95,7 +109,7 @@ class Profissionais
 
     function getStatusaprovado() {
         return $this->statusaprovado;
-}
+    }
 
     function getSomaavaliacoes() {
         return $this->somaavaliacoes;
@@ -164,7 +178,5 @@ class Profissionais
     function setMostraratual($mostraratual) {
         $this->mostraratual = $mostraratual;
     }
-
-
 
 }
