@@ -36,88 +36,112 @@ class ProfissionalController extends Controller {
      * @Route("/procurarprofissional", name="procurarprofissional")
      */
     public function procurarProfissional() {
-        $em = $this->getDoctrine()->getManager();
-        $request = $this->container->get('request_stack')->getCurrentRequest();
-        $session = $request->getSession();
-        if ($session->has('idservicosolicitado') && $session->has('quantidade')) {
-            $qbProf1 = $em->createQueryBuilder('s');
+        $idUsuario = $this->get('session')->get('idUsuario');
+        $tipoUsuario = $this->get('session')->get('tipoUsuario');
+        if ($idUsuario != null) {
+            $em = $this->getDoctrine()->getManager();
+            $request = $this->container->get('request_stack')->getCurrentRequest();
+            $session = $request->getSession();
+            if ($session->has('idservicosolicitado') && $session->has('quantidade')) {
+                $qbProf1 = $em->createQueryBuilder('s');
 
-            $nots = $qbProf1->select('pp.idprofissionais')
-                    ->from('App\Entity\Solicitacoes', 's')
-                    ->join('s.profissionaisprofissionais', 'pp')
-                    ->where($qbProf1->expr()->neq('s.statussolicitacao', 9))//só se ja foi cancelada
-                    ->andWhere($qbProf1->expr()->neq('s.statussolicitacao', 1))//ou se ele ainda nao aceitou
-                    ->andWhere($qbProf1->expr()->neq('s.statussolicitacao', 8)); //ou se ja foi finalizada
+                $nots = $qbProf1->select('pp.idprofissionais')
+                        ->from('App\Entity\Solicitacoes', 's')
+                        ->join('s.profissionaisprofissionais', 'pp')
+                        ->where($qbProf1->expr()->neq('s.statussolicitacao', 9))//só se ja foi cancelada
+                        ->andWhere($qbProf1->expr()->neq('s.statussolicitacao', 1))//ou se ele ainda nao aceitou
+                        ->andWhere($qbProf1->expr()->neq('s.statussolicitacao', 8)); //ou se ja foi finalizada
 
 
-            $qbProf = $em->createQueryBuilder();
+                $qbProf = $em->createQueryBuilder();
 
-            $qbProf->select('p,u')
-                    ->from('App\Entity\Profissionais', 'p')
-                    ->join('p.usuariosusuarios', 'u')
-                    ->where($qbProf->expr()->notIn('p.idprofissionais', $nots->getDQL()))
-                    ->andWhere($qbProf->expr()->eq('p.statusdisponivel', 1));
+                $qbProf->select('p,u')
+                        ->from('App\Entity\Profissionais', 'p')
+                        ->join('p.usuariosusuarios', 'u')
+                        ->where($qbProf->expr()->notIn('p.idprofissionais', $nots->getDQL()))
+                        ->andWhere($qbProf->expr()->eq('p.statusdisponivel', 1));
 
-            $profissionais = $qbProf->getQuery()->execute();
+                $profissionais = $qbProf->getQuery()->execute();
 
-            $enderecos = array();
-            foreach ($profissionais as $profissa) {
-                if ($profissa->getMostraratual()) {
-                    $qb = $em->createQueryBuilder();
-                    $qb->select('p,e')
-                            ->from('App\Entity\Enderecoatualprofissional', 'e')
-                            ->join('e.profissionaisprofissionais', 'p')
-                            ->where($qb->expr()->eq('e.profissionaisprofissionais', $profissa->getIdprofissionais()));
-                    $result = $qb->getQuery()->getOneOrNullResult();
+                $enderecos = array();
+                foreach ($profissionais as $profissa) {
+                    if ($profissa->getMostraratual()) {
+                        $qb = $em->createQueryBuilder();
+                        $qb->select('p,e')
+                                ->from('App\Entity\Enderecoatualprofissional', 'e')
+                                ->join('e.profissionaisprofissionais', 'p')
+                                ->where($qb->expr()->eq('e.profissionaisprofissionais', $profissa->getIdprofissionais()));
+                        $result = $qb->getQuery()->getOneOrNullResult();
 
-                    $pegarLatLong = 0;
-                    if ($result != null) {
-                        $UTC = new DateTimeZone("UTC");
-                        $newTZ = new DateTimeZone("America/Sao_Paulo");
+                        $pegarLatLong = 0;
+                        if ($result != null) {
+                            $UTC = new DateTimeZone("UTC");
+                            $newTZ = new DateTimeZone("America/Sao_Paulo");
 
-                        $now = new DateTime('now', $UTC);
-                        $now->setTimezone($newTZ);
-                        $intervalo = $now->diff($result->getAtualizacao());
-                        if ($intervalo->format("%i") <= 10) {//pelo menos 10 minutos de atualizacao
-                            // $enderecos[] = $result;
-                            $enderecos[] = array("atual", $result->getLatitude(), $result->getLongitude(), $profissa->getIdprofissionais());
+                            $now = new DateTime('now', $UTC);
+                            $now->setTimezone($newTZ);
+                            $intervalo = $now->diff($result->getAtualizacao());
+                            if ($intervalo->format("%i") <= 10) {//pelo menos 10 minutos de atualizacao
+                                // $enderecos[] = $result;
+                                $enderecos[] = array("atual", $result->getLatitude(), $result->getLongitude(), $profissa->getIdprofissionais());
+                            }
                         }
                     }
-                }
 
-                if ($profissa->getMostrarcasa()) {
-                    $curl = curl_init();
-                    curl_setopt($curl, CURLOPT_URL, 'https://maps.googleapis.com/maps/api/geocode/json?address='
-                            . rawurlencode("" . $profissa->getEnderecoresidencia() . " " . $profissa->getNumero() . " " . $profissa->getCep() . " " . $profissa->getBairro()));
+                    if ($profissa->getMostrarcasa()) {
+                        if ($profissa->getLatend() == null && $profissa->getLngend() == null) {
 
-                    curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+                            $curl = curl_init();
+                            curl_setopt($curl, CURLOPT_URL, 'https://maps.googleapis.com/maps/api/geocode/json?address='
+                                    . rawurlencode("" . $profissa->getNumero() . " " . $profissa->getEnderecoresidencia() . ", " . $profissa->getCep() . " " . $profissa->getBairro() . "&key" . $this->container->getParameter('key_maps')));
 
-                    $json = curl_exec($curl);
+                            curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
 
-                    curl_close($curl);
-                    $arrayEndereco = json_decode($json, true);
-                    // $enderecos[]=$arrayEndereco;
-                    if ($arrayEndereco["status"] == "OK") {
-                        $enderecos[] = array("casa",
-                            $arrayEndereco["results"][0]["geometry"]["location"]["lat"],
-                            $arrayEndereco["results"][0]["geometry"]["location"]["lng"],
-                            $profissa->getIdprofissionais());
+                            $json = curl_exec($curl);
+
+
+                            $arrayEndereco = json_decode($json, true);
+                            // $enderecos[]=$arrayEndereco;
+                            $httpcode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+
+                            if ($httpcode == 200) {
+                                if ($arrayEndereco["status"] == "OK") {
+                                    $enderecos[] = array("casa",
+                                        $arrayEndereco["results"][0]["geometry"]["location"]["lat"],
+                                        $arrayEndereco["results"][0]["geometry"]["location"]["lng"],
+                                        $profissa->getIdprofissionais());
+                                }
+                            }
+                            curl_close($curl);
+                        } else {
+                            $enderecos[] = array("casa",
+                                $profissa->getLatend(),
+                                $profissa->getLngend(),
+                                $profissa->getIdprofissionais());
+                        }
+                    }
+                    $servicos = ServicoController::buscarSolicitacoesConcluidasProf($profissa->getIdprofissionais(), $this->getDoctrine());
+                    if (!$servicos) {
+                        $estrelas[$profissa->getIdprofissionais()] = 0;
+                    } else {
+                        $totalServicos = count($servicos);
+                        $estrelas[$profissa->getIdprofissionais()] = $profissa->getSomaavaliacoes() / $totalServicos;
                     }
                 }
+                return $this->render('procurarProfissionalMaps.html.twig', array("endereco" => $enderecos, "profissionais" => $profissionais, "estrelas" => $estrelas));
+            } else {
+                return $this->redirectToRoute("solicitar");
             }
-            return $this->render('procurarProfissionalMaps.html.twig', array("endereco" => $enderecos, "profissionais" => $profissionais));
         } else {
-            $this->redirectToRoute("solicitar");
+            return $this->redirectToRoute("login");
         }
-
-        // to get just one result:
-        // $product = $qb->setMaxResults(1)->getOneOrNullResult();
     }
 
     /**
      * @Route("/profissional", name="profissional")
      */
     public function profissional(Request $request) {
+
         $usuarioCadastro = new Usuarios();
 
         $this->formCadastroProfissional = $this->createFormBuilder($usuarioCadastro)
@@ -178,7 +202,7 @@ class ProfissionalController extends Controller {
                         } else {
                             return new JsonResponse(array(
                                 'erro' => true,
-                                'mensagem' => 'Falha ao cadastrar profissional, tente novamente',
+                                'mensagem' => 'Falha ao cadastrar profissional, tente novamente.',
                                 'data' => null
                             ));
                         }
@@ -220,8 +244,34 @@ class ProfissionalController extends Controller {
 
             $em = $this->getDoctrine()->getManager();
             $em->persist($profissional);
+            //salvar as coordenadas do endereco
+            $curl = curl_init();
+            $cepFormatado = str_replace(" ", "_", preg_replace("/&([a-z])[a-z]+;/i", "$1", htmlentities(trim($profissional->getCep()))));
+            $profissional->setCep($cepFormatado);
+            curl_setopt($curl, CURLOPT_URL, 'https://maps.googleapis.com/maps/api/geocode/json?address='
+                    . rawurlencode("" . $profissional->getNumero() . "+" . $profissional->getEnderecoresidencia() . "," . $cepFormatado . " " . $profissional->getBairro() . "&key" . $this->container->getParameter('key_maps')));
+
+            curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+
+            $json = curl_exec($curl);
+
+
+            $httpcode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+            if ($httpcode == 200) {
+                $arrayEndereco = json_decode($json, true);
+                // $enderecos[]=$arrayEndereco;
+                if ($arrayEndereco["status"] == "OK") {
+
+                    $profissional->setLatend($arrayEndereco["results"][0]["geometry"]["location"]["lat"]);
+                    $profissional->setLngend($arrayEndereco["results"][0]["geometry"]["location"]["lng"]);
+                    $em->persist($profissional);
+                    curl_close($curl);
+                    $sucesso = true;
+                }
+            } else {
+                $sucesso = false;
+            }
             $em->flush();
-            $sucesso = true;
         } catch (\Doctrine\DBAL\DBALException $e) {
             $sucesso = false;
         }
@@ -332,7 +382,7 @@ class ProfissionalController extends Controller {
                     ));
                 }
             } else {
-                $this->redirectToRoute("login");
+                return $this->redirectToRoute("login");
             }
         } else {
             return new JsonResponse(array(
@@ -415,6 +465,36 @@ class ProfissionalController extends Controller {
                 ));
             } else {
                 return $this->redirectToRoute('login');
+            }
+        }
+    }
+
+    /**
+     * @Route("/salvarAvaliacaoCliente", name="salvarAvaliacaoCliente")
+     */
+    public function salvarAvaliacaoCliente(Request $request) {
+        if (0 === strpos($request->headers->get('Content-Type'), 'application/json')) {
+            $data = json_decode($request->getContent(), true);
+            $request->request->replace(is_array($data) ? $data : array());
+            if ($this->get('session')->get('idUsuario')) {
+                $em = $this->getDoctrine()->getManager();
+                $idUsuario = $this->get('session')->get('idUsuario');
+                $solicitacao = ServicoController::buscarSolicitacaoPorId($data['solicitacaoId'], $this->getDoctrine());
+                $solicitacao->setAvaliacao($data['estrelas']);
+                $prof = $solicitacao->getProfissionaisprofissionais();
+                $profissional = ProfissionalController::buscarProfissionalPorId($prof, $this->getDoctrine());
+                $profissional->setSomaavaliacoes($profissional->getSomaavaliacoes() + $data['estrelas']);
+                $em->persist($solicitacao);
+                $em->persist($profissional);
+                $em->flush();
+
+                return new JsonResponse(array(
+                    'erro' => false,
+                    'mensagem' => '',
+                    'data' => null
+                ));
+            } else {
+                $this->redirectToRoute("login");
             }
         }
     }

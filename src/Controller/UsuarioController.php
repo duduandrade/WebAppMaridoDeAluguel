@@ -73,8 +73,8 @@ class UsuarioController extends Controller {
                 ->from('App\Entity\Solicitacoes', 's')
                 ->join('s.usuariosusuarios', 'u')
                 ->where($qb->expr()->eq('s.usuariosusuarios', $idUsuario))
-                ->where($qb->expr()->neq('s.statussolicitacao', 9))//só se ja foi cancelada
-                ->andWhere($qb->expr()->neq('s.statussolicitacao', 8)); //ou se ja foi finalizada
+                ->andWhere('s.statussolicitacao <>9 AND s.statussolicitacao<>8');//só se ja foi cancelada
+//                ->orWhere($qb->expr()->neq('s.statussolicitacao', 8)); //ou se ja foi finalizada
         $solicitacaoCliente = $qb->getQuery()->execute();
         if ($solicitacaoCliente != null) {
             return true;

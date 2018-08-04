@@ -18,11 +18,34 @@
             </div>
             <a href="#user"><img class="circle" src="img/avatar.png"></a>
             <a href="#name"><span class="white-text name">Profissional {{ app.session.get('nomeUsuario') }}</span></a>
+            <a disable='disabled'><span class="white-text name"> {{app.session.get('estrelas')}} 
+                    {%if app.session.get('estrelas') is defined%}
+                        {%if app.session.get('estrelas') >0 %}
+                            {% for i in 1..app.session.get('estrelas')|round(0,'floor')%}
+
+                                <span class="fa fa-star checked"></span>
+                            {%endfor%}
+                            {%if app.session.get('estrelas')<5%}
+                                {% for k in app.session.get('estrelas')|round(0,'floor')..4%}
+
+                                    <span class="fa fa-star"></span>
+                                {%endfor%}
+                            {%endif%}
+                        {%else%}
+                            {% for k in app.session.get('estrelas')|round(0,'floor')..4%}
+
+                                <span class="fa fa-star"></span>
+                            {%endfor%}
+                        {%endif%}
+                    {%endif%}</span></a>  
         </div></li>
+    <li class='center-align'>
+    </li>
+
     <li><a href="home"><i class="material-icons">build</i>Solicitações</a></li>
     <li><div class="divider"></div></li>
     <li><a href="andamento"><i class="material-icons">assignment</i>Serviço em andamento</a></li>
-    <li><a href="#!"><i class="material-icons">check_circle</i>Serviços concluídos</a></li>
+    <li><a href="concluidasprof"><i class="material-icons">check_circle</i>Serviços concluídos</a></li>
     <li><div class="divider"></div></li>
     <li>   <p style="  margin-left: 30px;">  
             <label>

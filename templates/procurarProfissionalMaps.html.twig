@@ -106,7 +106,9 @@
                placeholder="Informe o local do antendimento">
 
         <div id="map"></div>
-
+        {# {{dump(estrelas)}}
+         {{dump(profissionais)}}
+         {{dump(endereco)}}#}
         {% for profissionalArray in profissionais %}
 
             <div  id="divProfissional{{profissionalArray.idprofissionais}}" class="divProfissionalBox valign-wrapper " style="display: none;">
@@ -124,11 +126,22 @@
                             </div>
                             <div class="col s6 m6 l6">
                                 <h5 id="nome">{{profissionalArray.usuariosusuarios.nome}}</h5>
-                                <span class="fa fa-star checked"></span>
-                                <span class="fa fa-star checked"></span>
-                                <span class="fa fa-star checked"></span>
-                                <span class="fa fa-star"></span>
-                                <span class="fa fa-star"></span>
+                                {%if estrelas[profissionalArray.idprofissionais]|round(0,'floor') ==0%}
+                                    {% for i in 1..5%}
+                                        <span class="fa fa-star"></span>
+                                    {%endfor%}
+                                {%else%}
+                                    {% for i in 1..estrelas[profissionalArray.idprofissionais]|round(0,'floor')%}
+
+                                        <span class="fa fa-star checked"></span>
+                                    {%endfor%}
+                                    {%if estrelas[profissionalArray.idprofissionais]|round(0,'floor')<5%}
+                                        {% for k in estrelas[profissionalArray.idprofissionais]|round(0,'floor')..4%}
+
+                                            <span class="fa fa-star"></span>
+                                        {%endfor%}
+                                    {%endif%}
+                                {%endif%}
                                 <p> Está em: Rua livino Andriotti, 500 </p>
                             </div>
                             <div class="row">
@@ -136,6 +149,11 @@
                                 <a class="waves-effect waves-light btn-small blue"  onClick="fechar('divProfissional{{profissionalArray.idprofissionais}}');">Procurar outro</a>
                                 <a class="waves-effect waves-light btn-small orange" onClick="criarSolicitacao('{{profissionalArray.idprofissionais}}');">    <i class="material-icons right">send</i>Solicitar</a>
                             </div>
+
+                                <div class="progress" id="loading{{profissionalArray.idprofissionais}}" style="display: none">
+      <div class="indeterminate"></div>
+  </div>
+        
                         </div>
                     </div>
                 </div>
@@ -293,6 +311,7 @@
                 if (enderecoServico == "") {
                     alert("Informe o local de antedimento");
                 } else {
+                    $("#loading"+codigoProfissional).show();
                     var solicitacao = {
                         profissional: codigoProfissional,
                         endereco: enderecoServico

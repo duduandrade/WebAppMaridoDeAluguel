@@ -57,8 +57,14 @@
                                 <button type='button' style="display: none" id="btnEsqueciSenha"  class='col s12 btn btn-large waves-effect blue'>Enviar e-mail</button>
 
                             </div>
+
+                            <div class="progress" id="loadingLogin" style="display: none">
+                                <div class="indeterminate"></div>
+                            </div>
+
                         </center>
-                         {{ form_end(formLogin) }}
+
+                        {{ form_end(formLogin) }}
                     </div>
                 </div>
                 <a href="/{{path}}/cadastrar">Não tem uma conta? Cadastre-se</a>

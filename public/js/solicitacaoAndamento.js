@@ -66,6 +66,34 @@ function mudarPreco(solicita) {
         }
     });
 }
+function finalizar(solicita) {
+    var resposta = confirm("Você confirma que recebeu o pagamento?");
+    if (resposta == true) {
+
+
+        var mensagem = {
+            solicitacao: solicita,
+        };
+
+        $.ajax({
+            type: "POST",
+            url: "finalizar",
+            dataType: "json",
+            contentType: 'application/json',
+            data: JSON.stringify(mensagem),
+            success: function (result) {
+                console.log(result);
+                alert("Solicitacao finalizada");
+                window.location.href = location.origin + '/maridoDeAluguel/home';
+
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                console.log(xhr.status);
+                console.log(thrownError);
+            }
+        });
+    }
+}
 function changeDisponivel(el) {
     if (el.checked) {
         var mensagem = {

@@ -16,25 +16,29 @@ $(document).ready(function () {
 });
 
 function cancelar(idSolicitacao) {
-    var mensagem = {
-        solicitacao: idSolicitacao
-    };
-    console.log("cancelar");
-    $.ajax({
-        type: "POST",
-        url: "cancelar",
-        dataType: "json",
-        contentType: 'application/json',
-        data: JSON.stringify(mensagem),
-        success: function (result) {
-            console.log(result);
-        },
-        error: function (xhr, ajaxOptions, thrownError) {
-            console.log(xhr.status);
-            console.log(thrownError);
-        }
-    });
+    var resposta = confirm("Tem certeza que deseja cancelar esta solicitacao?");
+    if (resposta) {
+        var mensagem = {
+            solicitacao: idSolicitacao
+        };
+        console.log("cancelar");
+        $.ajax({
+            type: "POST",
+            url: "cancelar",
+            dataType: "json",
+            contentType: 'application/json',
+            data: JSON.stringify(mensagem),
+            success: function (result) {
+                console.log(result);
+                window.location.href = location.origin + '/maridoDeAluguel/home';
 
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                console.log(xhr.status);
+                console.log(thrownError);
+            }
+        });
+    }
 }
 function verificaStatusSolicitacao(mensagem) {
     console.log(JSON.stringify(mensagem));

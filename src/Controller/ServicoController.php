@@ -12,6 +12,8 @@ use App\Entity\Solicitacoes;
 use App\Entity\Enderecosolicitacao;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use DateTime;
+use DateTimeZone;
 
 class ServicoController extends Controller {
 
@@ -21,20 +23,105 @@ class ServicoController extends Controller {
      * @Route("/solicitar", name="solicitarProfissional")
      */
     public function solicitarProfissional() {
-        //query builder
-        $em = $this->getDoctrine()->getManager();
+        $idUsuario = $this->get('session')->get('idUsuario');
+        $tipoUsuario = $this->get('session')->get('tipoUsuario');
+        if ($idUsuario != null) {
+            //query builder
+            $em = $this->getDoctrine()->getManager();
+            $qb = $em->createQueryBuilder();
+            //s e c sao alias 
+            $qb->select('s,c')
+                    ->from('App\Entity\Servicos', 's')
+                    ->join('s.categoriasservicoscategoriasservicos', 'c');
+
+            $servicos = $qb->getQuery()->getResult();
+
+
+            $categorias = $this->getDoctrine()->getRepository(Categoriasservicos::class)
+                    ->findAll();
+            return $this->render('solicitarServico.html.twig', array('servicos' => $servicos, 'categorias' => $categorias, 'fixed' => false));
+        } else {
+            return $this->redirectToRoute("login");
+        }
+    }
+
+    /**
+     * @Route("/concluidas", name="concluidas")
+     */
+    public function concluidas() {
+        $idUsuario = $this->get('session')->get('idUsuario');
+        if ($idUsuario != null) {
+            $solicitacoesConcluidas = ServicoController::buscarSolicitacoesConcluidas($idUsuario, $this->getDoctrine());
+            return $this->render('solicitacoesConcluidasCliente.html.twig', array('solicitacoesConcluidas' => $solicitacoesConcluidas, 'fixed' => true));
+        } else {
+            return $this->redirectToRoute("login");
+        }
+    }
+
+    /**
+     * @Route("/concluidasprof", name="concluidasprof")
+     */
+    public function concluidasprof() {
+        $idUsuario = $this->get('session')->get('idUsuario');
+
+        if ($idUsuario != null) {
+            $idProf = ProfissionalController::buscarProfissionalPorIdUsuario($idUsuario, $this->getDoctrine());
+            $solicitacoesConcluidas = ServicoController::buscarSolicitacoesConcluidasProf($idProf->getIdprofissionais(), $this->getDoctrine());
+            return $this->render('solicitacoesConcluidasProfissional.html.twig', array('solicitacoesConcluidas' => $solicitacoesConcluidas, 'fixed' => true));
+        } else {
+            return $this->redirectToRoute("login");
+        }
+    }
+
+    static public function buscarSolicitacoesConcluidas($idUsuario, $doctrine) {
+        $em = $doctrine->getManager();
         $qb = $em->createQueryBuilder();
-        //s e c sao alias 
-        $qb->select('s,c')
-                ->from('App\Entity\Servicos', 's')
-                ->join('s.categoriasservicoscategoriasservicos', 'c');
+        $qb->select('s,u,p, uP, ser, cat')
+                ->from('App\Entity\Solicitacoes', 's')
+                ->join('s.usuariosusuarios', 'u')
+                ->join('s.profissionaisprofissionais', 'p')
+                ->join('s.servicosservico', 'ser')
+                ->join('ser.categoriasservicoscategoriasservicos', 'cat')
+                ->leftJoin('p.usuariosusuarios', 'uP')
+//                ->leftJoin(
+//                        'App\Entity\Enderecosolicitacao', 'e', \Doctrine\ORM\Query\Expr\Join::WITH, 'e.solicitacoessolicitacoes = s.idsolicitacoes'
+//                )
+                ->where($qb->expr()->eq('s.usuariosusuarios', $idUsuario))
+                ->andWhere($qb->expr()->eq('s.statussolicitacao', 9))
+                ->orWhere($qb->expr()->eq('s.statussolicitacao', 8))
+                ->orderBy('s.dtsolicitacao', 'DESC');
 
-        $servicos = $qb->getQuery()->getResult();
+        $result = $qb->getQuery()->getResult();
+        if ($result != null) {
+            return $result;
+        } else {
+            return false;
+        }
+    }
 
-
-        $categorias = $this->getDoctrine()->getRepository(Categoriasservicos::class)
-                ->findAll();
-        return $this->render('solicitarServico.html.twig', array('servicos' => $servicos, 'categorias' => $categorias, 'fixed' => false));
+    static public function buscarSolicitacoesConcluidasProf($idprof, $doctrine) {
+        $em = $doctrine->getManager();
+        $qb = $em->createQueryBuilder();
+        $qb->select('s,u,p, uP, ser, cat')
+                ->from('App\Entity\Solicitacoes', 's')
+                ->join('s.usuariosusuarios', 'u')
+                ->join('s.profissionaisprofissionais', 'p')
+                ->join('s.servicosservico', 'ser')
+                ->join('ser.categoriasservicoscategoriasservicos', 'cat')
+                ->leftJoin('p.usuariosusuarios', 'uP')
+//                ->leftJoin(
+//                        'App\Entity\Enderecosolicitacao', 'e', \Doctrine\ORM\Query\Expr\Join::WITH, 'e.solicitacoessolicitacoes = s.idsolicitacoes'
+//                )
+                ->where($qb->expr()->eq('s.profissionaisprofissionais', $idprof))
+                ->andWhere($qb->expr()->eq('s.statussolicitacao', 9))
+                ->orWhere($qb->expr()->eq('s.statussolicitacao', 8))
+                ->orderBy('s.dtsolicitacao', 'DESC');
+        $result = $qb->getQuery()->getResult();
+        if ($result != null) {
+            return $result;
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -50,7 +137,28 @@ class ServicoController extends Controller {
      * @Route("/orcamento", name="orcamento")
      */
     public function orcamento() {
-        return $this->render('orcamento.html.twig');
+
+        $idUsuario = $this->get('session')->get('idUsuario');
+        if ($idUsuario != null) {
+            $servico = new Servicos();
+            $objetoCategoria = $this->getDoctrine()->getRepository(Categoriasservicos::class)
+                    ->findOneBy(array('idcategoriasservicos' => 5));
+
+            $servico->setCategoriasservicoscategoriasservicos($objetoCategoria);
+            $servico->setNomeservico("Orcamento");
+            $servico->setValorservico(0);
+            $servico->setUnidademedida("A avaliar");
+
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($servico);
+             $em->flush();
+            $this->get('session')->set('idservicosolicitado', $servico->getIdservico());
+            $this->get('session')->set('quantidade', 0);
+           
+            return $this->redirectToRoute('procurarprofissional');
+        } else {
+            return $this->redirectToRoute("login");
+        }
     }
 
     /**
@@ -58,10 +166,14 @@ class ServicoController extends Controller {
      */
     public function solicitacoes() {
         $idUsuario = $this->get('session')->get('idUsuario');
-        $servicos = array();
-        $servicos = ServicoController::buscarServicoEmAndamento($idUsuario, $this->getDoctrine());
+        if ($idUsuario != null) {
+            $servicos = array();
+            $servicos = ServicoController::buscarServicoEmAndamento($idUsuario, $this->getDoctrine());
 
-        return $this->render('solicitacaoAndamentoCliente.html.twig', array("solicitacao" => $servicos));
+            return $this->render('solicitacaoAndamentoCliente.html.twig', array("solicitacao" => $servicos));
+        } else {
+            return $this->redirectToRoute("login");
+        }
     }
 
     /**
@@ -69,9 +181,13 @@ class ServicoController extends Controller {
      */
     public function andamento() {
         $idUsuario = $this->get('session')->get('idUsuario');
-        $profissional = ProfissionalController::buscarProfissionalPorIdUsuario($idUsuario, $this->getDoctrine());
-        $solicitacoesProf = ServicoController::buscarServicoEmAndamentoProfissional($profissional->getIdprofissionais(), $this->getDoctrine());
-        return $this->render('solicitacoesAndamentoProfissional.html.twig', array("solicitacoesProf" => $solicitacoesProf));
+        if ($idUsuario != null) {
+            $profissional = ProfissionalController::buscarProfissionalPorIdUsuario($idUsuario, $this->getDoctrine());
+            $solicitacoesProf = ServicoController::buscarServicoEmAndamentoProfissional($profissional->getIdprofissionais(), $this->getDoctrine());
+            return $this->render('solicitacoesAndamentoProfissional.html.twig', array("solicitacoesProf" => $solicitacoesProf));
+        } else {
+            return $this->redirectToRoute("login");
+        }
     }
 
     static public function buscarServicoEmAndamento($idUsuario, $doctrine) {
@@ -168,14 +284,20 @@ class ServicoController extends Controller {
                     try {
                         $valorServico = $objetoServico->getValorservico();
                         $valorFinal = $valorServico * $quantidade;
+                        $UTC = new DateTimeZone("UTC");
+                        $newTZ = new DateTimeZone("America/Sao_Paulo");
 
+                        $now = new DateTime('now', $UTC);
+                        $now->setTimezone($newTZ);
                         $novaSolicitacao = new Solicitacoes();
                         $novaSolicitacao->setProfissionaisprofissionais($objetoProf);
                         $novaSolicitacao->setUsuariosusuarios($objetoUsuario);
                         $novaSolicitacao->setServicosservico($objetoServico);
                         $novaSolicitacao->setPrecofinal($valorFinal);
                         $novaSolicitacao->setStatussolicitacao(1);
+                        $novaSolicitacao->setDtsolicitacao($now);
                         $em->persist($novaSolicitacao);
+                        $this->get('session')->set('jatem', true);
 
                         $enderecoSolicitacao = new Enderecosolicitacao();
                         $enderecoSolicitacao->setSolicitacoessolicitacoes($novaSolicitacao);
@@ -199,7 +321,7 @@ class ServicoController extends Controller {
                     ));
                 }
             } else {
-                $this->redirectToRoute("login");
+                return $this->redirectToRoute("login");
             }
         } else {
             return new JsonResponse(array(
@@ -252,7 +374,7 @@ class ServicoController extends Controller {
         $em = $this->getDoctrine()->getManager();
         $qb = $em->createQueryBuilder();
         $solicitacao = ServicoController::buscarSolicitacaoPorId($solicitacao, $this->getDoctrine());
-        if ($solicitacao != false) {
+        if ($solicitacao != false && $idUsuario != null) {
             $result = $qb->update('App\Entity\Solicitacoes', 's')
                             ->set('s.statussolicitacao', '?1')
                             ->set('s.trocaprecoautorizada', '?4')
@@ -297,6 +419,8 @@ class ServicoController extends Controller {
                         'data' => null
                     ));
                 }
+            } else {
+                return $this->redirectToRoute("login");
             }
         }
     }
@@ -321,6 +445,47 @@ class ServicoController extends Controller {
                                 ->setParameter(1, 9) //status 9 cancelada
                                 ->setParameter(2, $idUsuario)
                                 ->setParameter(3, $data["solicitacao"])
+                                ->getQuery()->getSingleScalarResult();
+
+                if ($result != null) {
+                    return new JsonResponse(array(
+                        'erro' => false,
+                        'mensagem' => 'Sucesso',
+                        'status' => null,
+                        'data' => null
+                    ));
+                } else {
+                    return new JsonResponse(array(
+                        'erro' => true,
+                        'mensagem' => 'Não foi possivel cancelar.',
+                        'status' => null,
+                        'data' => null
+                    ));
+                }
+            } else {
+                return $this->redirectToRoute("login");
+            }
+        }
+    }
+
+    /**
+     * @Route("/finalizar", name="finalizar")
+     */
+    public function finalizar(Request $request) {
+        if (0 === strpos($request->headers->get('Content-Type'), 'application/json')) {
+            $data = json_decode($request->getContent(), true);
+            $request->request->replace(is_array($data) ? $data : array());
+            if ($this->get('session')->get('idUsuario')) {
+                $idUsuario = $this->get('session')->get('idUsuario');
+
+                $em = $this->getDoctrine()->getManager();
+                $qb = $em->createQueryBuilder();
+
+                $result = $qb->update('App\Entity\Solicitacoes', 's')
+                                ->set('s.statussolicitacao', '?1')
+                                ->andWhere('s.idsolicitacoes = ?2')
+                                ->setParameter(1, 8) //status 8 finalizada
+                                ->setParameter(2, $data["solicitacao"])
                                 ->getQuery()->getSingleScalarResult();
 
                 if ($result != null) {
@@ -455,6 +620,8 @@ class ServicoController extends Controller {
                         'data' => null
                     ));
                 }
+            } else {
+                return $this->redirectToRoute("login");
             }
         }
     }

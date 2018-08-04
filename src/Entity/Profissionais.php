@@ -37,11 +37,25 @@ class Profissionais {
     private $somaavaliacoes;
 
     /**
+     * @var int|null
+     *
+     * @ORM\Column(name="latEnd", type="string", length=45, nullable=true)
+     */
+    private $latend;
+
+    /**
+     * @var int|null
+     *
+     * @ORM\Column(name="lngEnd", type="string", length=45, nullable=true)
+     */
+    private $lngend;
+
+    /**
      * @var string|null
      *
      * @ORM\Column(name="enderecoResidencia", type="string", length=45, nullable=true)
      */
-    private $enderecoresidencia;
+    public $enderecoresidencia;
 
     /**
      * @var string|null
@@ -178,5 +192,21 @@ class Profissionais {
     function setMostraratual($mostraratual) {
         $this->mostraratual = $mostraratual;
     }
+    function getLatend() {
+        return $this->latend;
+    }
+
+    function getLngend() {
+        return $this->lngend;
+    }
+
+    function setLatend($latend) {
+        $this->latend = $latend;
+    }
+
+    function setLngend($lngend) {
+        $this->lngend = $lngend;
+    }
+
 
 }

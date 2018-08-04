@@ -1,0 +1,187 @@
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>{% block title %}Marido de Aluguel{% endblock %}</title>
+        {#<link href="{{ asset('css/materialize.css') }}" rel="stylesheet" />#}
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <link href="https://netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+        <!--Import materialize.css-->
+        <link type="text/css" rel="stylesheet" href="css/materialize.css" media="screen,projection"/>
+        <style type='text/css'>
+            header, main, footer {
+                padding-left: 300px;
+            }
+            .checked {
+                color:#FFED85;
+            }
+            @media only screen and (max-width : 992px) {
+                header, main, footer {
+                    padding-left: 0;
+                }
+            }
+
+            fieldset, label { margin: 0; padding: 0; }
+   
+
+            /****** Style Star Rating Widget *****/
+
+            .rating { 
+                border: none;
+                float: left;
+            }
+
+            .rating > input { display: none; } 
+            .rating > label:before { 
+                margin: 5px;
+                font-size: 1.25em;
+                font-family: FontAwesome;
+                display: inline-block;
+                content: "\f005";
+            }
+
+            .rating > .half:before { 
+                content: "\f089";
+                position: absolute;
+            }
+
+            .rating > label { 
+                color: #ddd; 
+                float: right; 
+            }
+            .rating > input:checked ~ label, /* show gold star when clicked */
+            .rating:not(:checked) > label:hover, /* hover current star */
+            .rating:not(:checked) > label:hover ~ label { color: #FFD700;  } /* hover previous stars in list */
+
+        </style>
+
+        <!--Let browser know website is optimized for mobile-->
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    </head>
+    <body>
+        <div id="navbar">
+            {% block navbar %}
+                {%include 'menuLateralCliente.html.twig' with {'fixed': true} %}
+
+
+            {% endblock %}
+        </div>
+
+        <main>
+            <div id="content" class="container valign center-block">
+
+                <div class="row">
+                    <div class="container center-align">
+                        <ul class="collection">
+                            {% for solicitacoesConcluidasArray in solicitacoesConcluidas %}
+
+
+                                <li class="collection-item avatar">
+                                    <img src="img/avatar.png" alt="" class="circle">
+                                    <p>{{solicitacoesConcluidasArray.dtsolicitacao.date|date("d/m/Y") }}</p>
+                                    <h5 class="title">Profissional {{solicitacoesConcluidasArray.profissionaisprofissionais.usuariosusuarios.nome}}</h5>
+                                    <p> 
+                                        {{ solicitacoesConcluidasArray.servicosservico.nomeservico}} - {{solicitacoesConcluidasArray.servicosservico.categoriasservicoscategoriasservicos.nomecategoria}} 
+                                    </p>
+                                    <p>
+                                        {%if solicitacoesConcluidasArray.trocaprecoautorizada and solicitacoesConcluidasArray.trocapreco %}
+                                            R$  {{ solicitacoesConcluidasArray.novovalor}}
+                                        {%elseif solicitacoesConcluidasArray.statussolicitacao ==9%}
+                                            R$ 0.00 - Cancelada   <i class="material-icons">pan_tool</i>
+
+                                        {%else%}
+                                            R$  {{ solicitacoesConcluidasArray.precofinal}}  
+                                        {%endif%}
+
+                                    </p>
+                                    {%if solicitacoesConcluidasArray.avaliacao is null or solicitacoesConcluidasArray.avaliacao ==0 %}
+                                        <fieldset disabled class="rating secondary-content" id="{{solicitacoesConcluidasArray.idsolicitacoes}}">
+                                            <input type="radio" id="star5" name="rating" value="5" /><label class = "full" for="star5" ></label>
+                                            <input type="radio" id="star4" name="rating" value="4" /><label class = "full" for="star4" ></label>
+                                            <input type="radio" id="star3" name="rating" value="3" /><label class = "full" for="star3" ></label>
+                                            <input type="radio" id="star2" name="rating" value="2" /><label class = "full" for="star2"></label>
+                                            <input type="radio" id="star1" name="rating" value="1" /><label class = "full" for="star1" ></label>
+                                        </fieldset>
+                                        <div class="preloader-wrapper small active"  id="load{{solicitacoesConcluidasArray.idsolicitacoes}}"style="display: none">
+                                            <div class="spinner-layer spinner-green-only">
+                                                <div class="circle-clipper left">
+                                                    <div class="circle"></div>
+                                                </div><div class="gap-patch">
+                                                    <div class="circle"></div>
+                                                </div><div class="circle-clipper right">
+                                                    <div class="circle"></div>
+                                                </div>
+                                            </div>
+                                        </div>    
+                                    {%else%}
+                                        <fieldset disabled class="rating secondary-content" id="{{solicitacoesConcluidasArray.idsolicitacoes}}">
+                                            {% for i in 1..solicitacoesConcluidasArray.avaliacao%}
+
+                                                <span class="fa fa-star checked"></span>
+                                            {%endfor%}
+                                            {%if solicitacoesConcluidasArray.avaliacao<5%}
+                                                {% for k in solicitacoesConcluidasArray.avaliacao..4%}
+
+                                                    <span class="fa fa-star"></span>
+                                                {%endfor%}
+                                            {%endif%}
+                                        </fieldset>
+
+                                    {%endif%}
+                                </li>
+
+
+
+
+
+                            {% endfor %} </ul>
+                    </div>
+                </div> 
+                </body>
+                <!-- Scripts -->
+                <script type="text/javascript" src="js/jquery-3.3.1.min.js"></script>
+                <script type="text/javascript" src="js/materialize.js"></script>
+                <script type="text/javascript" src="js/menuLateral.js"></script>
+                <script type="text/javascript">
+
+                    $(".full").click(function () {
+                        
+                        value = $(this).prev(":radio").val();
+                        console.log(value);
+                        solicitacao = $(this).parent().attr('id');
+                        $("#load"+solicitacao).show();
+                        $(this).attr('class', 'cancel-click');
+                        $(this).parent().find("label").attr('class', 'cancel-click');
+                        console.log(solicitacao);
+                        $(this).parent().find("label").css({"color": "#D8D8D8"});
+                        $(this).css({"color": "#FFED85"});
+                        $(this).nextAll().css({"color": "#FFED85"});
+                        var mensagem = {
+                            solicitacaoId: solicitacao,
+                            estrelas: value
+                        };
+
+                        $.ajax({
+                            type: "POST",
+                            url: "salvarAvaliacaoCliente",
+                            dataType: "json",
+                            contentType: 'application/json',
+                            data: JSON.stringify(mensagem),
+                            success: function (result) {
+                                console.log(result);
+                                if (!result.erro) {
+                                    location.reload();
+
+                                }
+                            },
+                            error: function (xhr, ajaxOptions, thrownError) {
+                                console.log(xhr.status);
+                                console.log(thrownError);
+                            }
+                        });
+
+                    });
+                </script>
+
+                </html>

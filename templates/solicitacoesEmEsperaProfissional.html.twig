@@ -2,21 +2,25 @@
     <head>
         <meta charset="UTF-8">
         <title>{% block title %}Marido de Aluguel{% endblock %}</title>
-        {#<link href="{{ asset('css/materialize.css') }}" rel="stylesheet" />#}
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <link href="https://netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
         <!--Import materialize.css-->
         <link type="text/css" rel="stylesheet" href="css/materialize.css" media="screen,projection"/>
         <style type='text/css'>
             header, main, footer {
                 padding-left: 300px;
             }
-
+            .checked {
+                color:#FFED85;
+            }
             @media only screen and (max-width : 992px) {
                 header, main, footer {
                     padding-left: 0;
                 }
-
             }
+
             .switch label input[type=checkbox]:checked+.lever:after {
                 background-color: #FF5252 !important;
             }

@@ -2,21 +2,28 @@
     <head>
         <meta charset="UTF-8">
         <title>{% block title %}Marido de Aluguel{% endblock %}</title>
-        {#<link href="{{ asset('css/materialize.css') }}" rel="stylesheet" />#}
-        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <link href="https://netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
         <!--Import materialize.css-->
         <link type="text/css" rel="stylesheet" href="css/materialize.css" media="screen,projection"/>
         <style type='text/css'>
             header, main, footer {
                 padding-left: 300px;
             }
-
+            .checked {
+                color:#FFED85;
+            }
             @media only screen and (max-width : 992px) {
                 header, main, footer {
                     padding-left: 0;
                 }
             }
+
+
         </style>
+
 
         <!--Let browser know website is optimized for mobile-->
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -77,7 +84,8 @@
                                         <a class="waves-effect waves-light btn modal-trigger blue " href="#modal1">Alterar Valor</a>
                                     </div>
                                     <div class="row">
-                                        <a class="waves-effect waves-light btn-large orange" style="display:block"> Finalizar e receber pagamento <i class="material-icons right">attach_money</i> </a>
+                                        <a class="waves-effect waves-light btn-large orange" style="display:block" onClick="event.preventDefault();
+                                                    finalizar('{{solicitacoesProf[0].idsolicitacoes}}')"> Finalizar e receber pagamento <i class="material-icons right">attach_money</i> </a>
                                     </div>
                                     <div id="modal1" class="modal  modal-fixed-footer">
 

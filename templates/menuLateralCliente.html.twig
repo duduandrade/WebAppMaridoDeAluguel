@@ -1,5 +1,5 @@
 <style type="text/css">
-    a[disabled="disabled"] {
+    #bloq{
         pointer-events: none;
         color: gray !important;
 
@@ -30,9 +30,9 @@
                 <a href="#user"><img class="circle" src="img/eletricista.jpg"></a>
                 <a href="#name"><span class="white-text name">{{ app.session.get('nomeUsuario') }}</span></a>
             </div></li>
-        <li ><a  {%if  app.session.get('jatem') %} disabled="disabled" {%else%}href="solicitar"{%endif%} ><i class="material-icons">add</i>Solicitar novo serviço</a></li>
+        <li ><a  {%if  app.session.get('jatem') %} id='bloq'onclick="M.toast({html: 'Você ja possui um serviço em andamento'})"{%else%}href="solicitar"{%endif%} ><i class="material-icons">add</i>Solicitar novo serviço</a></li>
         <li><a href="solicitacoes"><i class="material-icons">assignment</i>Serviço em andamento</a></li>
-        <li><a href="concluidos"><i class="material-icons">check_circle</i>Serviços concluídos</a></li>
+        <li><a href="concluidas"><i class="material-icons">check_circle</i>Serviços concluídos</a></li>
         <li><div class="divider"></div></li>
             {# <li><a class="subheader"></a></li>#}
         <li><a class="waves-effect" href="logout">Sair</a></li>

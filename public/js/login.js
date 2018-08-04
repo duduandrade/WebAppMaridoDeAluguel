@@ -8,6 +8,7 @@
 $("#form_login").submit(function (e) {
 
     e.preventDefault();
+    $("#loadingLogin").show();
     var formSerialize = $(this).serialize();
     var url = location.origin + '/maridoDeAluguel/login';
     $.ajax({

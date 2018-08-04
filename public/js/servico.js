@@ -6,7 +6,7 @@
 console.log("carregou");
 
 $(document).ready(function () {
-       $('.sidenav').sidenav();
+    $('.sidenav').sidenav();
     $('#slide-out').removeClass('sidenav-fixed');
     $('.modal').modal();
 
@@ -39,6 +39,9 @@ function procurarProfissional(codigoServico, valor) {
         $('#valorTotal' + codigoServico + '').text("Valor total: R$" + parseFloat(final)); // get the current value of the input field.
     });
 
+}
+function solicitarOrcamento() {
+    window.location.href = location.origin + '/maridoDeAluguel/orcamento/';
 }
 function salvarSessao(codigoServico, valor) {
     var quantidadeFinal = $('#unidadeQuantidade' + codigoServico + '').val();

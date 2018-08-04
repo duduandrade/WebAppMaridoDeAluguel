@@ -30,6 +30,13 @@ class Solicitacoes {
      * @ORM\Column(name="statusSolicitacao", type="integer", nullable=true)
      */
     private $statussolicitacao;
+    
+      /**
+     * @var int|null
+     *
+     * @ORM\Column(name="avaliacao", type="integer", nullable=true)
+     */
+    private $avaliacao;
 
     /**
      * @var string|null
@@ -220,5 +227,13 @@ class Solicitacoes {
     function setUsuariosusuarios(Usuarios $usuariosusuarios) {
         $this->usuariosusuarios = $usuariosusuarios;
     }
+    function getAvaliacao() {
+        return $this->avaliacao;
+    }
+
+    function setAvaliacao($avaliacao) {
+        $this->avaliacao = $avaliacao;
+    }
+
 
 }

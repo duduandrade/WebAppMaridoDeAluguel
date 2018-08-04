@@ -57,15 +57,15 @@ $("#form_cadastro").submit(function (e) {
             $(".progress").hide();
             console.log(result);
             if (!result.erro) {
-                // alert(result.mensagem + " Faça login para utilizar a plataforma.");
-                // window.location.href = location.origin + '/login';
-                alert(result.mensagem);
+                alert(result.mensagem + " Faça login para utilizar a plataforma.");
+                window.location.href = location.origin + '/login';
+                // alert(result.mensagem);
             } else {
                 alert(result.mensagem);
             }
         },
         error: function (xhr, ajaxOptions, thrownError) {
-            console.log (xhr.status);
+            console.log(xhr.status);
         }
     });
 });

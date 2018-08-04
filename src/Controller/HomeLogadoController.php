@@ -31,6 +31,15 @@ class HomeLogadoController extends Controller {
                     $this->get('session')->set('mostrarCasa', $profissional->getMostrarcasa());
                     $this->get('session')->set('mostrarAtual', $profissional->getMostraratual());
                     $this->get('session')->set('statusDisponivel', $profissional->getStatusdisponivel());
+                    $servicos = ServicoController::buscarSolicitacoesConcluidasProf($profissional->getIdprofissionais(), $this->getDoctrine());
+                    if ($servicos != false) {
+                        $totalServicos = count($servicos);
+                        $estrelas = $profissional->getSomaavaliacoes() / $totalServicos;
+                    } else {
+                        $estrelas = 0;
+                    }
+
+                    $this->get('session')->set('estrelas', $estrelas);
 
                     return $this->render('solicitacoesEmEsperaProfissional.html.twig', array("solicitacoesProf" => $solicitacoesProf));
                 } else {
