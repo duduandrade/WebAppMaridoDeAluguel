@@ -16,6 +16,10 @@ $(document).ready(function () {
     $('.tooltipped').tooltip();
 
     $('.sidenav').sidenav();
-     $('.modal').modal();
+    $('.modal').modal();
 });
 
+function solicitar() {
+    window.location.href = location.origin + '/maridoDeAluguel/solicitar';
+
+}

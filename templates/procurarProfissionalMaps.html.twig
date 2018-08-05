@@ -106,9 +106,9 @@
                placeholder="Informe o local do antendimento">
 
         <div id="map"></div>
-        {#{{dump(estrelas)}}
+        {{dump(estrelas)}}
         {{dump(profissionais)}}
-        {{dump(endereco)}}#}
+        {{dump(endereco)}}
         {% for profissionalArray in endereco %}
 
             <div  id="divProfissional{{profissionalArray[5].idprofissionais}}" class="divProfissionalBox valign-wrapper " style="display: none;">
@@ -122,7 +122,7 @@
                         <div class="row">
                             <div class="col s6 m6 l6">
                                 <br>
-                                <img src="img/avatar.png"  class="responsive-img circle">
+                                <img {%if profissionalArray[5].usuariosusuarios.foto is not null %} src="img/prof/{{profissionalArray[5].usuariosusuarios.foto}}" {%else%}src="img/avatar.png" {%endif%}  class="responsive-img circle">
                             </div>
                             <div class="col s6 m6 l6">
                                 <h5 id="nome">{{profissionalArray[5].usuariosusuarios.nome}}</h5>
@@ -184,6 +184,7 @@
                     navigator.permissions.query({name: 'geolocation'}).then(function (result) {
                         if (result.state == 'prompt' || result.state == 'denied') {
                             //solicita autorização ao usuário caso ainda não tenha aceitado
+                            
                             navigator.geolocation.getCurrentPosition(revealPosition, positionDenied, geoSettings);
                         }
                     });

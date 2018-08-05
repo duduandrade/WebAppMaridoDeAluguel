@@ -33,24 +33,33 @@
         <main>
             <div id="content" class="container valign center-block">
                 {#  {{dump(servico)}}#}
-                <h5 class="blue-text center-align"> Principais serviços </h5>
+                <h5 class="blue-text center-align"> Conheça alguns serviços</h5>
                 <div class="divider"></div>
 
                 <div class="row">
                     {#multiplicar pelo banco de dados#}
                     <div class="col s12 m6 l6">
-                        <div class="card small">
+                        <div class="card small" onClick="solicitar()">
                             <div class="card-image waves-effect waves-block waves-light">
-                                <img class="activator" src="img/eletricista.jpg">
+                                <img class="activator" src="img/eletrica/Instalar chuveiro.jpg">
                             </div>
                             <div class="card-content">
-                                <span class="card-title activator grey-text text-darken-4">Eletricista<i class="material-icons right">more_vert</i></span>
-                                <p>A partir de R$30,00</p>
+                                <span class="card-title activator grey-text text-darken-4">Instalar chuveiro<i class="material-icons right">more_vert</i></span>
+                                <p>A partir de R$20,00 por unidade</p>
                             </div>
-                            <div class="card-reveal">
-                                <span class="card-title grey-text text-darken-4">Card Title<i class="material-icons right">close</i></span>
-                                <p>Here is some more information about this product that is only revealed once clicked on.</p>
+                           
+                        </div>
+                    </div>  
+                      <div class="col s12 m6 l6">
+                        <div class="card small" onClick="solicitar()">
+                            <div class="card-image waves-effect waves-block waves-light">
+                                <img class="activator" src="img/alvenaria/Pintura.jpg">
                             </div>
+                            <div class="card-content">
+                                <span class="card-title activator grey-text text-darken-4">Pintura<i class="material-icons right">more_vert</i></span>
+                                <p>A partir de R$6,50 por M²</p>
+                            </div>
+                           
                         </div>
                     </div>  
                 </div>

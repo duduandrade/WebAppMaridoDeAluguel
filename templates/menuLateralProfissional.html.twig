@@ -16,7 +16,7 @@
             <div class="background orange">
 
             </div>
-            <a href="#user"><img class="circle" src="img/avatar.png"></a>
+            <a href="#user"><img class="circle"   {%if app.session.get('foto') is not null%} src="img/prof/{{app.session.get('foto')}}" {%else%}src="img/avatar.png" {%endif%}></a>
             <a href="#name"><span class="white-text name">Profissional {{ app.session.get('nomeUsuario') }}</span></a>
             <a disable='disabled'><span class="white-text name"> {{app.session.get('estrelas')|number_format(1, '.', ',')}} 
                     {%if app.session.get('estrelas') is defined%}
@@ -72,13 +72,15 @@
 <script type="text/javascript">
     function changeMinhaLocal(el) {
         if (el.checked) {
-            alert("Os usuarios nao irao ver  a sua localizacao atual no mapa.");
+            alert("Os usuarios irao ver a sua localizacao atual no mapa.");
+
             var mensagem = {
                 permissaoLocalAtual: true
             };
 
         } else {
-            alert("Os usuarios irao ver a sua localizacao atual no mapa.");
+            alert("Os usuarios nao irao ver  a sua localizacao atual no mapa.");
+
             var mensagem = {
                 permissaoLocalAtual: false
             };
@@ -101,13 +103,15 @@
     }
     function changeMinhaCasa(el) {
         if (el.checked) {
-            alert("Os usuarios nao irao mais a sua casa no mapa.");
+            alert("Os usuarios irao ver a sua casa no mapa.");
+
             var mensagem = {
                 permissaoCasa: true
             };
 
         } else {
-            alert("Os usuarios irao ver a sua casa no mapa.");
+            alert("Os usuarios nao irao mais a sua casa no mapa.");
+
             var mensagem = {
                 permissaoCasa: false
             };

@@ -16,7 +16,12 @@
                 background-color: #2196f3; /* Dark-grey background */
                 overflow: auto; /* Overflow due to float */
             }
-
+            .card-image{
+                    max-height: 50% !important;
+            }
+             .card-content{
+                    max-height: 50% !important;
+            }
             .icon-bar a {
                 float: left; /* Float links side by side */
                 text-align: center; /* Center-align text */
@@ -41,7 +46,7 @@
     <body>
         <div id="navbar">
             {% block navbar %}
-                             {% include 'menuLateralCliente.html.twig'%}
+                {% include 'menuLateralCliente.html.twig'%}
 
             {% endblock %}
         </div>
@@ -108,7 +113,7 @@
                                                 <a href="#!"   onClick="salvarSessao('{{servicosArray.idservico}}', '{{servicosArray.valorservico}}')"class="modal-close waves-effect waves-green btn-small orange">Procurar Profissional</a>
                                             </div>
                                         </div>
-                                       
+
                                     </div>
                                 </div>
                             {%endif%}
@@ -141,5 +146,7 @@
         <script type="text/javascript" src="js/jquery-3.3.1.min.js"></script>
         <script type="text/javascript" src="js/materialize.js"></script>
         <script type="text/javascript" src="js/servico.js"></script>
+        <script type="text/javascript" src="js/menuLateral.js"></script>
+
     </body>
 </html>

@@ -2,7 +2,7 @@
     <head>
         <meta charset="UTF-8">
         <title>{% block title %}Marido de Aluguel{% endblock %}</title>
-         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
         <link href="https://netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
@@ -85,7 +85,7 @@
                                     </div>
                                     <div class="row">
                                         <a class="waves-effect waves-light btn-large orange" style="display:block" onClick="event.preventDefault();
-                                                    finalizar('{{solicitacoesProf[0].idsolicitacoes}}')"> Finalizar e receber pagamento <i class="material-icons right">attach_money</i> </a>
+                                                finalizar('{{solicitacoesProf[0].idsolicitacoes}}')"> Finalizar e receber pagamento <i class="material-icons right">attach_money</i> </a>
                                     </div>
                                     <div id="modal1" class="modal  modal-fixed-footer">
 
@@ -135,9 +135,11 @@
 <!-- Scripts -->
 <script type="text/javascript" src="js/jquery-3.3.1.min.js"></script>
 <script type="text/javascript" src="js/materialize.js"></script>
+<script type="text/javascript" src="js/menuLateral.js"></script>
+
 <script type="text/javascript" src="js/solicitacaoAndamento.js"></script>
 <script type="text/javascript" src="js/coletarLocalizacaoProfissional.js"></script>
- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCJad8cPlyBoxq47_kMa7RejAGIOdIrVYc&libraries=places&callback=initMap"
-        async defer></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCJad8cPlyBoxq47_kMa7RejAGIOdIrVYc&libraries=places&callback=initMap"
+async defer></script>
 </body>
 </html>

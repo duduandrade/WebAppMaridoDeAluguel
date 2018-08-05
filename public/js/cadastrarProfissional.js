@@ -46,26 +46,42 @@ $("#form_cadastro").submit(function (e) {
     console.log("teste");
     e.preventDefault();
     var formSerialize = $(this).serialize();
-
-    var url = location.origin + '/maridoDeAluguel/profissional';
-    console.log(formSerialize);
-    $.ajax({
-        type: "POST",
-        url: url,
-        data: formSerialize,
-        success: function (result) {
-            $(".progress").hide();
-            console.log(result);
-            if (!result.erro) {
-                alert(result.mensagem + " Faça login para utilizar a plataforma.");
-                window.location.href = location.origin + '/login';
-                // alert(result.mensagem);
-            } else {
-                alert(result.mensagem);
-            }
-        },
-        error: function (xhr, ajaxOptions, thrownError) {
-            console.log(xhr.status);
+    var geocoder = new google.maps.Geocoder();
+    cep = $("#form_cep").val().replace(/[^a-z0-9]/gi, '');
+    endereco = "" + $("#form_numero").val() + " " + $("#form_enderecoresidencia").val() + ", " + $("#form_bairro").val() + " " + cep;
+    console.log(endereco);
+    geocoder.geocode({address: endereco}, function (results, status) {
+        if (status === 'OK')
+        {
+            // do something with the geocoded result
+            //
+            console.log(results[0].geometry.location);
+            console.log(results[0].geometry.location.lat());
+            console.log(results[0].geometry.location.lng());
+            formSerialize = formSerialize + "&latend=" + results[0].geometry.location.lat() + "&lngend=" + results[0].geometry.location.lng() + ""
+            console.log(formSerialize);
+            $.ajax({
+                type: "POST",
+                url: url,
+                data: formSerialize,
+                success: function (result) {
+                    $(".progress").hide();
+                    console.log(result);
+                    if (!result.erro) {
+                        alert(result.mensagem + " Faça login para utilizar a plataforma.");
+                        window.location.href = location.origin + '/maridoDeAluguel/login';
+                        // alert(result.mensagem);
+                    } else {
+                        alert(result.mensagem);
+                    }
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    console.log(xhr.status);
+                }
+            });
         }
     });
+    var url = location.origin + '/maridoDeAluguel/profissional';
+
+
 });

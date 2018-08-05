@@ -24,6 +24,9 @@ class HomeLogadoController extends Controller {
         if ($idUsuario != null) {
             $usuario = UsuarioController::buscarUsuarioPorId($idUsuario, $this->getDoctrine());
             $this->get('session')->set('nomeUsuario', $usuario->getNome());
+            if ($usuario->getFoto() != null) {
+                $this->get('session')->set('foto', $usuario->getFoto());
+            }
             if ($usuario != false) {
                 if ($tipoUsuario == "P") {
                     $profissional = ProfissionalController::buscarProfissionalPorIdUsuario($idUsuario, $this->getDoctrine());
@@ -31,6 +34,7 @@ class HomeLogadoController extends Controller {
                     $this->get('session')->set('mostrarCasa', $profissional->getMostrarcasa());
                     $this->get('session')->set('mostrarAtual', $profissional->getMostraratual());
                     $this->get('session')->set('statusDisponivel', $profissional->getStatusdisponivel());
+
                     $servicos = ServicoController::buscarSolicitacoesConcluidasProfAvaliadas($profissional->getIdprofissionais(), $this->getDoctrine());
                     if ($servicos != false) {
                         $totalServicos = count($servicos);

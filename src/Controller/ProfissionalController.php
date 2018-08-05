@@ -87,7 +87,7 @@ class ProfissionalController extends Controller {
                                     $result->getLatitude(),
                                     $result->getLongitude(),
                                     $profissa->getIdprofissionais(),
-                                    $profissa->getEnderecoresidencia() . ", " . $profissa->getNumero(),
+                                    $result->getEndereco(),
                                     $profissa);
                             }
                         }
@@ -139,7 +139,7 @@ class ProfissionalController extends Controller {
                 }
                 return $this->render('procurarProfissionalMaps.html.twig', array("endereco" => $enderecos, "profissionais" => $profissionais, "estrelas" => $estrelas));
             } else {
-                return $this->redirectToRoute("solicitar");
+                return $this->redirectToRoute("solicitarProfissional");
             }
         } else {
             return $this->redirectToRoute("login");
@@ -315,6 +315,12 @@ class ProfissionalController extends Controller {
         $this->formProfissional = $this->createFormBuilder($profissionalCadastro)
                 ->add('enderecoresidencia', TextType::class)
                 ->add('cep', TextType::class)
+                ->add('latend',HiddenType::class, array(
+                    'data' => ''
+                ))
+                ->add('lngend',  HiddenType::class, array(
+                    'data' => ''
+                ))
                 ->add('numero', NumberType::class)
                 ->add('bairro', TextType::class)
                 ->getForm();
@@ -327,6 +333,7 @@ class ProfissionalController extends Controller {
 
 
         if (isset($data['form'])) {
+           
             $usuarioCadastro = $this->formCadastroProfissional->getData();
             $profissionalCadastro = $this->formProfissional->getData();
             if (UsuarioController::verificarEmailCadastrado($usuarioCadastro->getEmail(), $this->getDoctrine())) {
@@ -334,7 +341,7 @@ class ProfissionalController extends Controller {
                 if ((UsuarioController::salvarUsuario($usuarioCadastro, $this->getDoctrine()))) {
                     $objetoUsuario = UsuarioController::buscarUsuarioPorEmail($usuarioCadastro->getEmail(), $this->getDoctrine());
                     if ($objetoUsuario != false) {
-                        if ($this->salvarProfissional($objetoUsuario, $profissionalCadastro)) {
+                        if ($this->salvarProfissional($objetoUsuario, $profissionalCadastro, $data)) {
                             if ($this->enviarEmailConfirmacao($usuarioCadastro->getEmail())) {
                                 return new JsonResponse(array(
                                     'erro' => false,
@@ -383,44 +390,46 @@ class ProfissionalController extends Controller {
         ));
     }
 
-    public function salvarProfissional($usuarioCadastro, $profissionalCadastro) {
+    public function salvarProfissional($usuarioCadastro, $profissionalCadastro, $data) {
         $profissional = $profissionalCadastro;
         try {
             $profissional->setUsuariosusuarios($usuarioCadastro);
             $profissional->setSomaavaliacoes(0);
             $profissional->setStatusaprovado(0);
+            $profissional->setLatend($data['latend']);
+            $profissional->setLngend($data['lngend']);
             $sucesso = false;
 
             $em = $this->getDoctrine()->getManager();
-            $em->persist($profissional);
+
             //salvar as coordenadas do endereco
-            $curl = curl_init();
+
             $cepFormatado = str_replace(" ", "_", preg_replace("/&([a-z])[a-z]+;/i", "$1", htmlentities(trim($profissional->getCep()))));
             $profissional->setCep($cepFormatado);
-            curl_setopt($curl, CURLOPT_URL, 'https://maps.googleapis.com/maps/api/geocode/json?address='
-                    . rawurlencode("" . $profissional->getNumero() . "+" . $profissional->getEnderecoresidencia() . "," . $cepFormatado . " " . $profissional->getBairro() . "&key" . $this->container->getParameter('key_maps')));
-
-            curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-
-            $json = curl_exec($curl);
-
-
-            $httpcode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-            if ($httpcode == 200) {
-                $arrayEndereco = json_decode($json, true);
-                // $enderecos[]=$arrayEndereco;
-                if ($arrayEndereco["status"] == "OK") {
-
-                    $profissional->setLatend($arrayEndereco["results"][0]["geometry"]["location"]["lat"]);
-                    $profissional->setLngend($arrayEndereco["results"][0]["geometry"]["location"]["lng"]);
-                    $em->persist($profissional);
-                    curl_close($curl);
-                    $sucesso = true;
-                }
-            } else {
-                $sucesso = false;
-            }
+            $em->persist($profissional);
+//$curl = curl_init();
+//            curl_setopt($curl, CURLOPT_URL, 'https://maps.googleapis.com/maps/api/geocode/json?address='
+//                    . rawurlencode("" . $profissional->getNumero() . "+" . $profissional->getEnderecoresidencia() . "," . $cepFormatado . " " . $profissional->getBairro() . "&key" . $this->container->getParameter('key_maps')));
+//
+//            curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+//
+//            $json = curl_exec($curl);
+//
+//
+//            $httpcode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+//            if ($httpcode == 200) {
+//                $arrayEndereco = json_decode($json, true);
+//                // $enderecos[]=$arrayEndereco;
+//                if ($arrayEndereco["status"] == "OK") {
+//
+//                    $profissional->setLatend($arrayEndereco["results"][0]["geometry"]["location"]["lat"]);
+//                    $profissional->setLngend($arrayEndereco["results"][0]["geometry"]["location"]["lng"]);
+//                    $em->persist($profissional);
+//                    curl_close($curl);
+//                }
+//            }
             $em->flush();
+            $sucesso = true;
         } catch (\Doctrine\DBAL\DBALException $e) {
             $sucesso = false;
         }
