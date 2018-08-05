@@ -148,8 +148,11 @@ class Profissionais {
     function getUsuariosusuarios() {
         return $this->usuariosusuarios;
     }
+    function setEnderecoresidencia($enderecoresidencia) {
+        $this->enderecoresidencia = $enderecoresidencia;
+    }
 
-    function setIdprofissionais($idprofissionais) {
+        function setIdprofissionais($idprofissionais) {
         $this->idprofissionais = $idprofissionais;
     }
 

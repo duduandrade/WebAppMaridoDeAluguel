@@ -24,7 +24,7 @@ function handlePermission() {
 }
 
 function report(state) {
-    console.log('Permission ' + state);
+ //   console.log('Permission ' + state);
 }
 
 
@@ -32,7 +32,7 @@ function pegaPosicao() {
     if (navigator.geolocation) {
 
         navigator.geolocation.getCurrentPosition(function (position) {
-            console.log(position);
+          //  console.log(position);
             var pos = {
                 lat: position.coords.latitude,
                 lng: position.coords.longitude,
@@ -43,13 +43,13 @@ function pegaPosicao() {
             google_maps_geocoder.geocode(
                     {'latLng': google_map_pos},
                     function (results, status) {
-                        console.log(results);
+                      //  console.log(results);
                         if (status == google.maps.GeocoderStatus.OK && results[0]) {
-                            console.log(results[0].formatted_address);
+                         //   console.log(results[0].formatted_address);
                             pos.endereco = results[0].formatted_address;
                         }
-                        console.log(pos);
-                        console.log("POST");
+                      //  console.log(pos);
+                      //  console.log("POST");
                         $.ajax({
                             type: "POST",
                             url: "localAtual",
@@ -57,12 +57,12 @@ function pegaPosicao() {
                             contentType: 'application/json',
                             data: JSON.stringify(pos),
                             success: function (result) {
-                                console.log("result");
-                                console.log(result);
+                             //   console.log("result");
+                             //   console.log(result);
                             },
                             error: function (xhr, ajaxOptions, thrownError) {
-                                console.log(xhr.status);
-                                console.log(thrownError);
+                             //   console.log(xhr.status);
+                             //   console.log(thrownError);
                             }
                         });
                     }

@@ -83,7 +83,12 @@ class ProfissionalController extends Controller {
                             $intervalo = $now->diff($result->getAtualizacao());
                             if ($intervalo->format("%i") <= 10) {//pelo menos 10 minutos de atualizacao
                                 // $enderecos[] = $result;
-                                $enderecos[] = array("atual", $result->getLatitude(), $result->getLongitude(), $profissa->getIdprofissionais());
+                                $enderecos[] = array("atual",
+                                    $result->getLatitude(),
+                                    $result->getLongitude(),
+                                    $profissa->getIdprofissionais(),
+                                    $profissa->getEnderecoresidencia() . ", " . $profissa->getNumero(),
+                                    $profissa);
                             }
                         }
                     }
@@ -109,7 +114,9 @@ class ProfissionalController extends Controller {
                                     $enderecos[] = array("casa",
                                         $arrayEndereco["results"][0]["geometry"]["location"]["lat"],
                                         $arrayEndereco["results"][0]["geometry"]["location"]["lng"],
-                                        $profissa->getIdprofissionais());
+                                        $profissa->getIdprofissionais(),
+                                        $profissa->getEnderecoresidencia() . ", " . $profissa->getNumero(),
+                                        $profissa);
                                 }
                             }
                             curl_close($curl);
@@ -117,10 +124,12 @@ class ProfissionalController extends Controller {
                             $enderecos[] = array("casa",
                                 $profissa->getLatend(),
                                 $profissa->getLngend(),
-                                $profissa->getIdprofissionais());
+                                $profissa->getIdprofissionais(),
+                                $profissa->getEnderecoresidencia() . ", " . $profissa->getNumero(),
+                                $profissa);
                         }
                     }
-                    $servicos = ServicoController::buscarSolicitacoesConcluidasProf($profissa->getIdprofissionais(), $this->getDoctrine());
+                    $servicos = ServicoController::buscarSolicitacoesConcluidasProfAvaliadas($profissa->getIdprofissionais(), $this->getDoctrine());
                     if (!$servicos) {
                         $estrelas[$profissa->getIdprofissionais()] = 0;
                     } else {
@@ -134,6 +143,146 @@ class ProfissionalController extends Controller {
             }
         } else {
             return $this->redirectToRoute("login");
+        }
+    }
+
+    /**
+     * @Route("/editarPerfil", name="editarPerfil")
+     */
+    public function editarPerfil() {
+        $idUsuario = $this->get('session')->get('idUsuario');
+        if ($idUsuario != null) {
+            $profissional = ProfissionalController::buscarProfissionalPorIdUsuario($idUsuario, $this->getDoctrine());
+            $usuario = UsuarioController::buscarUsuarioPorId($idUsuario, $this->getDoctrine());
+            return $this->render('editarPerfilProfissional.html.twig', array("perfil" => $profissional, "usuario" => $usuario));
+        } else {
+            return $this->redirectToRoute("login");
+        }
+    }
+
+    /**
+     * @Route("/uploadFotoProfissional", name="uploadFotoProfissional")
+     */
+    public function uploadFotoProfissional(Request $request) {
+        $idUsuario = $this->get('session')->get('idUsuario');
+        if ($idUsuario != null) {
+            $target_dir = "../public/img/prof/";
+            $target_file = $target_dir . basename($_FILES["fileToUpload"]["name"]);
+            $uploadOk = 1;
+            $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
+// Check if image file is a actual image or fake image
+            if (isset($_POST["submit"])) {
+                $check = getimagesize($_FILES["fileToUpload"]["tmp_name"]);
+                if ($check !== false) {
+                    echo "File is an image - " . $check["mime"] . ".";
+                    $uploadOk = 1;
+                } else {
+                    echo "File is not an image.";
+                    $uploadOk = 0;
+                }
+            }
+// Check if file already exists
+            if (file_exists($target_file)) {
+                echo "Sorry, file already exists.";
+                $uploadOk = 0;
+            }
+// Check file size
+            if ($_FILES["fileToUpload"]["size"] > 500000) {
+                echo "Sorry, your file is too large.";
+                $uploadOk = 0;
+            }
+// Allow certain file formats
+            if ($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg" && $imageFileType != "gif") {
+                echo "Sorry, only JPG, JPEG, PNG & GIF files are allowed.";
+                $uploadOk = 0;
+            }
+// Check if $uploadOk is set to 0 by an error
+            if ($uploadOk == 0) {
+                echo "Sorry, your file was not uploaded.";
+// if everything is ok, try to upload file
+            } else {
+                $temp = explode(".", $_FILES["fileToUpload"]["name"]);
+                $newfilename = round(microtime(true)) . '.' . end($temp);
+                $target_file = $target_dir . $newfilename;
+                if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) {
+                    echo "The file " . basename($_FILES["fileToUpload"]["name"]) . " has been uploaded.";
+                    $profissional = UsuarioController::buscarUsuarioPorId($idUsuario, $this->getDoctrine());
+                    $em = $this->getDoctrine()->getManager();
+                    $profissional->setFoto($newfilename);
+                    $em->persist($profissional);
+                    $em->flush();
+                    return $this->redirectToRoute("editarPerfil");
+                } else {
+                    echo "Sorry, there was an error uploading your file.";
+                }
+            }
+        } else {
+            return $this->redirectToRoute("login");
+        }
+    }
+
+    /**
+     * @Route("/atualizarPerfilProf", name="atualizarPerfilProf")
+     */
+    public function atualizarPerfilProf(Request $request) {
+        if (0 === strpos($request->headers->get('Content-Type'), 'application/json')) {
+            $data = json_decode($request->getContent(), true);
+            $request->request->replace(is_array($data) ? $data : array());
+            if ($this->get('session')->get('idUsuario')) {
+                $idUsuario = $this->get('session')->get('idUsuario');
+                $usuario = UsuarioController::buscarUsuarioPorId($idUsuario, $this->getDoctrine());
+                $usuario->setNome($data['nome']);
+                $usuario->setCpf($data['cpf']);
+                $usuario->setTelefone($data['telefone']);
+                $em = $this->getDoctrine()->getManager();
+                $em->persist($usuario);
+
+                $profissional = ProfissionalController::buscarProfissionalPorIdUsuario($idUsuario, $this->getDoctrine());
+                $profissional->setEnderecoresidencia($data['enderecoresidencia']);
+                $profissional->setNumero($data['numero']);
+                $profissional->setBairro($data['bairro']);
+                $cepFormatado = str_replace(" ", "_", preg_replace("/&([a-z])[a-z]+;/i", "$1", htmlentities(trim($data['cep']))));
+
+                $profissional->setCep($cepFormatado);
+
+                $em->persist($profissional);
+//salvar as coordenadas do endereco
+                $curl = curl_init();
+                curl_setopt($curl, CURLOPT_URL, 'https://maps.googleapis.com/maps/api/geocode/json?address='
+                        . rawurlencode("" . $profissional->getNumero() . "+" . $profissional->getEnderecoresidencia() . "," . $cepFormatado . " " . $profissional->getBairro() . "&key" . $this->container->getParameter('key_maps')));
+
+                curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+
+                $json = curl_exec($curl);
+
+
+                $httpcode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+                if ($httpcode == 200) {
+                    $arrayEndereco = json_decode($json, true);
+                    // $enderecos[]=$arrayEndereco;
+                    if ($arrayEndereco["status"] == "OK") {
+
+                        $profissional->setLatend($arrayEndereco["results"][0]["geometry"]["location"]["lat"]);
+                        $profissional->setLngend($arrayEndereco["results"][0]["geometry"]["location"]["lng"]);
+                        $em->persist($profissional);
+                        curl_close($curl);
+                    }
+                }
+                $em->flush();
+                return new JsonResponse(array(
+                    'erro' => false,
+                    'mensagem' => $data,
+                    'data' => null
+                ));
+            } else {
+                return $this->redirectToRoute("login");
+            }
+        } else {
+            return new JsonResponse(array(
+                'erro' => true,
+                'mensagem' => 'nao é json',
+                'data' => null
+            ));
         }
     }
 

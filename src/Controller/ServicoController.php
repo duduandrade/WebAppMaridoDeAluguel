@@ -123,6 +123,32 @@ class ServicoController extends Controller {
             return false;
         }
     }
+    
+     static public function buscarSolicitacoesConcluidasProfAvaliadas($idprof, $doctrine) {
+        $em = $doctrine->getManager();
+        $qb = $em->createQueryBuilder();
+        $qb->select('s,u,p, uP, ser, cat')
+                ->from('App\Entity\Solicitacoes', 's')
+                ->join('s.usuariosusuarios', 'u')
+                ->join('s.profissionaisprofissionais', 'p')
+                ->join('s.servicosservico', 'ser')
+                ->join('ser.categoriasservicoscategoriasservicos', 'cat')
+                ->leftJoin('p.usuariosusuarios', 'uP')
+//                ->leftJoin(
+//                        'App\Entity\Enderecosolicitacao', 'e', \Doctrine\ORM\Query\Expr\Join::WITH, 'e.solicitacoessolicitacoes = s.idsolicitacoes'
+//                )
+                ->where($qb->expr()->eq('s.profissionaisprofissionais', $idprof))
+                ->andWhere($qb->expr()->eq('s.statussolicitacao', 9))
+                  ->andWhere($qb->expr()->isNotNull('s.avaliacao'))
+                ->orWhere($qb->expr()->eq('s.statussolicitacao', 8))
+                ->orderBy('s.dtsolicitacao', 'DESC');
+        $result = $qb->getQuery()->getResult();
+        if ($result != null) {
+            return $result;
+        } else {
+            return false;
+        }
+    }
 
     /**
      * @Route("/set/{idservico}/{quantidade}", name="set")
@@ -145,7 +171,7 @@ class ServicoController extends Controller {
                     ->findOneBy(array('idcategoriasservicos' => 5));
 
             $servico->setCategoriasservicoscategoriasservicos($objetoCategoria);
-            $servico->setNomeservico("Orcamento");
+            $servico->setNomeservico("A avaliar");
             $servico->setValorservico(0);
             $servico->setUnidademedida("A avaliar");
 
@@ -523,14 +549,14 @@ class ServicoController extends Controller {
                 $qb = $em->createQueryBuilder();
 
                 $result = $qb->update('App\Entity\Solicitacoes', 's')
-//                                ->set('s.statussolicitacao', '?1')
+                                ->set('s.statussolicitacao', '?7')
                                 ->set('s.novovalor', '?1')
                                 ->set('s.motivotrocapreco', '?4')
                                 ->set('s.trocapreco', '?5')
                                 ->set('s.trocaprecoautorizada', '?6')
                                 ->where('s.profissionaisprofissionais = ?2')
                                 ->andWhere('s.idsolicitacoes = ?3')
-//                                ->setParameter(1, 3) //status 3 troca preco 
+                                ->setParameter(7, 3) //status 3 troca preco 
                                 ->setParameter(1, $data["novoPreco"])
                                 ->setParameter(2, $profissional->getIdprofissionais())
                                 ->setParameter(3, $data["solicitacao"])

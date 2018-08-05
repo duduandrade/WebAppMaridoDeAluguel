@@ -3,9 +3,9 @@
         <a href="#!" class="brand-logo"></a>
         <a href="#" data-target="slide-out" class="sidenav-trigger"><i class="material-icons">menu</i></a>
         <ul class="right hide-on-med-and-down">
-            <li><a href="#">Home</a></li>
-            <li><a href="#">Perfil</a></li>
-            <li><a href="#">Sair</a></li>
+            <li><a href="home">Home</a></li>
+            <li><a href="editarPerfil">Perfil</a></li>
+            <li><a href="logout">Sair</a></li>
 
         </ul>
     </div>
@@ -18,7 +18,7 @@
             </div>
             <a href="#user"><img class="circle" src="img/avatar.png"></a>
             <a href="#name"><span class="white-text name">Profissional {{ app.session.get('nomeUsuario') }}</span></a>
-            <a disable='disabled'><span class="white-text name"> {{app.session.get('estrelas')}} 
+            <a disable='disabled'><span class="white-text name"> {{app.session.get('estrelas')|number_format(1, '.', ',')}} 
                     {%if app.session.get('estrelas') is defined%}
                         {%if app.session.get('estrelas') >0 %}
                             {% for i in 1..app.session.get('estrelas')|round(0,'floor')%}

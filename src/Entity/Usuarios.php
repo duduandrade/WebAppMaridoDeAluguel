@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -11,8 +10,8 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="usuarios", uniqueConstraints={@ORM\UniqueConstraint(name="email_UNIQUE", columns={"email"}), @ORM\UniqueConstraint(name="cpf_UNIQUE", columns={"cpf"})})
  * @ORM\Entity
  */
-class Usuarios
-{
+class Usuarios {
+
     /**
      * @var int
      *
@@ -35,6 +34,13 @@ class Usuarios
      * @ORM\Column(name="senha", type="string", length=45, nullable=false)
      */
     private $senha;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="foto", type="string", length=200, nullable=true)
+     */
+    private $foto;
 
     /**
      * @var string
@@ -70,6 +76,7 @@ class Usuarios
      * @ORM\Column(name="emailConfirmado", type="boolean", nullable=true)
      */
     private $emailconfirmado;
+
     function getIdusuarios() {
         return $this->idusuarios;
     }
@@ -80,7 +87,7 @@ class Usuarios
 
     function getSenha() {
         return $this->senha;
-}
+    }
 
     function getEmail() {
         return $this->email;
@@ -134,6 +141,12 @@ class Usuarios
         $this->emailconfirmado = $emailconfirmado;
     }
 
+    function getFoto() {
+        return $this->foto;
+    }
 
+    function setFoto($foto) {
+        $this->foto = $foto;
+    }
 
 }

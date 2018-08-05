@@ -130,7 +130,7 @@
                 $("#status1").hide();
                 $("#status3").hide();
                 $("#textoTrocaPreco").html("Não há informações para exibir");
-            {%elseif solicitacao[0].statussolicitacao ==3 and solicitacao[0].trocaprecoautorizada ==0 %}
+            {%elseif solicitacao[0].trocapreco ==3 and solicitacao[0].trocaprecoautorizada ==0 %}
                 $("#status3").show();
                 $("#status1").hide();
                 $("#status2").hide();

@@ -1,0 +1,121 @@
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>{% block title %}Marido de Aluguel{% endblock %}</title>
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <link href="https://netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+        <!--Import materialize.css-->
+        <link type="text/css" rel="stylesheet" href="css/materialize.css" media="screen,projection"/>
+        <style type='text/css'>
+            header, main, footer {
+                padding-left: 300px;
+            }
+            .checked {
+                color:#FFED85;
+            }
+            @media only screen and (max-width : 992px) {
+                header, main, footer {
+                    padding-left: 0;
+                }
+            }
+
+
+        </style>
+
+
+        <!--Let browser know website is optimized for mobile-->
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    </head>
+    <body>
+        <div id="navbar">
+            {% block navbar %}
+                {% include 'menuLateralProfissional.html.twig' %}
+
+            {% endblock %}
+        </div>
+
+        <main>
+            <div id="content" class="container valign center-block">
+                <h5 class="blue-text center-align"> Editar perfil</h5>
+                <div class="divider"></div>
+                <div class="row">
+                  
+                    <form action="uploadFotoProfissional" method="post" enctype="multipart/form-data">
+                        Selecione imagem
+                        <input type="file" name="fileToUpload" id="fileToUpload">
+                        <img id="image" class="circle" {%if usuario.foto is not null%} src="img/prof/{{usuario.foto}}" {%else%}src="img/avatar.png" {%endif%}width="200"/>
+
+                        <input type="submit" class="inputfile" value="Salvar" name="submit">
+                    </form>
+                    <form action="atualizarPerfilProf" id="idForm">
+                        <div class="input-field col s12 m12 l12">
+                            <i class="material-icons prefix">account_circle</i>
+                            <input type="text" id="nome" name="nome" {%if usuario.nome is not null%} value="{{usuario.nome}}" {%endif%}">
+                            <label for="nome">Nome</label>
+                        </div>
+
+                        <div class="input-field col s12 m6 l6">
+                            <i class="material-icons prefix">phone</i>
+                            <input type="text" id="celular" name="celular"{%if usuario.telefone is not null%} value="{{usuario.telefone}}" {%endif%}>
+                            <label for="celular">Celular</label>
+                        </div>
+                        <div class="input-field col s12 m6 l6">p
+                            <i class="material-icons prefix">fingerprint</i>
+                            <input type="text" id="cpf" name="cpf"{%if usuario.cpf is not null%} value="{{usuario.cpf}}" {%endif%}>
+
+                            <label for="cpf">CPF</label>
+                        </div>
+                        <div class="input-field col s12 m8 l8">
+                            <i class="material-icons prefix">home</i>
+                            <input type="text" id="enderecoresidencia" name="enderecoresidencia" {%if perfil.enderecoresidencia is not null%} value="{{perfil.enderecoresidencia}}" {%endif%}>
+
+                            <label for="enderecoresidencia">Endereco</label>
+                        </div>
+                        <div class="input-field col s12 m4 l4">
+                            <i class="material-icons prefix">home</i>
+                            <input type="number" id="numero" name="numero"{%if perfil.numero is not null%} value="{{perfil.numero}}" {%endif%}>
+
+                            <label for="numero">Numero</label>
+                        </div>
+                        <div class="input-field col s12 m8 l8">
+                            <i class="material-icons prefix">map</i>
+                            <input type="text" id="bairro" name="bairro"{%if perfil.bairro is not null%} value="{{perfil.bairro}}" {%endif%}>
+
+                            <label for="bairro">Bairro</label>
+                        </div>
+                        <div class="input-field col s12 m4 l4">
+                            <i class="material-icons prefix">map</i>
+                            <input type="text" id="cep" name="cpf"{%if perfil.cep is not null%} value="{{perfil.cep}}" {%endif%}>
+                            <label for="cep">CEP</label>
+                        </div>
+
+                        <div class="progress" style="display: none">
+                            <div class="indeterminate"></div>
+                        </div>
+                            <input type="submit" value="salvar" onClick="salvarForm()"> 
+
+                    </form>
+
+                    <div class="row">
+
+
+                    </div>
+                </div>
+            </div> 
+        </div>
+    </div>
+
+</main>
+<!-- Scripts -->
+<script type="text/javascript" src="js/jquery-3.3.1.min.js"></script>
+<script type="text/javascript" src="js/materialize.js"></script>
+<script type="text/javascript" src="js/editarPerfilProfissional.js"></script>
+<script type="text/javascript" src="js/coletarLocalizacaoProfissional.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.0/jquery.mask.js"></script>
+
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCJad8cPlyBoxq47_kMa7RejAGIOdIrVYc&libraries=places&callback=initMap"
+async defer></script>
+</body>
+</html>
