@@ -66,20 +66,23 @@
         </p>
     </li>
     <li><div class="divider"></div></li>
-
-    <li><a class="waves-effect" href="#!">Sair</a></li>
+    <li><a href="home">Home</a></li>
+    <li><a href="editarPerfil">Perfil</a></li>
+    <li><a class="waves-effect" href="logout">Sair</a></li>
 </ul>
 <script type="text/javascript">
     function changeMinhaLocal(el) {
         if (el.checked) {
-            alert("Os usuarios irao ver a sua localizacao atual no mapa.");
+            M.toast({html: 'Os usuários irão ver a sua localizção atual no mapa.'});
+
 
             var mensagem = {
                 permissaoLocalAtual: true
             };
 
         } else {
-            alert("Os usuarios nao irao ver  a sua localizacao atual no mapa.");
+            M.toast({html: 'Os usuarios não irão ver a sua localização atual no mapa.'});
+
 
             var mensagem = {
                 permissaoLocalAtual: false
@@ -88,8 +91,7 @@
         $.ajax({
             type: "POST",
             url: "mostrarMinhaLocalAtual",
-            dataType: "json",
-            contentType: 'application/json',
+            dataType: "json", contentType: 'application/json',
             data: JSON.stringify(mensagem),
             success: function (result) {
                 console.log("result");
@@ -103,21 +105,21 @@
     }
     function changeMinhaCasa(el) {
         if (el.checked) {
-            alert("Os usuarios irao ver a sua casa no mapa.");
+            M.toast({html: 'Os usuários irão ver sua casa no mapa.'});
 
             var mensagem = {
                 permissaoCasa: true
             };
 
         } else {
-            alert("Os usuarios nao irao mais a sua casa no mapa.");
+            M.toast({html: 'Os usuários não irão mais ver sua casa no mapa.'});
+
 
             var mensagem = {
                 permissaoCasa: false
             };
         }
-        $.ajax({
-            type: "POST",
+        $.ajax({type: "POST",
             url: "mostrarMinhaCasa",
             dataType: "json",
             contentType: 'application/json',

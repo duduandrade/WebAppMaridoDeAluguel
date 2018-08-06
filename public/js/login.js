@@ -18,10 +18,12 @@ $("#form_login").submit(function (e) {
         success: function (result) {
             console.log(result);
             if (!result.erro) {
-                
+
                 window.location.href = location.origin + '/maridoDeAluguel/home';
             } else {
-                alert(result.mensagem);
+                 $("#loadingLogin").hide();
+                M.toast({html: result.mensagem});
+
             }
         }
     });
@@ -39,22 +41,22 @@ $("#esqueciSenha").click(function () {
 
 $("#btnEsqueciSenha").click(function () {
     console.log("cliquei");
-    
 
-        var formSerialize = $("#form_login").serialize();
-        var url = location.origin + '/maridoDeAluguel/esquecisenha';
-        $.ajax({
-            type: "POST",
-            url: url,
-            data: formSerialize,
-            success: function (result) {
-                console.log(result);
-                if (!result.erro) {
-                    console.log(result.mensagem);
-                } else {
-                    alert(result.mensagem);
-                }
+
+    var formSerialize = $("#form_login").serialize();
+    var url = location.origin + '/maridoDeAluguel/esquecisenha';
+    $.ajax({
+        type: "POST",
+        url: url,
+        data: formSerialize,
+        success: function (result) {
+            console.log(result);
+            if (!result.erro) {
+                console.log(result.mensagem);
+            } else {
+                alert(result.mensagem);
             }
-        });
-   
+        }
+    });
+
 });

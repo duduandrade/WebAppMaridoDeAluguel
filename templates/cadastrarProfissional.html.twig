@@ -16,6 +16,13 @@
                     padding-left: 0;
                 }
             }
+            input + label {
+                pointer-events: none;
+
+                * {
+                    pointer-events: all;
+                }
+            }
         </style>
 
         <!--Let browser know website is optimized for mobile-->
@@ -31,9 +38,9 @@
                         </ul>
 
                         <ul id="nav-mobile" class="sidenav">
-                            <li><a href="#">Home</a></li>
+                            <li><a href="/">Home</a></li>
                         </ul>
-                        <a href="#" data-target="nav-mobile" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+                        <a href="/" data-target="nav-mobile" class="sidenav-trigger"><i class="material-icons">menu</i></a>
                     </div>
                 </nav>
             {% endblock %}
@@ -144,8 +151,8 @@
                     <div class="progress" style="display: none">
                         <div class="indeterminate"></div>
                     </div>
-                      {#  {{ form_widget(formProfisional.latend, {'attr':{'id':'latend'} } ) }}
-                        {{ form_widget(formProfisional.lngend, {'attr':{'id':'lngend'} } ) }}
+                    {#  {{ form_widget(formProfisional.latend, {'attr':{'id':'latend'} } ) }}
+                      {{ form_widget(formProfisional.lngend, {'attr':{'id':'lngend'} } ) }}
 #}
 
                     {{ form_widget(form.cadastrar, {'attr':{'class':'col s12 blue white-text btn btn-done waves-effect'} } ) }}
@@ -160,6 +167,8 @@
         <!-- Scripts -->
         <script type="text/javascript" src="js/jquery-3.3.1.min.js"></script>
         <script type="text/javascript" src="js/materialize.js"></script>
+                <script type="text/javascript" src="js/menulateral.js"></script>
+
         <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCJad8cPlyBoxq47_kMa7RejAGIOdIrVYc&libraries=places&?sensor=false"
         async defer></script>
         <script type="text/javascript" src="js/cadastrarProfissional.js"></script>

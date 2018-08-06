@@ -29,7 +29,7 @@
 
             .rating { 
                 border: none;
-                float: left;
+               {# float: left;#}
             }
 
             .rating > input { display: none; } 
@@ -96,7 +96,8 @@
 
                                     </p>
                                     {%if solicitacoesConcluidasArray.avaliacao is null or solicitacoesConcluidasArray.avaliacao ==0 %}
-                                        <fieldset disabled class="rating secondary-content" id="{{solicitacoesConcluidasArray.idsolicitacoes}}">
+                                        <p> Avalie o profissional:
+                                        <fieldset disabled class="rating " id="{{solicitacoesConcluidasArray.idsolicitacoes}}">
                                             <input type="radio" id="star5" name="rating" value="5" /><label class = "full" for="star5" ></label>
                                             <input type="radio" id="star4" name="rating" value="4" /><label class = "full" for="star4" ></label>
                                             <input type="radio" id="star3" name="rating" value="3" /><label class = "full" for="star3" ></label>
@@ -115,7 +116,7 @@
                                             </div>
                                         </div>    
                                     {%else%}
-                                        <fieldset disabled class="rating secondary-content" id="{{solicitacoesConcluidasArray.idsolicitacoes}}">
+                                        <fieldset disabled class="rating" id="{{solicitacoesConcluidasArray.idsolicitacoes}}">
                                             {% for i in 1..solicitacoesConcluidasArray.avaliacao%}
 
                                                 <span class="fa fa-star checked"></span>

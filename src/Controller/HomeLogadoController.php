@@ -16,6 +16,13 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 class HomeLogadoController extends Controller {
 
     /**
+     * @Route("/", name="")
+     */
+    public function index() {
+        return $this->render('index.html.twig');
+    }
+
+    /**
      * @Route("/home", name="home")
      */
     public function homeAction(\Swift_Mailer $mailer) {
@@ -59,8 +66,7 @@ class HomeLogadoController extends Controller {
                             return $this->redirectToRoute("solicitacoes");
                         } else {
                             $this->get('session')->set('jatem', false);
-
-                            return $this->render('homeLogado.html.twig', array("nome" => $usuario->getNome(), "fixed" => true));
+                            return $this->redirectToRoute("solicitarProfissional");
                         }
                     } else {
                         //se nao for cliente nem profissional

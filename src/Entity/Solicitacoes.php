@@ -83,7 +83,7 @@ class Solicitacoes {
     /**
      * @var string|null
      *
-     * @ORM\Column(name="motivoTrocaPreco", type="string", length=45, nullable=true)
+     * @ORM\Column(name="motivoTrocaPreco", type="string", length=200, nullable=true)
      */
     private $motivotrocapreco;
 

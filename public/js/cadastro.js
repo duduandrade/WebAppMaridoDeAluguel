@@ -24,28 +24,32 @@ $("#form_senha_second").on("focusout", function (e) {
 });
 
 $(document).ready(function () {
+
+
     $('#form_cpf').mask('000.000.000-00', {reverse: true});
     $("#form_telefone").mask("(00) 00000-0000");
 });
-$("#form_cadastro").submit(function(e) {
+$("#form_cadastro").submit(function (e) {
 
-        e.preventDefault();
-        var formSerialize = $(this).serialize();
+    e.preventDefault();
+    var formSerialize = $(this).serialize();
 
-        var url = location.origin + '/maridoDeAluguel/cadastrar';
-        $.ajax({
-            type: "POST",
-            url: url,
-            data: formSerialize,
-            success: function (result) {
-                console.log(result);
-              if (!result.erro){
-                  alert(result.mensagem + " Faça login para utilizar a plataforma.");
-                  window.location.href = location.origin + '/maridoDeAluguel/login';
+    var url = location.origin + '/maridoDeAluguel/cadastrar';
+    $.ajax({
+        type: "POST",
+        url: url,
+        data: formSerialize,
+        success: function (result) {
+            console.log(result);
 
-              }else{
-                   alert(result.mensagem);
-              }
+            if (!result.erro) {
+                M.toast({html: result.mensagem + " Faça login para utilizar a plataforma."});
+                window.location.href = location.origin + '/maridoDeAluguel/login';
+
+            } else {
+                M.toast({html: result.mensagem});
+
             }
-        });
+        }
     });
+});

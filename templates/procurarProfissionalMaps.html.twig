@@ -106,9 +106,9 @@
                placeholder="Informe o local do antendimento">
 
         <div id="map"></div>
-        {{dump(estrelas)}}
-        {{dump(profissionais)}}
-        {{dump(endereco)}}
+        {# {{dump(estrelas)}}
+         {{dump(profissionais)}}
+         {{dump(endereco)}}#}
         {% for profissionalArray in endereco %}
 
             <div  id="divProfissional{{profissionalArray[5].idprofissionais}}" class="divProfissionalBox valign-wrapper " style="display: none;">
@@ -175,6 +175,7 @@
                     zoom: 17,
                     center: coordenadasCharqueadas[0],
                     mapTypeId: google.maps.MapTypeId.ROADMAP,
+                    disableDefaultUI: true,
                     zoomControl: true,
                     gestureHandling: 'cooperative'
                 });
@@ -184,7 +185,7 @@
                     navigator.permissions.query({name: 'geolocation'}).then(function (result) {
                         if (result.state == 'prompt' || result.state == 'denied') {
                             //solicita autorização ao usuário caso ainda não tenha aceitado
-                            
+
                             navigator.geolocation.getCurrentPosition(revealPosition, positionDenied, geoSettings);
                         }
                     });
@@ -311,7 +312,8 @@
 
                 var enderecoServico = $("#pac-input").val();
                 if (enderecoServico == "") {
-                    alert("Informe o local de antedimento");
+                    M.toast({html: 'Informe o local de antedimento'});
+
                 } else {
                     $("#loading" + codigoProfissional).show();
                     var solicitacao = {

@@ -54,6 +54,7 @@ function mudarPreco(solicita) {
         data: JSON.stringify(mensagem),
         success: function (result) {
             console.log(result);
+            $("#texto").html('<i class="material-icons">local_atm</i> Você solicitou mudança de preço de ' + $('#preco').val() + ' para R$' + mensagem.novoPreco + '.')
             window.setInterval(function () {
 
                 verificarAceiteCliente(solicita);
@@ -67,32 +68,31 @@ function mudarPreco(solicita) {
     });
 }
 function finalizar(solicita) {
-    var resposta = confirm("Você confirma que recebeu o pagamento?");
-    if (resposta == true) {
 
 
-        var mensagem = {
-            solicitacao: solicita,
-        };
+    var mensagem = {
+        solicitacao: solicita,
+    };
 
-        $.ajax({
-            type: "POST",
-            url: "finalizar",
-            dataType: "json",
-            contentType: 'application/json',
-            data: JSON.stringify(mensagem),
-            success: function (result) {
-                console.log(result);
-                alert("Solicitacao finalizada");
-                window.location.href = location.origin + '/maridoDeAluguel/home';
+    $.ajax({
+        type: "POST",
+        url: "finalizar",
+        dataType: "json",
+        contentType: 'application/json',
+        data: JSON.stringify(mensagem),
+        success: function (result) {
+            console.log(result);
+            M.toast({html: "Solicitacao finalizada"});
 
-            },
-            error: function (xhr, ajaxOptions, thrownError) {
-                console.log(xhr.status);
-                console.log(thrownError);
-            }
-        });
-    }
+            window.location.href = location.origin + '/maridoDeAluguel/home';
+
+        },
+        error: function (xhr, ajaxOptions, thrownError) {
+            console.log(xhr.status);
+            console.log(thrownError);
+        }
+    });
+
 }
 function changeDisponivel(el) {
     if (el.checked) {

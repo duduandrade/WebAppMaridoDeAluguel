@@ -123,8 +123,8 @@ class ServicoController extends Controller {
             return false;
         }
     }
-    
-     static public function buscarSolicitacoesConcluidasProfAvaliadas($idprof, $doctrine) {
+
+    static public function buscarSolicitacoesConcluidasProfAvaliadas($idprof, $doctrine) {
         $em = $doctrine->getManager();
         $qb = $em->createQueryBuilder();
         $qb->select('s,u,p, uP, ser, cat')
@@ -139,7 +139,7 @@ class ServicoController extends Controller {
 //                )
                 ->where($qb->expr()->eq('s.profissionaisprofissionais', $idprof))
                 ->andWhere($qb->expr()->eq('s.statussolicitacao', 9))
-                  ->andWhere($qb->expr()->isNotNull('s.avaliacao'))
+                ->andWhere($qb->expr()->isNotNull('s.avaliacao'))
                 ->orWhere($qb->expr()->eq('s.statussolicitacao', 8))
                 ->orderBy('s.dtsolicitacao', 'DESC');
         $result = $qb->getQuery()->getResult();
@@ -177,10 +177,10 @@ class ServicoController extends Controller {
 
             $em = $this->getDoctrine()->getManager();
             $em->persist($servico);
-             $em->flush();
+            $em->flush();
             $this->get('session')->set('idservicosolicitado', $servico->getIdservico());
             $this->get('session')->set('quantidade', 0);
-           
+
             return $this->redirectToRoute('procurarprofissional');
         } else {
             return $this->redirectToRoute("login");
@@ -230,7 +230,8 @@ class ServicoController extends Controller {
                         'App\Entity\Enderecosolicitacao', 'e', \Doctrine\ORM\Query\Expr\Join::WITH, 'e.solicitacoessolicitacoes = s.idsolicitacoes'
                 )
                 ->where($qb->expr()->eq('s.usuariosusuarios', $idUsuario))
-                ->andWhere($qb->expr()->neq('s.statussolicitacao', 9));
+                ->andWhere($qb->expr()->neq('s.statussolicitacao', 9))
+                ->andWhere($qb->expr()->neq('s.statussolicitacao', 8));
         $result = $qb->getQuery()->getResult();
         if ($result != null) {
             return $result;
@@ -253,7 +254,7 @@ class ServicoController extends Controller {
                         'App\Entity\Enderecosolicitacao', 'e', \Doctrine\ORM\Query\Expr\Join::WITH, 'e.solicitacoessolicitacoes = s.idsolicitacoes'
                 )
                 ->where($qb->expr()->eq('s.profissionaisprofissionais', $idProfissional))
-                ->andWhere($qb->expr()->eq('s.statussolicitacao', 2));
+                ->andWhere('s.statussolicitacao =2 OR s.statussolicitacao =3');
         $result = $qb->getQuery()->getResult();
         if ($result != null) {
             return $result;

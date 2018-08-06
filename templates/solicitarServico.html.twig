@@ -11,16 +11,25 @@
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
 
         <style>
+            header, main, footer {
+                padding-left: 300px;
+            }
+
+            @media only screen and (max-width : 992px) {
+                header, main, footer {
+                    padding-left: 0;
+                }
+            }
             .icon-bar {
                 width: 100%; /* Full-width */
                 background-color: #2196f3; /* Dark-grey background */
                 overflow: auto; /* Overflow due to float */
             }
             .card-image{
-                    max-height: 50% !important;
+                max-height: 50% !important;
             }
-             .card-content{
-                    max-height: 50% !important;
+            .card-content{
+                max-height: 50% !important;
             }
             .icon-bar a {
                 float: left; /* Float links side by side */
@@ -44,16 +53,18 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     </head>
     <body>
-        <div id="navbar">
+        <div id="navbar"> 
             {% block navbar %}
-                {% include 'menuLateralCliente.html.twig'%}
+                {%include 'menuLateralCliente.html.twig' with {'fixed': true} %}
 
             {% endblock %}
         </div>
 
+        <main>
 
-        <div id="content" class="container valign center-block">
-            {% block body %}
+
+            <div id="content" class="container valign center-block">
+
                 {#{{dump(servicos)}}
                 {{dump(categorias)}}#}
 
@@ -61,7 +72,7 @@
                     <div class="icon-bar">
                         {#ids devem ser os mesmos das categorias do banco de dados#}
                         <a class='col s12 m3 l3'href="#" onClick="visibilidade('limpeza');"><i class="fas fa-broom"></i> Limpeza</a> 
-                        <a  class='col s12 m3 l3'href="#" onClick="visibilidade('eletrica');"><i class="fa fa-plug"></i> Elétrica</a> 
+                        <a  class='col s12 m3 l3'href="#" onClick="visibilidade('eletrica');"><i class="fa fa-plug"></i> <br class="hide-on-small-only">Elétrica</a> 
                         <a  class='col s12 m3 l3'href="#" onClick="visibilidade('hidraulica');"><i class="fa fa-tint"></i> Hidráulica</a>
 
                         <a  class='col s12 m3 l3'href="#" onClick="visibilidade('alvenaria');"><i class="fa fa-industry"></i> Alvenaria</a> 
@@ -139,14 +150,16 @@
 
 
 
-            {% endblock %}
-        </div>
+            </div>
+        </main>
         <!-- Scripts -->
 
         <script type="text/javascript" src="js/jquery-3.3.1.min.js"></script>
+
         <script type="text/javascript" src="js/materialize.js"></script>
-        <script type="text/javascript" src="js/servico.js"></script>
         <script type="text/javascript" src="js/menuLateral.js"></script>
+
+        <script type="text/javascript" src="js/servico.js"></script>
 
     </body>
 </html>

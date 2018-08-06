@@ -1,0 +1,139 @@
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>{% block title %}Faz tudo{% endblock %}</title>
+        {#<link href="{{ asset('css/materialize.css') }}" rel="stylesheet" />#}
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <!--Import materialize.css-->
+        <link type="text/css" rel="stylesheet" href="css/materialize.css" media="screen,projection"/>
+        <style type='text/css'>
+            header, main, footer {
+                padding-left: 300px;
+            }
+
+            @media only screen and (max-width : 992px) {
+                header, main, footer {
+                    padding-left: 0;
+                }
+            }
+            input + label {
+                pointer-events: none;
+
+                * {
+                    pointer-events: all;
+                }
+            }
+        </style>
+
+        <!--Let browser know website is optimized for mobile-->
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    </head>
+    <body>
+        <div id="navbar">
+            {% block navbar %}
+                <nav class="blue" role="navigation">
+                    <div class="nav-wrapper container"><a id="logo-container" href="#" class="brand-logo"> <img class="responsive-img" style="width: 210px;" src="img/logo_faz_tudo2.png" /></a>
+
+                        <ul class="right hide-on-med-and-down orange">
+                            <li><a href="cadastrar">Cadastre-se</a></li>
+                        </ul>
+                        <ul class="right hide-on-med-and-down">
+                            <li><a href="profissional">Seja um profissional</a></li>
+                        </ul>
+                        <ul class="right hide-on-med-and-down">
+                            <li><a href="/">Home</a></li>
+                        </ul>
+                        <ul id="nav-mobile" class="sidenav">
+                            <li><a href="cadastrar">Cadastre-se</a></li>
+                            <li><a href="profissional">Seja um profissional</a></li>
+                            <li><a href="/">Home</a></li>
+                        </ul>
+                        <a href="#" data-target="nav-mobile" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+                    </div>
+                </nav>
+            {% endblock %}
+        </div>
+        <div class="section no-pad-bot" id="index-banner">
+            <div class="container">
+
+                <div class="row">
+                    <div class="col s12 m12 l12">
+                        <br>
+                        <br>
+                        <br>
+                        <div class="slider hide-on-small-only">
+                            <ul class="slides">
+                                <li>
+                                    <img src="img/11.png"> <!-- random image -->
+                                    <div class="caption right-align blue-text">
+                                        <h3>Os principais servicos</h3>
+                                        <a class="waves-effect waves-light btn orange" href="cadastrar">Cadastre-se</a>
+
+                                        <h5 class="light blue-text text-lighten-1">Realize manutencoes com seguranca.</h5>
+                                    </div>
+                                </li>
+                                <li>
+                                    <img src="img/22.png"> <!-- random image -->
+                                    <div class="caption right-align blue-text">
+                                        <h3>Localize profissionais</h3>
+                                        <a class="waves-effect waves-light btn orange" href="cadastrar">Cadastre-se</a>
+
+                                        <h5 class="light blue-text text-lighten-1">Encontre os melhores profissionais.</h5>
+                                    </div>
+                                </li> <li>
+                                    <img src="img/33.png"> <!-- random image -->
+                                    <div class="caption right-align blue-text">
+                                        <h3>Conheca quem ira <br>na sua casa</h3>
+                                        <a class="waves-effect waves-light btn orange">Cadastre-se</a>
+
+                                        <h5 class="light blue-text text-lighten-1">Os clientes avaliam os profissionais</h5>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="row">
+                            <div class="col s12 m12 l12 hide-on-med-and-up">
+                                <img class="responsive-img" src="img/homegif.gif">
+                            </div>
+                            <div class="col s12 m12 l12">
+                                <h3 class="header center orange-text">Encontre profissionais qualificados</h3>
+                                <div class="row center">
+                                    <h5 class="header col s12 light">Conheça as vantagens de solicitar suas manutencoes pelo FAZ TUDO</h5>
+
+                                    <div class="icon-block col s6 m6 l6">
+                                        <h5 class="center blue-text"><i class="material-icons">attach_money</i></h5>
+                                        <h5 class="center">Preco justo</h5>
+                                        <p class="light">Os precos iniciais sao definidos com base em servicos simples e so pode ser aumentado se voce concordar.</p>
+                                    </div>
+
+
+                                    <div class="icon-block col s6 m6 l6">
+                                        <h5 class="center blue-text"><i class="material-icons">my_location</i></h5>
+                                        <h5 class="center">Localize  profissionais</h5>
+                                        <p class="light">Deixe que nos encontremos os profissionais mais proximos de voce, semelhante ao uber.</p>
+                                    </div>
+
+                                </div>
+                                <div class="row center">
+                                    <button id="button-cadastrar"  href='cadastrar' class="btn-large waves-effect waves-light orange">Cadastre-se</button>
+                                    <button id="button-cadastrar"  href='profissional' class="btn-large waves-effect waves-light blue">Seja um profissional</button>
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script type="text/javascript" src="js/jquery-3.3.1.min.js"></script>
+        <script type="text/javascript" src="js/materialize.js"></script>
+        <script type="text/javascript" src="js/menulateral.js"></script>
+        <script type="text/javascript">
+
+            $(document).ready(function () {
+                $('.slider').slider();
+            });
+        </script>
+    </body>
+</html>

@@ -16,53 +16,93 @@
                     padding-left: 0;
                 }
             }
+            .icon-bar {
+                width: 100%; /* Full-width */
+                background-color: #2196f3; /* Dark-grey background */
+                overflow: auto; /* Overflow due to float */
+            }
+            .card-image{
+                max-height: 50% !important;
+            }
+            .card-content{
+                max-height: 50% !important;
+            }
+            .icon-bar a {
+                float: left; /* Float links side by side */
+                text-align: center; /* Center-align text */
+                width: 20%; /* Equal width (5 icons with 20% width each = 100%) */
+                padding: 12px 0; /* Some top and bottom padding */
+                transition: all 0.3s ease; /* Add transition for hover effects */
+                color: white; /* White text color */
+                font-size: 36px; /* Increased font size */
+            }
+
+            .icon-bar a:hover {
+                background-color: #000; /* Add a hover color */
+            }
+
+            .active {
+                background-color: #00bcd4; /* Add an active/current color */
+            }
         </style>
 
         <!--Let browser know website is optimized for mobile-->
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     </head>
     <body>
-      <div id="navbar"> 
-            {% block navbar %}
-                {% include 'menuLateralCliente.html.twig'%}
+            <div id="navbar"> 
+                {% block navbar %}
+                    {% include 'menuLateralCliente.html.twig'%}
 
 
-            {% endblock %}
-        </div>
+                {% endblock %}
+            </div>
 
-        <main>
+            <main>
             <div id="content" class="container valign center-block">
-                {#  {{dump(servico)}}#}
-                <h5 class="blue-text center-align"> Conheça alguns serviços</h5>
-                <div class="divider"></div>
+                <h5 class="blue-text center-align">Bem vindo {{ app.session.get('nomeUsuario') }}</h5>
+                <div class="row" {# style="height: 180px"#}>
+                    <div class="icon-bar">
+                        {#ids devem ser os mesmos das categorias do banco de dados#}
+                        <a class='col s12 m4 l4'href="#" onClick="visibilidade('limpeza');"><i class="fas fa-broom"></i> Limpeza</a> 
+                        <a  class='col s12 m4 l4'href="#" onClick="visibilidade('eletrica');"><i class="fa fa-plug"></i> Elétrica</a> 
+                        <a  class='col s12 m4 l4'href="#" onClick="visibilidade('hidraulica');"><i class="fa fa-tint"></i> Hidráulica</a>
 
-                <div class="row">
-                    {#multiplicar pelo banco de dados#}
-                    <div class="col s12 m6 l6">
-                        <div class="card small" onClick="solicitar()">
-                            <div class="card-image waves-effect waves-block waves-light">
-                                <img class="activator" src="img/eletrica/Instalar chuveiro.jpg">
-                            </div>
-                            <div class="card-content">
-                                <span class="card-title activator grey-text text-darken-4">Instalar chuveiro<i class="material-icons right">more_vert</i></span>
-                                <p>A partir de R$20,00 por unidade</p>
-                            </div>
-                           
-                        </div>
-                    </div>  
-                      <div class="col s12 m6 l6">
-                        <div class="card small" onClick="solicitar()">
-                            <div class="card-image waves-effect waves-block waves-light">
-                                <img class="activator" src="img/alvenaria/Pintura.jpg">
-                            </div>
-                            <div class="card-content">
-                                <span class="card-title activator grey-text text-darken-4">Pintura<i class="material-icons right">more_vert</i></span>
-                                <p>A partir de R$6,50 por M²</p>
-                            </div>
-                           
-                        </div>
-                    </div>  
+                        <a  class='col s12 m4 l4'href="#" onClick="visibilidade('alvenaria');"><i class="fa fa-industry"></i> Alvenaria</a> 
+
+                    </div>
                 </div>
+                {#  {{dump(servico)}}#}
+                {# <h5 class="blue-text center-align"> Conheça alguns serviços</h5>
+                 <div class="divider"></div>
+ 
+                 <div class="row">#}
+                {#multiplicar pelo banco de dados#}
+                {# <div class="col s6 m6 l6">
+                     <div class="card small" onClick="solicitar()">
+                         <div class="card-image waves-effect waves-block waves-light">
+                             <img class="activator" src="img/eletrica/Instalar chuveiro.jpg">
+                         </div>
+                         <div class="card-content">
+                             <span class="card-title activator grey-text text-darken-4">Instalar chuveiro<i class="material-icons right">more_vert</i></span>
+                             <p>A partir de R$20,00 por unidade</p>
+                         </div>
+                        
+                     </div>
+                 </div>  
+                   <div class="col s6 m6 l6">
+                     <div class="card small" onClick="solicitar()">
+                         <div class="card-image waves-effect waves-block waves-light">
+                             <img class="activator" src="img/alvenaria/Pintura.jpg">
+                         </div>
+                         <div class="card-content">
+                             <span class="card-title activator grey-text text-darken-4">Pintura<i class="material-icons right">more_vert</i></span>
+                             <p>A partir de R$6,50 por M²</p>
+                         </div>
+                        
+                     </div>
+                 </div>  
+             </div>#}
 
             </div>
 

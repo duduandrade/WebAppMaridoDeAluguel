@@ -56,7 +56,7 @@
                                 <p> 
                                     {{ solicitacoesProf[0].servicosservico.nomeservico}} - {{solicitacoesProf[0].servicosservico.categoriasservicoscategoriasservicos.nomecategoria}}
                                 </p>
-                                <p>
+                                <p id="preco">
                                     R$  {{ solicitacoesProf[0].precofinal}}
                                 </p>
                                 {%if solicitacoesProf[0].trocapreco==1  and solicitacoesProf[0].trocaprecoautorizada==0%}
@@ -66,7 +66,7 @@
                                         Você solicitou mudança de preço de R${{solicitacoesProf[0].precoFinal}} para R${{solicitacoesProf[0].novovalor}}.
                                     </p>
                                 {%elseif solicitacoesProf[0].trocapreco==1 and solicitacoesProf[0].trocaprecoautorizada==1%}
-                                    <p>
+                                    <p id="texto">
                                         <i class="material-icons">local_atm</i>
 
                                         Alteração de preço autorizada pelo cliente.
@@ -78,14 +78,27 @@
                                     {{ solicitacoesProf[1].enderecosolicitacao}}
                                 </p>
 
-                                {%if solicitacoesProf[0].statussolicitacao == 2%}
+                                {%if solicitacoesProf[0].statussolicitacao == 2 or solicitacoesProf[0].statussolicitacao == 3 %}
 
                                     <div class="row center-align">
                                         <a class="waves-effect waves-light btn modal-trigger blue " href="#modal1">Alterar Valor</a>
                                     </div>
                                     <div class="row">
-                                        <a class="waves-effect waves-light btn-large orange" style="display:block" onClick="event.preventDefault();
-                                                finalizar('{{solicitacoesProf[0].idsolicitacoes}}')"> Finalizar e receber pagamento <i class="material-icons right">attach_money</i> </a>
+                                        <!-- Modal Structure -->
+                                        <div id="modalfinal" class="modal">
+                                            <div class="modal-content">
+                                                <h4>Você confirma o recebimento do pagamento?</h4>
+                                                <p>Você só deve finalizar após o recebimento pelo cliente.</p>
+
+                                            </div>
+                                            <div class="modal-footer">
+                                                <a onClick="event.preventDefault();
+                                                        finalizar('{{solicitacoesProf[0].idsolicitacoes}}')"
+                                                   class="modal-close waves-effect waves-green btn orange">Sim, concordo.</a>
+                                                <a class="modal-close waves-effect waves-green btn orange">Ainda não.</a>
+                                            </div>
+                                        </div>
+                                        <a class="waves-effect waves-light btn-large orange  modal-trigger"  href="#modalfinal" style="display:block" > Finalizar e receber pagamento <i class="material-icons right">attach_money</i> </a>
                                     </div>
                                     <div id="modal1" class="modal  modal-fixed-footer">
 
@@ -112,6 +125,7 @@
                                             </form>
 
                                         </div>
+
                                         <div class="modal-footer">
                                             <a href="" onClick="event.preventDefault();
                                                     mudarPreco('{{solicitacoesProf[0].idsolicitacoes}}')" class="modal-close waves-effect waves-green btn-small orange">Salvar</a>
@@ -139,7 +153,7 @@
 
 <script type="text/javascript" src="js/solicitacaoAndamento.js"></script>
 <script type="text/javascript" src="js/coletarLocalizacaoProfissional.js"></script>
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCJad8cPlyBoxq47_kMa7RejAGIOdIrVYc&libraries=places&callback=initMap"
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCJad8cPlyBoxq47_kMa7RejAGIOdIrVYc&libraries=places"
 async defer></script>
 </body>
 </html>
